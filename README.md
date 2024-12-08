@@ -14,7 +14,16 @@ volume levels.
 - Jackson Jewell
 - Ryan Slusser
 
+---
+
 ### **Acknowledgements**
 
-- Dr. Leda Kloudas, Project Mentor, Duquesne Univeristy School of Science and Engineering
-- Jake Graham, Critical Care PA-C, Clinical Mentor, UPMC Presbyterian
+- **Dr. Leda Kloudas**  
+  _Ph.D., Bioengineering,_  
+  Duquesne University, School of Science and Engineering  
+  _Project Mentor_
+
+- **Jake Graham**  
+   _Critical Care PA-C_  
+   UPMC Presbyterian  
+   _Clinical Mentor_

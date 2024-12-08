@@ -474,6 +474,23 @@ li.checked::marker { content: "\2612"; }
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;80 mmHg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+    <!-- New QPushButton to route to the patient window -->
+    <widget class="QPushButton" name="patient_window_button">
+        <property name="geometry">
+        <rect>
+        <x>350</x>
+        <y>500</y>
+        <width>120</width>
+        <height>40</height>
+        </rect>
+        </property>
+        <property name="text">
+        <string>Go to Patient</string>
+        </property>
+        <property name="toolTip">
+        <string>Click to view patient window</string>
+        </property>
+    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

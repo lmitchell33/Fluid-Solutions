@@ -300,6 +300,23 @@ li.checked::marker { content: &quot;\2612&quot;; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+   <!-- New QPushButton to route to the patient window -->
+    <widget class="QPushButton" name="vitals_window_button">
+        <property name="geometry">
+        <rect>
+        <x>350</x>
+        <y>500</y>
+        <width>120</width>
+        <height>40</height>
+        </rect>
+        </property>
+        <property name="text">
+        <string>Go to Vitalst</string>
+        </property>
+        <property name="toolTip">
+        <string>Click to view vitals window</string>
+        </property>
+    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
