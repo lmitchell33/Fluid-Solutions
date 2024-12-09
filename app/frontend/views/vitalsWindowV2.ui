@@ -1,54 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <!--QSS Style: 
-QWidget {
-    background-color: #f7f7f7;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    color: #333;
-}
-
-QLabel {
-    color: #555;
-    font-weight: bold;
-}
-
-QLineEdit, QComboBox, QSpinBox {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 4px;
-}
-
-QPushButton {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-QPushButton:hover {
-    background-color: #45a049;
-}
-
-QPushButton:pressed {
-    background-color: #3e8e41;
-}
-
-QGroupBox {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-top: 20px;
-}
-
-QGroupBox::title {
-    subcontrol-origin: margin;
-    subcontrol-position: top center;
-    padding: 0 4px;
-    background-color: #f7f7f7;
-}
---><class>MainWindow</class>
+ <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
