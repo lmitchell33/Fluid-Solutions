@@ -1,48 +1,73 @@
- QWidget {
-    background-color: #f7f7f7;
-    font-family: Arial, sans-serif;
+/* Modern Flat Design Stylesheet */
+QWidget {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     font-size: 14px;
-    color: #333;
+    color: #2c3e50;
+}
+
+QMainWindow {
+    background-color: #f0f3f6;
 }
 
 QLabel {
-    color: #555;
-    font-weight: bold;
-}
-
-QLineEdit, QComboBox, QSpinBox {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    color: #34495e;
+    font-weight: 600;
     padding: 4px;
 }
 
+QTextEdit, QLineEdit {
+    background-color: white;
+    border: 1.5px solid #bdc3c7;
+    border-radius: 6px;
+    padding: 6px;
+    selection-background-color: #3498db;
+    selection-color: white;
+}
+
+QTextEdit:focus, QLineEdit:focus {
+    border-color: #2980b9;
+}
+
 QPushButton {
-    background-color: #4CAF50;
+    background-color: blue;
     color: blue;
     border: none;
     padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 14px;
+    border-radius: 6px;
+    font-weight: 600;
 }
 
 QPushButton:hover {
-    background-color: #45a049;
+    background-color: red;
 }
 
 QPushButton:pressed {
-    background-color: #3e8e41;
+    background-color: red;
 }
 
-QGroupBox {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-top: 20px;
+QPushButton:disabled {
+    background-color: #bdc3c7;
+    color: #7f8c8d;
 }
 
-QGroupBox::title {
-    subcontrol-origin: margin;
-    subcontrol-position: top center;
-    padding: 0 4px;
-    background-color: #f7f7f7;
+QMenuBar {
+    background-color: #ecf0f1;
+    color: #2c3e50;
+}
+
+QMenuBar::item {
+    spacing: 5px;
+    padding: 4px 10px;
+    background-color: transparent;
+}
+
+QMenuBar::item:selected {
+    background-color: #3498db;
+    color: white;
+}
+
+QStatusBar {
+    background-color: #ecf0f1;
+    color: #2c3e50;
 }
