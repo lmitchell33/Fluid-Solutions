@@ -40,7 +40,7 @@
        <string>Click to view vitals window</string>
       </property>
       <property name="text">
-       <string>Go to Vitalst</string>
+       <string>Go to Vitals</string>
       </property>
      </widget>
     </item>
