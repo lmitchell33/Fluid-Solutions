@@ -6,7 +6,13 @@ from frontend.vitals_window import VitalsWindow
 class Router(QStackedWidget):
     """
     A class to manage routing between multiple windows in the application.
-
+    
+    NOTE: A stacked widget was chosen becuase it loads all views into memory when initalized
+    making the switching of the views more efficent because of less load time. 
+    However, if the model inference or SQLAlchemy uses too much RAM change this to a more
+    simple routing method where you simply show and hide the windows, that way the number of 
+    views loaded into memroy at once is limited to 1.
+    
     It initializes and handles interactions between `PatientWindow` and `VitalsWindow`.
 
     Methods:
@@ -33,6 +39,7 @@ class Router(QStackedWidget):
         # NOTE: If any other windows are added, add the routing here
         self.vitals_window.get_patient_routing_button().clicked.connect(lambda: self.show_window(self.patient_window))
         self.patient_window.get_vitals_routing_button().clicked.connect(lambda: self.show_window(self.vitals_window))
+
 
     def show_window(self, window):
         ''' Sets the current window being shown to the specified window
