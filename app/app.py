@@ -4,16 +4,17 @@ import argparse
 from PyQt6.QtCore import QFile, QTextStream
 from PyQt6.QtWidgets import QApplication
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 
 from frontend.router import Router
-from database_models import Base
+from database_models import Base, Patient
 
 # Create an engine to connect to database
 engine = create_engine("sqlite:///data.db")
 
 # Create a session for this database (engine)
-db_session = sessionmaker(bind=engine)
+session_bind = sessionmaker(bind=engine)
+db_session = session_bind()
 
 def initdb():
     '''initalizes the database by dropping all tables (if currently exists), then creating the tables again (blank)'''
