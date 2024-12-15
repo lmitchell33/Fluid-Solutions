@@ -4,7 +4,7 @@ import argparse
 from PyQt6.QtCore import QFile, QTextStream
 from PyQt6.QtWidgets import QApplication
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker
 
 from frontend.router import Router
 from database_models import Base, Patient
@@ -13,8 +13,7 @@ from database_models import Base, Patient
 engine = create_engine("sqlite:///data.db")
 
 # Create a session for this database (engine)
-session_bind = sessionmaker(bind=engine)
-db_session = session_bind()
+db_session = sessionmaker(bind=engine)
 
 def initdb():
     '''initalizes the database by dropping all tables (if currently exists), then creating the tables again (blank)'''
@@ -87,7 +86,7 @@ def parse_arguments(args=None):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    
+
     if args.initdb:
         initdb()
     else:    
