@@ -1,5 +1,8 @@
 import sys
 from PyQt6 import QtWidgets, uic
+from app.app import db_session
+from database_models import Patient
+from utils.db_utils import session_context, session_wrapper
 
 def main():
     # Create the application
@@ -68,5 +71,12 @@ def main():
     # Run the application
     sys.exit(app.exec())
 
+@session_wrapper
+def test():
+    me = Patient(firstname="Lucas", lastname="Mitchell")
+    db_session.add(me)
+
+
 if __name__ == "__main__":
-    main()
+    test()
+    # main()

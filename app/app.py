@@ -13,7 +13,8 @@ from database_models import Base, Patient
 engine = create_engine("sqlite:///data.db")
 
 # Create a session for this database (engine)
-db_session = sessionmaker(bind=engine)
+session = sessionmaker(bind=engine)
+db_session = session()
 
 def initdb():
     '''initalizes the database by dropping all tables (if currently exists), then creating the tables again (blank)'''
