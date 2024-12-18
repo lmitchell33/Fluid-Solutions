@@ -3,6 +3,9 @@ from PyQt6.QtWidgets import QStackedWidget
 from frontend.patient_window import PatientWindow
 from frontend.vitals_window import VitalsWindow
 
+from utils.db_utils import session_context
+from database_models import Patient
+
 class Router(QStackedWidget):
     """
     A class to manage routing between multiple windows in the application.
