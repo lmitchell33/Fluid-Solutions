@@ -17,6 +17,8 @@ class Patient(Base):
     age = mapped_column(Integer, nullable=True)
     height_cm = mapped_column(Float, nullable=True)
     weight_kg = mapped_column(Float, nullable=True)
+    patient_MRN = mapped_column(Integer, nullable=True)
+
 
     #NOTE: This is a one-to-many relationship as one patient can have many medications and many fluid instances
     # The first argument is the table the relationship corresponds with

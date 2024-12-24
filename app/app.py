@@ -60,7 +60,7 @@ def main():
 
     router = Router()
 
-    # resize the window to the size of the current screen
+    # resize the window to 1.5x that of the current screen
     router.resize(int(geometry.width()/(1.5)), int(geometry.height()/(1.5)))
 
     # set the stylesheet and display the screen

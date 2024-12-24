@@ -10,21 +10,23 @@ class Router(QStackedWidget):
     """
     A class to manage routing between multiple windows in the application.
     
-    NOTE: A stacked widget was chosen becuase it loads all views into memory when initalized
-    making the switching of the views more efficent because of less load time. 
-    However, if the model inference or SQLAlchemy uses too much RAM change this to a more
-    simple routing method where you simply show and hide the windows, that way the number of 
-    views loaded into memroy at once is limited to 1.
+    NOTE: A stacked widget was chosen becuase it loads all views into memory 
+    when initalized making the switching of the views more efficent because of 
+    less load time. However, if the model inference or SQLAlchemy uses too much 
+    RAM change this to a more simple routing method where you simply show and 
+    hide the windows, that way the number of views loaded into memroy at once 
+    is limited to 1.
     
-    It initializes and handles interactions between `PatientWindow` and `VitalsWindow`.
+    Inits and handles interactions between `PatientWindow` & `VitalsWindow`.
 
     Methods:
-        show_window(window): Switches the displayed window to the specified one.
+        show_window(window): Switches the displayed window to the specified one
     """
 
     def __init__(self):
-        '''Constructor for the Router, creates and adds all windows to the QStackedWidget.
-        Also sets up the button click connections to handle the physical routing between the windows
+        '''Constructor for the Router, creates and adds all windows 
+        to the QStackedWidget. Also sets up the button click connections to 
+        handle the physical routing between the windows
         '''
         super().__init__()
 
