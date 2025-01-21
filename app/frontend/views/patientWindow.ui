@@ -35,7 +35,7 @@
      </widget>
     </item>
     <item row="8" column="0" colspan="7">
-     <widget class="QPushButton" name="vitals_window_button">
+     <widget class="QPushButton" name="routing_button">
       <property name="toolTip">
        <string>Click to view vitals window</string>
       </property>

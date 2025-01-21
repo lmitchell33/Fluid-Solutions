@@ -14,9 +14,17 @@ class BaseWindow(QMainWindow):
         ''' Constructor for the BaseWindow class, loads the specified .ui file
         Args:
             ui_file {str} -- Filepath to the .ui file to load. These files should all be in the /frontend/views/ directory
-        
+            
+            
         Returns:
             None 
         '''
         super().__init__()
         uic.loadUi(ui_file, self)
+        self.routes_to = None
+
+
+    def get_routing_button(self):
+        '''getter funciton to find and return the button obj from the xml'''
+
+        return self.routing_button

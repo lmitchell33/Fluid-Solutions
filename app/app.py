@@ -3,29 +3,14 @@ import argparse
 
 from PyQt6.QtCore import QFile, QTextStream
 from PyQt6.QtWidgets import QApplication
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 from frontend.router import Router
-from database_models import Base, Patient
+from frontend.patient_window import PatientWindow
+from frontend.vitals_window import VitalsWindow
+from database_models import Base
+from datetime import datetime 
 
-# Create an engine to connect to database
-engine = create_engine("sqlite:///data.db")
-
-# Create a session for this database (engine)
-session = sessionmaker(bind=engine)
-db_session = session()
-
-def initdb():
-    '''initalizes the database by dropping all tables (if currently exists), then creating the tables again (blank)'''
-    if not engine:
-        raise Exception("Engine not found")
-
-    # Clear the database by dropping the current tables and creating them again
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
-
-    print("Successfully intialized database")
+from database_manager import DatabaseManager
 
 
 def load_stylesheet(stylesheet):
@@ -58,7 +43,15 @@ def main():
     screen = app.primaryScreen()
     geometry = screen.geometry()
 
-    router = Router()
+    # initalize the windows and specify which each window routes to
+    patient_window = PatientWindow()
+    vitals_window = VitalsWindow()
+
+    patient_window.routes_to = vitals_window
+    vitals_window.routes_to = patient_window
+
+    # router facilitates the routing using a stackedwidget
+    router = Router(patient_window, vitals_window)
 
     # resize the window to 1.5x that of the current screen
     router.resize(int(geometry.width()/(1.5)), int(geometry.height()/(1.5)))
@@ -77,7 +70,8 @@ def parse_arguments(args=None):
         args {argparse obj} -- list of args to parse, default is cli args (sys.argv)
     
     Returns:
-        parsed_args {argparse obj} -- argparse obj with the arguments from the cli'''
+        parsed_args {argparse obj} -- argparse obj with the arguments from the cli
+    '''
     
     # intended use: "python3 app.py --initdb" to initalize the database
     parser = argparse.ArgumentParser()
@@ -85,10 +79,21 @@ def parse_arguments(args=None):
 
     return parser.parse_args(args)
 
+
 if __name__ == "__main__":
     args = parse_arguments()
 
+    # create the instance of the DatabaseManager
+    db = DatabaseManager()
+
+    # fluid = Fluid(fluid_name="98% Saline")
+    # record = FluidRecord(fluid_time_given=datetime.now(), amount_ml=50, fluid=fluid)
+    # fluid.fluid_record = record
+    # me = Patient(firstname="Lucas", lastname="Mitchell", dob=datetime.now().date(), height_cm=120.3, weight_kg=20.34, patient_mrn=1234567, fluid_records=[record])
+    # with db.session_context() as session:
+    #     session.add_all([me, fluid, record])
+
     if args.initdb:
-        initdb()
+        db.initdb(Base)
     else:    
         main()
