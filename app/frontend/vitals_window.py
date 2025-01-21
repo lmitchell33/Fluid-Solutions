@@ -14,18 +14,8 @@ class VitalsWindow(BaseWindow):
     def __init__(self):
         '''Constructor for the VitalsWindow class, loads the vitals .ui file'''
         # pass the filepath for the vitals window ui file into the BaseWindow for displaying
-        super().__init__("frontend/views/vitalsWindowV2.ui")
+        super().__init__("frontend/views/vitalsWindow.ui")
 
-    def get_patient_routing_button(self):
-        ''' getter function to find and return the button obj to routing to the patient window
-        Args:
-            None
-
-        Returns:
-            button {obj} -- pyqt6 button object used for routing to the patient window
-        '''
-        
-        return self.patient_window_button
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

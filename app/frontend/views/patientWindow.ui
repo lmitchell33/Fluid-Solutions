@@ -20,6 +20,34 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="1">
      <widget class="QTextEdit" name="textEdit">
+    <item row="2" column="4" rowspan="4" colspan="2" alignment="Qt::AlignHCenter">
+     <widget class="QLabel" name="label_4">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>800</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0" colspan="7">
+     <widget class="QPushButton" name="routing_button">
+      <property name="toolTip">
+       <string>Click to view vitals window</string>
+      </property>
+      <property name="text">
+       <string>Go to Vitals</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="1" colspan="6">
+     <widget class="QTextEdit" name="textEdit_5">
       <property name="font">
        <font>
         <pointsize>18</pointsize>
