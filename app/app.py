@@ -46,7 +46,6 @@ def main():
     # initalize the windows and specify which each window routes to
     patient_window = PatientWindow()
     vitals_window = VitalsWindow()
-
     patient_window.routes_to = vitals_window
     vitals_window.routes_to = patient_window
 

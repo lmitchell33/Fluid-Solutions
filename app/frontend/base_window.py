@@ -7,7 +7,7 @@ class BaseWindow(QMainWindow):
     go into this class
 
     Methods:
-        None (add to this comment if you add a method)
+        get_routing_button(): finds and returns the routing button for the loaded window
     '''
 
     def __init__(self, ui_file):

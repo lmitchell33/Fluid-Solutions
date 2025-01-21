@@ -6,9 +6,6 @@ from frontend.base_window import BaseWindow
 class PatientWindow(BaseWindow):
     '''
     BaseWindow inherited class to display and handle the logic for the patient window.
-
-    Methods:
-        get_vitals_routing_button(): returns the pyqt button obj for routing to the vitals window
     '''
     
     def __init__(self):
