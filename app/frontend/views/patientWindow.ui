@@ -18,22 +18,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="4" rowspan="4" colspan="2" alignment="Qt::AlignHCenter">
-     <widget class="QLabel" name="label_4">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>800</height>
-       </size>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="scaledContents">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="8" column="0" colspan="7">
      <widget class="QPushButton" name="routing_button">
       <property name="toolTip">
@@ -331,6 +315,30 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+    <item row="5" column="3" colspan="2">
+     <widget class="QLabel" name="label_7">
+      <property name="font">
+       <font>
+        <pointsize>18</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Height:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="5">
+     <widget class="QTextEdit" name="textEdit_4">
+      <property name="font">
+       <font>
+        <pointsize>18</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -348,4 +356,3 @@ li.checked::marker { content: &quot;\2612&quot;; }
  <resources/>
  <connections/>
 </ui>
-
