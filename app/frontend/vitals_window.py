@@ -2,7 +2,9 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer, QDateTime
+
 from frontend.base_window import BaseWindow
+from backend.fluid_manager import FluidManager
 
 class VitalsWindow(BaseWindow):
     '''

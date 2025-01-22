@@ -8,7 +8,6 @@ from frontend.router import Router
 from frontend.patient_window import PatientWindow
 from frontend.vitals_window import VitalsWindow
 from database_models import Base
-from datetime import datetime 
 
 from database_manager import DatabaseManager
 
@@ -82,15 +81,7 @@ def parse_arguments(args=None):
 if __name__ == "__main__":
     args = parse_arguments()
 
-    # create the instance of the DatabaseManager
     db = DatabaseManager()
-
-    # fluid = Fluid(fluid_name="98% Saline")
-    # record = FluidRecord(fluid_time_given=datetime.now(), amount_ml=50, fluid=fluid)
-    # fluid.fluid_record = record
-    # me = Patient(firstname="Lucas", lastname="Mitchell", dob=datetime.now().date(), height_cm=120.3, weight_kg=20.34, patient_mrn=1234567, fluid_records=[record])
-    # with db.session_context() as session:
-    #     session.add_all([me, fluid, record])
 
     if args.initdb:
         db.initdb(Base)
