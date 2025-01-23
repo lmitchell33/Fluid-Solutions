@@ -57,6 +57,7 @@ def main():
     # set the stylesheet and display the screen
     app.setStyleSheet(load_stylesheet("frontend/stylesheets/window.qss"))
     router.show() # by default, this shows the patient window
+
     sys.exit(app.exec())
 
 

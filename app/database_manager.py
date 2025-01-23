@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from threading import Lock
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
@@ -9,7 +10,11 @@ class DatabaseManager:
     of the `DatabaseManager` class exists throughout the application. It is 
     responsible for creating and managing the SQLAlchemy engine and session.
     The databaes is accessed via the `session_conext()` method, which hanldes
-    the creation, commits, rollbacks on error, and close of a session. 
+    the creation, commits, rollbacks on error, and close of a session. The 
+    Singleton is used here because pretty much all the modules of the code need
+    to use the DatabaseManager class and databse connections are fairly expensive,
+    therefore, only having one instance of the class is dideal because there will
+    only ever be once connection to the database. 
 
     The class provides methods to initalize the database schema with the 
     `initdb(Base)` method by dropping all tables and re-creating them.
@@ -19,6 +24,7 @@ class DatabaseManager:
         session_context(): Context manager for safely handling database sessions, committing changes and rolling back on errors.
     '''
     _instance = None
+    _lock = Lock() # thread lock to prevent race conditions
 
     def __new__(cls):
         '''Called before the __init__ method. This uses a Singleton pattern, 
@@ -42,8 +48,11 @@ class DatabaseManager:
         # If instance does not exist, then initalize an instance and set the 
         # initalized flag to ensure no more instances of the class be created.
         if cls._instance is None:
-            cls._instance = super(DatabaseManager, cls).__new__(cls)
-            cls._instance._initialized  = False
+            with cls._lock:
+                if cls._instance is None: 
+                    # double check the locking
+                    cls._instance = super(DatabaseManager, cls).__new__(cls)
+                    cls._instance._initialized  = False
         
         return cls._instance
 

@@ -25,17 +25,17 @@ class Router(QStackedWidget):
         '''
         super().__init__()
 
-        self.windows = windows
+        self._windows = windows
 
         try:
             # add each widget to the stacked widget
-            for window in self.windows:
+            for window in self._windows:
                 self.addWidget(window)
         except Exception as e:
             print(f"Window not found: {e}")
 
         # set the inital (default) window to be the first window added to the router
-        self.setCurrentWidget(self.windows[0])
+        self.setCurrentWidget(self._windows[0])
 
         self._setup_routing()
 
@@ -43,7 +43,7 @@ class Router(QStackedWidget):
     def _setup_routing(self):
         '''Dynamically connects routing buttons between all windows'''
         try:
-            for window in self.windows: 
+            for window in self._windows: 
                 # get the routing button for the current window 
                 routing_button = window.get_routing_button()
 
@@ -67,5 +67,5 @@ class Router(QStackedWidget):
             
         Returns:
             None
-        '''
+        ''' 
         self.setCurrentWidget(window)

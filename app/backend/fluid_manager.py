@@ -13,6 +13,18 @@ class FluidManager:
         self._db = DatabaseManager()
 
 
+    def add_record(self, patient, fluid_id, amount_mL, time_given):
+        pass
+
+
+    def get_patient_records(self, patient, start_time=None, end_time=None):
+        pass
+
+
+    def get_fluid_volume(self, patient, start_time=None, end_time=None):
+        pass
+
+
     def get_fluid_names(self):
         '''Queries the database gets a list of all fluid names stored.
 
@@ -21,3 +33,11 @@ class FluidManager:
         '''
         with self._db.session_context() as session:
             return session.query(Fluid.fluid_name).all()
+
+
+    def _create_record(self, patient, fluid_id, amount_ml, time_given):
+        pass
+
+
+    def _get_patient(self, patient):
+        pass
