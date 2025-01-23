@@ -22,6 +22,7 @@ class PatientWindow(BaseWindow):
                 
         # TODO: Add code to update the ui features when the current patient is changed.
 
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyle("macOS")

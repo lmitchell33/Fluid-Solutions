@@ -1,7 +1,10 @@
 from threading import Lock
+
+from PyQt6.QtCore import QObject, pyqtSignal
+
 from database_models import Patient
 
-class PatientState:
+class PatientState(QObject):
     '''Singleton calss for managing the current Patient being displayed on the 
     application.
     
@@ -18,8 +21,8 @@ class PatientState:
     Methods:
         get_current_patient() - returns the current patient
         set_current_patient(new_patient) - updates the current patient
-        add_observer(observer) - adds a function to call when the patient is updated
     '''
+    patient_changed = pyqtSignal()
     _instance = None
     _lock = Lock() # threadlock the patient state
     
@@ -39,9 +42,9 @@ class PatientState:
         if self._initialized:
             return 
         
+        super().__init__()
         self._current_patient = None
         self._initialized  = True
-        self._observers = []
     
     @property # designates current_patient as a property of the class
     def current_patient(self):
@@ -54,20 +57,4 @@ class PatientState:
         when the new patient is set, which updates the observer windows
         '''
         self._current_patient = new_patient
-        self._notify_observers()
-
-    def add_observer(self, observer):
-        '''Adds an observer function for each window.
-        Args:
-            observer {function} -- observer function to be called when the patient is changed
-        '''
-        if observer not in self._observers:
-            self._observers.append(observer)
-
-    def _notify_observers(self):
-        '''Calls the observer function with the new patient as a parameter.
-        The observer function should then make updates to the view/UI with the 
-        data of the new patient
-        '''
-        for observer in self._observers:
-            observer(self._current_patient)
+        self.patient_changed.emit()

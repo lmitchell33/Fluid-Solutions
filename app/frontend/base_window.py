@@ -27,17 +27,13 @@ class BaseWindow(QMainWindow):
 
         # Initialize patient state used to display the current patient being shown
         self.patient_state = PatientState()
-        self.patient_state.add_observer(self._on_patient_change)
+        self.patient_state.patient_changed.connect(self._update_ui)
 
 
     def get_routing_button(self):
         '''getter funciton to find and return the button obj from the xml'''
 
         return self.routing_button
-    
-
-    def _on_patient_change(self, new_patient):
-        self._update_ui()
 
 
     def _update_ui(self):
