@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from database_manager import DatabaseManager
-from database_models import Patient, Fluid, FluidRecord
+from database_models import Fluid, FluidRecord
 
 class FluidManager:
     '''Fluid Manager class used for managing everything involving fluids and 
@@ -13,9 +15,18 @@ class FluidManager:
         self._db = DatabaseManager()
 
 
-    def add_record(self, patient, fluid_id, amount_mL, time_given):
-        pass
+    def add_record(self, patient, fluid_name, amount_mL):
+        with self._db.session_context() as session:
+            fluid = session.query(Fluid).filter_by(fluid_name=fluid_name).first()
 
+            new_record = FluidRecord(fluid_time_given=datetime.now(), amount_mL=amount_mL, fluid=fluid, patient=patient)
+
+            fluid.fluid_records.append(new_record)
+            patient.fluid_records.append(new_record)
+
+        # TODO: replace this with some way of showing the user it was successful
+        print("Successfully created fluid record")
+        # return True
 
     def get_patient_records(self, patient, start_time=None, end_time=None):
         pass

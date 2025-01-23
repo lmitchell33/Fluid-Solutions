@@ -50,6 +50,7 @@ class FluidRecord(Base):
     patient: Mapped["Patient"] = relationship("Patient", back_populates="fluid_records")
 
     # Many-to-one relationship: One fluid record is associated with one fluid type
+    fluid_id: Mapped[int] = mapped_column(Integer, ForeignKey("fluid.id"))
     fluid: Mapped["Fluid"] = relationship("Fluid", back_populates="fluid_record", uselist=False)
 
 
@@ -60,5 +61,4 @@ class Fluid(Base):
     fluid_name = mapped_column(String, unique=True)
 
     # One-to-one relationship: One fluid belongs to one fluid record
-    fluid_record_id: Mapped[int] = mapped_column(Integer, ForeignKey("fluid_record.id"), unique=True)
-    fluid_record: Mapped["FluidRecord"] = relationship("FluidRecord", back_populates="fluid", uselist=False)
+    fluid_records: Mapped[List["FluidRecord"]] = relationship("FluidRecord", back_populates="fluid")

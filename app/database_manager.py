@@ -9,12 +9,12 @@ class DatabaseManager:
     This class implements a Singleton pattern, ensuring that only one instance
     of the `DatabaseManager` class exists throughout the application. It is 
     responsible for creating and managing the SQLAlchemy engine and session.
-    The databaes is accessed via the `session_conext()` method, which hanldes
-    the creation, commits, rollbacks on error, and close of a session. The 
-    Singleton is used here because pretty much all the modules of the code need
-    to use the DatabaseManager class and databse connections are fairly expensive,
-    therefore, only having one instance of the class is dideal because there will
-    only ever be once connection to the database. 
+    The database is accessed via the `session_conext()` method, which hanldes
+    the creation, commits, rollback, and closure of a session. The Singleton 
+    is used here because pretty much all modules need to use DatabaseManager 
+    databse connections are fairly expensive, therefore, only having one 
+    instance of the class is ideal because there will only ever be one
+    connection to the database. 
 
     The class provides methods to initalize the database schema with the 
     `initdb(Base)` method by dropping all tables and re-creating them.
