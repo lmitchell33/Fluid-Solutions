@@ -4,14 +4,12 @@ import argparse
 from PyQt6.QtCore import QFile, QTextStream
 from PyQt6.QtWidgets import QApplication
 
+from database_models import Base
+from database_manager import DatabaseManager
+
 from frontend.router import Router
 from frontend.patient_window import PatientWindow
 from frontend.vitals_window import VitalsWindow
-from database_models import Base, Patient
-
-from database_manager import DatabaseManager
-from backend.patient_state import PatientState
-
 
 def load_stylesheet(stylesheet):
     '''util function to load in a QSS stylesheet to apply to the app as a whole
@@ -49,9 +47,6 @@ def main():
     patient_window.routes_to = vitals_window
     vitals_window.routes_to = patient_window
 
-    ps = PatientState()
-    ps.current_patient = Patient(firstname="Lucas", lastname="Mitchell")
-
     # router facilitates the routing using a stackedwidget
     router = Router(patient_window, vitals_window)
 
@@ -61,8 +56,6 @@ def main():
     # set the stylesheet and display the screen
     app.setStyleSheet(load_stylesheet("frontend/stylesheets/window.qss"))
     router.show() # by default, this shows the patient window
-
-    ps.current_patient = Patient(firstname="Nathan", lastname="Mitchell")
 
     sys.exit(app.exec())
 
@@ -92,5 +85,6 @@ if __name__ == "__main__":
 
     if args.initdb:
         db.initdb(Base)
-    else:    
+    else:
         main()
+        db.close_session()

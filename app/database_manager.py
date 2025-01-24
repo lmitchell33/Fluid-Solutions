@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from threading import Lock
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker
 
 class DatabaseManager:
     '''Singleton class for managing database connections and sessions.
@@ -70,7 +70,10 @@ class DatabaseManager:
             return 
         
         self._engine = create_engine(database_url)
-        self._session = scoped_session(sessionmaker(self._engine))
+        
+        # This creates a persistant session that is alive throughout the entirety of the app
+        self._SessionFactory = sessionmaker(self._engine)
+        self._session = self._SessionFactory()
         self._initialized  = True
 
 
@@ -99,17 +102,17 @@ class DatabaseManager:
         
         this automatically creates and closes the session, as well as commits any changes and rolls back on errors
         '''
-        session = self._session()
 
         try:
-            yield session
-            session.commit()
+            yield self._session
         
         except Exception as e:
             # on error, dont allow the db to be updated
-            session.rollback()
+            self._session.rollback()
             raise e
 
-        finally:
-            # cleanup garbage
+
+    def close_session(self):
+        if self._session:
             self._session.remove()
+            self._session = None

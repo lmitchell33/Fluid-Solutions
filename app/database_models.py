@@ -58,7 +58,7 @@ class Fluid(Base):
     __tablename__ = "fluid"
 
     id = mapped_column(Integer, primary_key=True)
-    fluid_name = mapped_column(String, unique=True)
+    name = mapped_column(String, unique=True)
 
     # One-to-one relationship: One fluid belongs to one fluid record
     fluid_records: Mapped[List["FluidRecord"]] = relationship("FluidRecord", back_populates="fluid")

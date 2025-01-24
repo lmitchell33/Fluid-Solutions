@@ -22,7 +22,11 @@ class PatientState(QObject):
         get_current_patient() - returns the current patient
         set_current_patient(new_patient) - updates the current patient
     '''
+    # pyqt signal allows emits a signal to all functions connected to it, 
+    # allowing us to update speciifc values/fields in the connected windows
     patient_changed = pyqtSignal()
+
+    # private class members, used to ensure threadsafe, singleton behavior
     _instance = None
     _lock = Lock() # threadlock the patient state
     
@@ -36,6 +40,7 @@ class PatientState(QObject):
                 cls._instance._initialized = False
         return cls._instance
     
+
     def __init__(self):
         '''Constructor for the PatientState class'''
         # skip if instance of the class already exists
@@ -46,15 +51,17 @@ class PatientState(QObject):
         self._current_patient = None
         self._initialized  = True
     
+
     @property # designates current_patient as a property of the class
     def current_patient(self):
         '''Getter for the current patient'''
         return self._current_patient
         
+
     @current_patient.setter
     def current_patient(self, new_patient: Patient):
         '''Setter for the current patient. Calls the _notify_observers func
         when the new patient is set, which updates the observer windows
         '''
         self._current_patient = new_patient
-        self.patient_changed.emit()
+        self.patient_changed.emit() # emit the changes to all connected func's

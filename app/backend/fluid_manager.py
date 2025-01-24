@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from database_manager import DatabaseManager
-from database_models import Fluid, FluidRecord
+from database_models import Fluid, FluidRecord, Patient
 
 class FluidManager:
     '''Fluid Manager class used for managing everything involving fluids and 
@@ -9,31 +9,72 @@ class FluidManager:
     
     Methods:
         get_all_fluids(): Returns a list of names of all fluids found in the db
+        add_record(patient_id, fluid_name, amount_ml) - adds a fluidrecord to a patient
+        get_total_fluid_volume(patient_id) - returns the total fluid volume administered to a patient
     '''
     
     def __init__(self):
         self._db = DatabaseManager()
 
 
-    def add_record(self, patient, fluid_name, amount_mL):
-        with self._db.session_context() as session:
-            fluid = session.query(Fluid).filter_by(fluid_name=fluid_name).first()
+    def add_record(self, patient, fluid_name, amount_ml):
+        '''Adds a fluid record for a designated patient. If a inputted fluid 
+        name is not found in the database, it will create a new fluid.
+        
+        Args: 
+            patient_id {int} -- Unique db id of the patient to whom the fluid record belongs
+            fluid_name {str} -- the name of the fluid being recorded
+            amount_mL {float} -- The volume of fluid that was administered
+        '''
+        try:
+            with self._db.session_context() as session:
+                # patient = session.query(Patient).filter_by(id=int(patient_id)).first()
+                fluid = session.query(Fluid).filter_by(name=fluid_name).first()
+                
+                if not fluid:
+                    # TODO: could also throw an error
+                    fluid = Fluid(name=fluid_name)
+                    session.add(fluid)
 
-            new_record = FluidRecord(fluid_time_given=datetime.now(), amount_mL=amount_mL, fluid=fluid, patient=patient)
+                new_fluid_record = FluidRecord(fluid_time_given=datetime.now(), amount_ml=amount_ml, fluid=fluid, patient=patient)
 
-            fluid.fluid_records.append(new_record)
-            patient.fluid_records.append(new_record)
+                fluid.fluid_records.append(new_fluid_record)
+                patient.fluid_records.append(new_fluid_record)
 
-        # TODO: replace this with some way of showing the user it was successful
-        print("Successfully created fluid record")
-        # return True
+                session.add(new_fluid_record)
+                session.commit()
 
-    def get_patient_records(self, patient, start_time=None, end_time=None):
-        pass
+                # TODO: replace this with some way of showing the user it was successful
+                print("Successfully created fluid record")
+        
+        except Exception as e:
+            print(f"Failed to create fluid record: {e}")
 
 
-    def get_fluid_volume(self, patient, start_time=None, end_time=None):
-        pass
+    def get_total_fluid_volume(self, patient, fluid=None):
+        '''Calculates the total volume of fluid administered to a specific patient
+        
+        Args:
+            patient {Patient} -- The unique db id of the patient for whom the total fluid volume is administered to
+
+        Kwargs:
+            fluid {str} -- Name of the specific fluid to query, if not None
+
+        Returns:
+            sum {int} -- total fluid volume (mL) administered to the patient    
+        '''
+        try:
+            with self._db.session_context() as session:
+                records = patient.fluid_records
+            
+                if fluid:
+                    records = [record for record in records if record.fluid.name == fluid]
+                
+                return sum([record.amount_ml for record in records])
+                
+        except Exception as e:
+            print(f"Failed to get the total fluid volume {e}")
+            raise e
 
 
     def get_fluid_names(self):
@@ -43,12 +84,4 @@ class FluidManager:
             names {List[str]} -- names of all fluids stored in the db
         '''
         with self._db.session_context() as session:
-            return session.query(Fluid.fluid_name).all()
-
-
-    def _create_record(self, patient, fluid_id, amount_ml, time_given):
-        pass
-
-
-    def _get_patient(self, patient):
-        pass
+            return [name for name, in session.query(Fluid.name).all()]
