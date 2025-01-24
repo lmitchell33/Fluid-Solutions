@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from database_manager import DatabaseManager
-from database_models import Fluid, FluidRecord, Patient
+from database_models import Fluid, FluidRecord
 
 class FluidManager:
     '''Fluid Manager class used for managing everything involving fluids and 
