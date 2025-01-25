@@ -8,7 +8,7 @@
 # chmod +x generate-keys.sh
 # source generate-keys.sh privatekey.pem publickey.pem
 
-KEY_DIR=~/Fluid-Solutions/app/backend/epic_integration/auth/keys
+KEY_DIR=~/Fluid-Solutions/app/backend/epic/auth/keys
 
 mkdir -r "${KEY_DIR}"
 
