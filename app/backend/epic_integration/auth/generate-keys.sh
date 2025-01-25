@@ -4,7 +4,11 @@
 # 1 -> name for the private key
 # 2 -> name for the public key
 
-KEY_DIR=~/Fluid-Solutions/app/backend/auth/keys
+# How to run:
+# chmod +x generate-keys.sh
+# source generate-keys.sh privatekey.pem publickey.pem
+
+KEY_DIR=~/Fluid-Solutions/app/backend/epic_integration/auth/keys
 
 mkdir -r "${KEY_DIR}"
 
