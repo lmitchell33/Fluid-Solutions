@@ -3,6 +3,7 @@ flask==3.0.3
 PyQt6==6.7.1
 pyjwt==2.10.1
 pytest==8.3.4
+pytest-md==0.2.0
 python-dotenv==0.20.0
 requests==2.32.3
 sqlalchemy==2.0.36

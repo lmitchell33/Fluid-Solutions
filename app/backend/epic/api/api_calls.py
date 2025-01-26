@@ -71,6 +71,7 @@ class EpicAPI:
             for element in tree.iter():
                 print(element.tag, element.attrib)
 
+
 if __name__ == "__main__":
     epic = EpicAPI()
     epic.get_patient_data()

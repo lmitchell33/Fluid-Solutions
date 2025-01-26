@@ -1,0 +1,14 @@
+version: '3'
+services:
+  api:
+    environment:
+      CLIENT_ID: ${CLIENT_ID}
+      NON_PRODUCTION_CLIENT_ID: ${NON_PRODUCTION_CLIENT_ID}
+      TOKEN_URL: ${TOKEN_URL}
+      SEARCH_PATIENT_URL: ${SEARCH_PATIENT_URL}
+      READ_VITALS_URL: ${READ_VITALS_URL}
+      READ_PATIENT_URL: ${READ_PATIENT_URL}
+      
+    build:
+      context: ../
+      dockerfile: TEST.Dockerfile
