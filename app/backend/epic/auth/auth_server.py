@@ -4,6 +4,9 @@ from auth import get_public_key_modulus, kid
 '''
 Basic flask app to serve the JWT as required by Epic. Multiple keys can be added
 to this endpoint if more than one key is required or rotation is implemented.
+
+NOTE: I'm not actually sure if this is required becuase the token autflow works 
+without it, but the documentation says it is required.
 '''
 
 app = Flask(__name__)

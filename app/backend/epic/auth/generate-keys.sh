@@ -10,7 +10,8 @@
 
 KEY_DIR=~/Fluid-Solutions/app/backend/epic/auth/keys
 
-mkdir -r "${KEY_DIR}"
+# if the directory does not exist, create it
+mkdir -p "${KEY_DIR}"
 
 # Create the private/public key pair
 openssl genrsa -out "${KEY_DIR}/${1}" 2048

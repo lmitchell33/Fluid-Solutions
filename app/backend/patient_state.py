@@ -34,7 +34,8 @@ class PatientState(QObject):
         '''Called before the __init__ method. Uses a Singleton pattern similar
         to the DatabaseManager class.
         '''
-        if cls._instance is None:
+        # if cls._instance is None:
+        if not cls._instance:
             with cls._lock:
                 cls._instance = super(PatientState, cls).__new__(cls)
                 cls._instance._initialized = False

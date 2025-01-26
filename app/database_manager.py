@@ -47,7 +47,7 @@ class DatabaseManager:
         
         # If instance does not exist, then initalize an instance and set the 
         # initalized flag to ensure no more instances of the class be created.
-        if cls._instance is None:
+        if not cls._instance:
             with cls._lock:
                 if cls._instance is None: 
                     # double check the locking

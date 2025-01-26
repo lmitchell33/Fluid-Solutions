@@ -2,6 +2,7 @@ from base64 import urlsafe_b64encode
 from cryptography.x509 import load_pem_x509_certificate
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
+
 import jwt
 import requests
 import uuid
@@ -11,9 +12,9 @@ import os
 load_dotenv()
 
 # get the client secrets and credentials
-CLIENT_ID = os.getenv("CLIENT_ID").rstrip("\r").rstrip("\n")
-NON_PRODUCTION_CLIENT_ID = os.getenv("NON_PRODUCTION_CLIENT_ID").rstrip("\r").rstrip("\n")
-TOKEN_URL = os.getenv("TOKEN_URL").rstrip("\r").rstrip("\n")
+CLIENT_ID = os.getenv("CLIENT_ID")
+NON_PRODUCTION_CLIENT_ID = os.getenv("NON_PRODUCTION_CLIENT_ID")
+TOKEN_URL = os.getenv("TOKEN_URL")
 
 # generate a unique key id number to be used for the JWT token and set
 kid = str(uuid.uuid4())
@@ -73,15 +74,18 @@ def create_jwt():
     return json_web_token
 
 
-def get_access_token(jwt):
+def get_access_token(jwt=None):
     '''Requests and receives an access token from Epic using the Backend Server model
     
-    Args:
+    Kwargs:
         jwt {jwt} - json web token to be used for the request
         
     Returns:
         access_token {str} -- access token for the Epic APIs
     '''
+
+    if not jwt:
+        jwt = create_jwt()
  
     # OAuth 2.0 http request information
     auth_headers = {
@@ -89,19 +93,14 @@ def get_access_token(jwt):
     }
 
     auth_payload = {
-    "grant_type" : "client_credentials",
-    "client_assertion_type" : "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-    "client_assertion" : jwt
+        "grant_type" : "client_credentials",
+        "client_assertion_type" : "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+        "client_assertion" : jwt
     }
 
     response = requests.post(url=TOKEN_URL, data=auth_payload, headers=auth_headers)
 
-    print(response.json())
-
-    # TODO: Implement a way to keep track of the expiration time of the token 
-    # and request a new token when the expiration time is reached
-
-    return response.json()['access_token']
+    return response.json()
 
 
 if __name__ == "__main__":
