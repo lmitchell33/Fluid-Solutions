@@ -64,7 +64,7 @@ def create_jwt():
     }
 
     # load the private key
-    with open(f"./keys/privatekey.pem", "r") as key:
+    with open(os.path.expanduser("~/Fluid-Solutions/app/backend/epic/auth/keys/privatekey.pem"), "r") as key:
         private_key = key.read()
 
     # create the token
@@ -95,6 +95,11 @@ def get_access_token(jwt):
     }
 
     response = requests.post(url=TOKEN_URL, data=auth_payload, headers=auth_headers)
+
+    print(response.json())
+
+    # TODO: Implement a way to keep track of the expiration time of the token 
+    # and request a new token when the expiration time is reached
 
     return response.json()['access_token']
 
