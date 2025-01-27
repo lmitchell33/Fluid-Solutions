@@ -49,7 +49,7 @@ class DatabaseManager:
         # initalized flag to ensure no more instances of the class be created.
         if not cls._instance:
             with cls._lock:
-                if cls._instance is None: 
+                if not cls._instance: 
                     # double check the locking
                     cls._instance = super(DatabaseManager, cls).__new__(cls)
                     cls._instance._initialized  = False
@@ -69,13 +69,12 @@ class DatabaseManager:
         if self._initialized:
             return 
         
-        self._engine = create_engine(database_url)
-        
-        # This creates a persistant session that is alive throughout the entirety of the app
-        self._SessionFactory = sessionmaker(self._engine)
-        self._session = self._SessionFactory()
         self._initialized  = True
 
+        self._engine = create_engine(database_url)        
+        self._SessionFactory = sessionmaker(self._engine) # create a persistent session
+        self._session = self._SessionFactory()
+        
 
     def initdb(self, Base):
         '''initalizes the database by dropping all tables then re-creating the 

@@ -2,13 +2,28 @@ import os
 import requests
 import time
 from xml.etree import ElementTree
+from threading import Lock
 from auth.auth import get_access_token, create_jwt
 
-class EpicAPI:
-    '''
-    Maybe do use a class like this to hold the expirtaion for the auth token??
-    '''
+class EpicAPIManager:
+    _instance = None
+    _lock = Lock()
+
+    def __new__(cls):
+        if not cls._instance:
+            with cls._lock:
+                cls._instance = super(EpicAPIManager, cls).__new__(cls)
+                cls._instance._initalized = False
+        
+        return cls._instance
+    
     def __init__(self):
+
+        if self._initalized:
+            return
+        
+        self._initalized = True
+
         # urls for each of the Epic API endpoints we are using
         self.search_patient_url = os.environ.get("SEARCH_PATIENT_URL")
         self.vitals_url = os.environ.get("READ_VITALS_URL")
@@ -26,6 +41,17 @@ class EpicAPI:
         }
 
 
+    @property
+    def access_token(self):
+        '''Property of the class to get the access token and ensure its not expired'''
+        
+        # check if the token is expired and get a new one if it is
+        if not self._access_token or time.time() >= self._access_token_expr:
+            self._get_new_access_token() 
+        
+        return self._access_token
+
+
     def _get_new_access_token(self):
         '''Private method to get a new access token from Epic'''
         if not self._jwt:
@@ -36,17 +62,6 @@ class EpicAPI:
         # parse epic's OAuth endpoint response to get the info we need
         self._access_token = epic_auth_response["access_token"]
         self._access_token_expr = time.time() + epic_auth_response["expires_in"]
-
-
-    @property
-    def access_token(self):
-        '''Property of the class to get the access token and ensure its not expired'''
-        
-        # check if the token is expired and get a new one if it is
-        if not self._access_token or time.time() >= self._access_token_expr:
-            self._get_new_access_token() 
-        
-        return self._access_token
 
 
     # TODO: update the parameters here
@@ -123,7 +138,7 @@ class EpicAPI:
 
 
 if __name__ == "__main__":
-    epic = EpicAPI()
+    epic = EpicAPIManager()
     # epic.search_patient()
     # epic.get_patient_data("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
     epic.get_patient_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83")
