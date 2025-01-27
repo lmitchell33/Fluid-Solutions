@@ -13,11 +13,17 @@ class EpicAPI:
         self.search_patient_url = os.environ.get("SEARCH_PATIENT_URL")
         self.vitals_url = os.environ.get("READ_VITALS_URL")
         self.read_patient_url = os.environ.get("READ_PATIENT_URL")
-        
+
         # private variables to hold auth information for the session
         self._jwt = create_jwt()  # jwt for the session
         self._access_token = None # access token for the session
         self._access_token_expr = None # expiration time for the access token
+
+        # specify the headers for each request
+        self.headers = {
+            "Authorization" : f"Bearer {self.access_token}",
+            "Content-Type" : "application/json"
+        }
 
 
     def _get_new_access_token(self):
@@ -56,11 +62,7 @@ class EpicAPI:
             "own-name" : "Lucas Mitchell"
         }
 
-        headers = {
-            "Authorization" : f"Bearer {self.access_token}"
-        }
-
-        response = requests.get(self.search_patient_url, payload, headers=headers)
+        response = requests.get(self.search_patient_url, payload, headers=self.headers)
 
         # check the response is valid before proceeding
         if 200 <= response.status_code < 300:
@@ -84,12 +86,7 @@ class EpicAPI:
 
         url = self.read_patient_url + patient_id
 
-        headers = {
-            "Authorization" : f"Bearer {self.access_token}",
-            "Content-Type" : "application/json"
-        }
-
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=self.headers)
 
         # check the response is valid before proceeding
         if 200 <= response.status_code < 300:
@@ -102,14 +99,18 @@ class EpicAPI:
 
 
     def get_patient_vitals(self, observation_id):
-        headers = {
-            "Authorization" : f"Bearer {self.access_token}",
-            "Content-Type" : "application/json"
-        }
+        '''Method to get patient vitals from Epic
+        
+        Args:
+            observation_id {str} -- observation id from Epic
+            
+        Returns:
+            vitals {dict} -- patient vitals from Epic
+        '''
 
         url = self.vitals_url + observation_id
 
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=self.headers)
 
         # check the response is valid before proceeding
         if 200 <= response.status_code < 300:

@@ -12,3 +12,7 @@ services:
     build:
       context: ../
       dockerfile: TEST.Dockerfile
+    
+    volumes:
+      - ../:/app
+      - ./test-reports:/app/test-reports
