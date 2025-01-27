@@ -53,7 +53,7 @@ class PatientState(QObject):
         self._initialized  = True
     
 
-    @property # designates current_patient as a property of the class
+    @property
     def current_patient(self):
         '''Getter for the current patient'''
         return self._current_patient
