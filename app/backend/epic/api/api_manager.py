@@ -83,19 +83,19 @@ class EpicAPIManager:
         Kwargs:
             **kwargs {dict} -- search parameters for the patient. A list of valid parameters is shown below
                 - address
-                - address-city
-                - address-postalcode
-                - address-state
+                - address_city
+                - address_postalcode
+                - address_state
                 - birthdate
                 - family
                 - gender
                 - given
                 - identifier
-                - legal-sex
-                - own-name
-                - own-prefix
-                - partner-name
-                - partner-prefix
+                - legal_sex
+                - own_name
+                - own_prefix
+                - partner_name
+                - partner_prefix
                 - telecom
 
         Returns:
@@ -108,14 +108,14 @@ class EpicAPIManager:
 
         # Define the allowed search parameters for the API (from Epic)
         allowed_keys = [
-            "address", "address-city", "address-postalcode", "address-state",
+            "address", "address_city", "address_postalcode", "address_state",
             "birthdate", "family", "gender", "given", "identifier",
-            "legal-sex", "own-name", "own-prefix", "partner-name",
-            "partner-prefix", "telecom"
+            "legal_sex", "own_name", "own_prefix", "partner_name",
+            "partner_prefix", "telecom"
         ]
     
         # filter for the kwargs so that only the valid serach parameters are used
-        payload = {k: v for k, v in kwargs.items() if k in allowed_keys}
+        payload = {k.replace('_', '-'): v for k, v in kwargs.items() if k in allowed_keys}
 
         response = requests.get(self.search_patient_url, payload, headers=self.headers)
 
@@ -217,7 +217,7 @@ class EpicAPIManager:
 
 if __name__ == "__main__":
     epic = EpicAPIManager()
-    # epic.search_patient()
+    # epic.search_patient(own_name="theodore")
     epic.get_patient_data("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
     # epic.get_patient_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83")
     

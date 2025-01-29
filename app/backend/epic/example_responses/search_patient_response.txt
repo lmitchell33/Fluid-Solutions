@@ -1,0 +1,21 @@
+Bundle {}
+type {'value': 'searchset'}
+total {'value': '0'}
+link {}
+relation {'value': 'self'}
+url {'value': 'https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/STU3/Patient?own-name=theodore'}
+entry {}
+fullUrl {'value': 'urn:uuid:31c6cb96-6e42-4c67-b66c-35141ed38e6f'}
+resource {}
+OperationOutcome {}
+issue {}
+severity {'value': 'warning'}
+code {'value': 'processing'}
+details {}
+coding {}
+system {'value': 'urn:oid:1.2.840.114350.1.13.0.1.7.2.657369'}
+code {'value': '4101'}
+display {'value': 'Resource request returns no results.'}
+text {'value': 'Resource request returns no results.'}
+search {}
+mode {'value': 'outcome'}
