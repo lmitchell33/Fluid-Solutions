@@ -1,9 +1,10 @@
 import sys
 import argparse
-import threading
 
 from PyQt6.QtCore import QFile, QTextStream
 from PyQt6.QtWidgets import QApplication
+from apscheduler.schedulers.qt import QtScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 from database_manager import DatabaseManager
 from database_models import Patient
@@ -67,11 +68,15 @@ def remove_inactive_patients():
 
 def main():
     '''Initalizes the router and start the PyQT application'''
-    # start a background process to remove the inactive patients
-    cleanup_thread = threading.Thread(target=remove_inactive_patients, daemon=True)
-    cleanup_thread.start()
 
     app = QApplication(sys.argv)
+
+    remove_inactive_patients()
+
+    # create a cron scheduler to interact with the QT app to remove inactive patients everynight at midnight
+    scheduler = QtScheduler()
+    scheduler.add_job(remove_inactive_patients, CronTrigger(hour=0, minute=0))
+    scheduler.start()
 
     # get the current size of the screen so we can resize the new window when it displays
     screen = app.primaryScreen()
@@ -87,7 +92,7 @@ def main():
     router = Router(patient_window, vitals_window)
 
     # resize the window to 1.5x that of the current screen
-    router.resize(int(geometry.width()/(1.5)), int(geometry.height()/(1.5)))
+    router.resize(int(geometry.width()/(1.25)), int(geometry.height()/(1.25)))
 
     # set the stylesheet and display the screen
     app.setStyleSheet(load_stylesheet("frontend/stylesheets/window.qss"))
