@@ -1,7 +1,9 @@
 from contextlib import contextmanager
 from threading import Lock
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
+
+from database_models import Fluid, Base
 
 class DatabaseManager:
     '''Singleton class for managing database connections and sessions.
@@ -71,12 +73,11 @@ class DatabaseManager:
         
         self._initialized  = True
 
-        self._engine = create_engine(database_url)        
-        self._SessionFactory = sessionmaker(self._engine) # create a persistent session
-        self._session = self._SessionFactory()
+        self._database_url = database_url
+        self._create_session()
         
 
-    def initdb(self, Base):
+    def initdb(self):
         '''initalizes the database by dropping all tables then re-creating the 
         the tables.
 
@@ -86,6 +87,10 @@ class DatabaseManager:
 
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
+        
+        self._populate_fluid_names("./utils/fluid_names.txt")
+
+        # Add a list of Fluids to the database
         print("Successfully intialized database")
 
 
@@ -97,10 +102,12 @@ class DatabaseManager:
             function(*args, **kwargs):
                 with session_context() as session:
                     val = session.query(class).filter(params).first()
-                    # logic here
         
-        this automatically creates and closes the session, as well as commits any changes and rolls back on errors
+        this will automatically rollback on error
         '''
+
+        if not self._session:
+            self._create_session()
 
         try:
             yield self._session
@@ -109,9 +116,29 @@ class DatabaseManager:
             # on error, dont allow the db to be updated
             self._session.rollback()
             raise e
+        finally:
+            self._session.commit()
 
 
     def close_session(self):
+        '''Util function to remove the current session'''
         if self._session:
             self._session.remove()
             self._session = None
+
+
+    def _create_session(self):
+        '''Private helper function to create a scoped session'''
+        self._engine = create_engine(self._database_url)        
+        self._SessionFactory = sessionmaker(self._engine) # create a persistent session
+        self._session = scoped_session(self._SessionFactory)
+
+
+    def _populate_fluid_names(self, filepath):
+        '''private util method to populate the database with fluid names'''
+        with open(filepath, "r") as fluid_names:
+            for name in fluid_names:
+                if name.strip():
+                    self._session.add(Fluid(name=name.strip()))
+
+        self._session.commit()

@@ -28,7 +28,6 @@ class FluidManager:
         '''
         try:
             with self._db.session_context() as session:
-                # patient = session.query(Patient).filter_by(id=int(patient_id)).first()
                 fluid = session.query(Fluid).filter_by(name=fluid_name).first()
                 
                 if not fluid:
@@ -74,7 +73,6 @@ class FluidManager:
                 
         except Exception as e:
             print(f"Failed to get the total fluid volume {e}")
-            raise e
 
 
     def get_fluid_names(self):
@@ -84,4 +82,4 @@ class FluidManager:
             names {List[str]} -- names of all fluids stored in the db
         '''
         with self._db.session_context() as session:
-            return [name for name, in session.query(Fluid.name).all()]
+            return [fluid.name for fluid in session.query(Fluid).all()]

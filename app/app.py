@@ -1,15 +1,18 @@
 import sys
 import argparse
+import threading
 
 from PyQt6.QtCore import QFile, QTextStream
 from PyQt6.QtWidgets import QApplication
 
-from database_models import Base
 from database_manager import DatabaseManager
+from database_models import Patient
 
 from frontend.router import Router
 from frontend.patient_window import PatientWindow
 from frontend.vitals_window import VitalsWindow
+
+from backend.epic.api.api_manager import EpicAPIManager
 
 def load_stylesheet(stylesheet):
     '''util function to load in a QSS stylesheet to apply to the app as a whole
@@ -32,9 +35,42 @@ def load_stylesheet(stylesheet):
     return qss_content
 
 
+def remove_inactive_patients():
+    """Removes inactive patients from the database based on API response."""
+
+    db = DatabaseManager()
+    api = EpicAPIManager()
+
+    with db.session_context() as session:
+        # get a list of all patients
+        patients = session.query(Patient).all()
+
+        if not patients:
+            print("No patients to remove")
+            return
+
+        # call the api and determine if they are inactive
+        inactive_patients = api.get_inactive_patients(patients)
+
+        # handle errors
+        if not inactive_patients:
+            print("No inactive patients to remove")
+            return
+
+        # remove all inactive patients from the db
+        session.query(Patient).filter(Patient.id.in_([p.id for p in inactive_patients])).delete(synchronize_session=False)
+
+        session.commit()
+
+    return
+
+
 def main():
     '''Initalizes the router and start the PyQT application'''
-    # starts the application from the cli and initalizes the router
+    # start a background process to remove the inactive patients
+    cleanup_thread = threading.Thread(target=remove_inactive_patients, daemon=True)
+    cleanup_thread.start()
+
     app = QApplication(sys.argv)
 
     # get the current size of the screen so we can resize the new window when it displays
@@ -84,7 +120,7 @@ if __name__ == "__main__":
     db = DatabaseManager()
 
     if args.initdb:
-        db.initdb(Base)
+        db.initdb()
     else:
         main()
         db.close_session()
