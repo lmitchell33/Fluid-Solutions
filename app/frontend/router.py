@@ -1,7 +1,5 @@
 from PyQt6.QtWidgets import QStackedWidget
 
-from backend.patient_state import PatientState
-
 class Router(QStackedWidget):
     """
     A class to manage routing between multiple windows in the application.

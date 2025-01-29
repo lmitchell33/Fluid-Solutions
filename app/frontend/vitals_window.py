@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer, QDateTime
 
 from frontend.base_window import BaseWindow
-from backend.fluid_manager import FluidManager
 
 class VitalsWindow(BaseWindow):
     '''
@@ -18,8 +17,6 @@ class VitalsWindow(BaseWindow):
         '''Constructor for the VitalsWindow class, loads the vitals .ui file'''
         # pass the filepath for the vitals window ui file into the BaseWindow for displaying
         super().__init__("frontend/views/vitalsWindow.ui")
-
-        self.fluid_manager = FluidManager()
 
         # Access the QDateTimeEdit widget
         self.dateTimeEdit.setDisplayFormat("yyyy-MM-dd HH:mm:ss")

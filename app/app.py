@@ -13,11 +13,12 @@ from frontend.router import Router
 from frontend.patient_window import PatientWindow
 from frontend.vitals_window import VitalsWindow
 
-from backend.epic.api.api_manager import EpicAPIManager
+from backend.managers.api_manager import EpicAPIManager
 
 def load_stylesheet(stylesheet):
     '''util function to load in a QSS stylesheet to apply to the app as a whole
-    NOTE: This will apply to ALL windows in the app unless a stylesheet is applied directly to the other window
+    This will apply to ALL windows in the app unless a stylesheet is applied directly to the other window
+    
     Args:
         stylesheet {str} -- path to the .qss file containing the styling
     
@@ -71,9 +72,10 @@ def main():
 
     app = QApplication(sys.argv)
 
+    # on app startup, remove all inactive patients (if any)
     remove_inactive_patients()
 
-    # create a cron scheduler to interact with the QT app to remove inactive patients everynight at midnight
+    # create a cron scheduler within the QT app to remove inactive patients everynight at midnight (if app is running)
     scheduler = QtScheduler()
     scheduler.add_job(remove_inactive_patients, CronTrigger(hour=0, minute=0))
     scheduler.start()

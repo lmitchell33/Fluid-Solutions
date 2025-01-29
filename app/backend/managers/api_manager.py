@@ -5,7 +5,6 @@ from xml.etree import ElementTree
 from threading import Lock
 
 from backend.epic.auth.auth import get_access_token, create_jwt
-# from auth.auth import get_access_token, create_jwt
 
 class EpicAPIManager:
     '''Singleton class to manage the Epic API requests. 
@@ -82,42 +81,29 @@ class EpicAPIManager:
         
         Kwargs:
             **kwargs {dict} -- search parameters for the patient. A list of valid parameters is shown below
+                - _id
                 - address
-                - address_city
-                - address_postalcode
-                - address_state
                 - birthdate
-                - family
-                - gender
-                - given
-                - identifier
-                - legal_sex
-                - own_name
-                - own_prefix
-                - partner_name
-                - partner_prefix
-                - telecom
+                - family 
+                - gender 
+                - given 
+                - identifier 
 
         Returns:
             patient_data {str} -- patient data from Epic        
         '''
 
-        # NOTE: Becuase we are using a sandbox and we dont have our own patient data
-        # with our own server, I cant find a set of parameters that will allow us to
-        # get a valid response (find a patient). 
-
         # Define the allowed search parameters for the API (from Epic)
         allowed_keys = [
-            "address", "address_city", "address_postalcode", "address_state",
-            "birthdate", "family", "gender", "given", "identifier",
-            "legal_sex", "own_name", "own_prefix", "partner_name",
-            "partner_prefix", "telecom"
+            "_id", "address", "birthdate", "family", "gender", "given", "identifier",
         ]
     
         # filter for the kwargs so that only the valid serach parameters are used
-        payload = {k.replace('_', '-'): v for k, v in kwargs.items() if k in allowed_keys}
+        payload = {k.replace('_', '-'): v.lower() for k, v in kwargs.items() if k in allowed_keys}
 
         response = requests.get(self.search_patient_url, payload, headers=self.headers)
+
+        patient = {}
 
         # check the response is valid before proceeding
         if 200 <= response.status_code < 300:
@@ -126,13 +112,15 @@ class EpicAPIManager:
             tree = ElementTree.fromstring(xml)
 
             for element in tree.iter():
-                print(element.tag.removeprefix("{http://hl7.org/fhir}"), element.attrib)
+                patient[element.tag.removeprefix("{http://hl7.org/fhir}")] = element.get("value")
         
         else:
             print(f"Bad Response: {response.status_code}")
 
+        return patient
 
-    def get_patient_data(self, patient_id):
+
+    def get_patient(self, patient_id):
         '''Method to get patient data from Epic
         
         Args:
@@ -159,8 +147,7 @@ class EpicAPIManager:
             tree = ElementTree.fromstring(xml)
 
             for element in tree.iter():
-                print(element.tag.removeprefix("{http://hl7.org/fhir}"), element.attrib)
-        
+                # return the following dict {field : value} for the patient's information
                 patient[element.tag.removeprefix("{http://hl7.org/fhir}")] = element.attrib.get('value')
 
         else:
@@ -169,7 +156,7 @@ class EpicAPIManager:
         return patient
 
 
-    def get_patient_vitals(self, observation_id):
+    def get_vitals(self, observation_id):
         '''Method to get patient vitals from Epic
         
         Args:
@@ -203,11 +190,12 @@ class EpicAPIManager:
             patient_mrns {list} -- list of patient instances 
 
         Returns:
-            patient_ids {list} -- list of patient MRN's who are inactive
+            patient_ids {list} -- list of patients who are inactive
         '''
         inactive_patients = []
         for patient in patients:
-            patient_data = self.get_patient_data(patient.patient_mrn)
+            # call the get epic api to get the patient data based off of their mrn
+            patient_data = self.get_patient(patient.patient_mrn)
 
             if patient_data.get('active') == "false":
                 inactive_patients.append(patient)
@@ -217,7 +205,7 @@ class EpicAPIManager:
 
 if __name__ == "__main__":
     epic = EpicAPIManager()
-    # epic.search_patient(own_name="theodore")
-    epic.get_patient_data("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
-    # epic.get_patient_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83")
+    # epic.search_patient(given="theodore", family="mychart", birthdate="1948-07-07")
+    # epic.get_patient("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
+    epic.get_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83")
     

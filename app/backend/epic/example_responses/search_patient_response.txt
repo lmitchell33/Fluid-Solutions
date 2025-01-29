@@ -1,21 +1,83 @@
 Bundle {}
 type {'value': 'searchset'}
-total {'value': '0'}
+total {'value': '1'}
 link {}
 relation {'value': 'self'}
-url {'value': 'https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/STU3/Patient?own-name=theodore'}
+url {'value': 'https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/DSTU2/Patient?given=theodore&family=mychart&birthdate=1948-07-07'}
 entry {}
-fullUrl {'value': 'urn:uuid:31c6cb96-6e42-4c67-b66c-35141ed38e6f'}
+link {}
+relation {'value': 'self'}
+url {'value': 'https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/DSTU2/Patient/T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B'}
+fullUrl {'value': 'https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/DSTU2/Patient/T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B'}
 resource {}
-OperationOutcome {}
-issue {}
-severity {'value': 'warning'}
-code {'value': 'processing'}
-details {}
+Patient {}
+id {'value': 'T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B'}
+extension {'url': 'http://hl7.org/fhir/StructureDefinition/us-core-race'}
+valueCodeableConcept {}
 coding {}
-system {'value': 'urn:oid:1.2.840.114350.1.13.0.1.7.2.657369'}
-code {'value': '4101'}
-display {'value': 'Resource request returns no results.'}
-text {'value': 'Resource request returns no results.'}
+system {'value': 'urn:oid:2.16.840.1.113883.5.104'}
+code {'value': '2106-3'}
+display {'value': 'White'}
+text {'value': 'White'}
+extension {'url': 'http://hl7.org/fhir/StructureDefinition/us-core-ethnicity'}
+valueCodeableConcept {}
+coding {}
+system {'value': 'urn:oid:2.16.840.1.113883.5.50'}
+code {'value': 'UNK'}
+display {'value': 'Unknown'}
+text {'value': 'Unknown'}
+identifier {}
+use {'value': 'usual'}
+system {'value': 'urn:oid:1.2.840.114350.1.13.0.1.7.5.737384.0'}
+value {'value': 'E2734'}
+identifier {}
+use {'value': 'usual'}
+system {'value': 'urn:oid:1.2.840.114350.1.13.0.1.7.5.737384.14'}
+value {'value': '202500'}
+identifier {}
+extension {'url': 'http://hl7.org/fhir/StructureDefinition/rendered-value'}
+valueString {'value': 'xxx-xx-4199'}
+use {'value': 'usual'}
+system {'value': 'urn:oid:2.16.840.1.113883.4.1'}
+active {'value': 'true'}
+name {}
+use {'value': 'official'}
+text {'value': 'Mr. Theodore Mychart'}
+family {'value': 'Mychart'}
+given {'value': 'Theodore'}
+prefix {'value': 'MR.'}
+name {}
+use {'value': 'usual'}
+text {'value': 'Mr. Theodore Mychart'}
+family {'value': 'Mychart'}
+given {'value': 'Theodore'}
+prefix {'value': 'MR.'}
+telecom {}
+system {'value': 'phone'}
+value {'value': '608-213-5806'}
+use {'value': 'home'}
+telecom {}
+system {'value': 'phone'}
+value {'value': '608-272-5000'}
+use {'value': 'work'}
+gender {'value': 'male'}
+birthDate {'value': '1948-07-07'}
+deceasedBoolean {'value': 'false'}
+address {}
+use {'value': 'home'}
+line {'value': '134 Elm Street'}
+city {'value': 'Madison'}
+state {'value': 'WI'}
+postalCode {'value': '53706'}
+country {'value': 'US'}
+maritalStatus {}
+text {'value': 'Married'}
+communication {}
+language {}
+text {'value': 'Sign Languages'}
+preferred {'value': 'true'}
+careProvider {}
+display {'value': 'Physician Family Medicine, MD'}
+reference {'value': 'https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/DSTU2/Practitioner/Thh97FZ9lU9.p-Rgpozo6vwB'}
 search {}
-mode {'value': 'outcome'}
+mode {'value': 'match'}
