@@ -21,7 +21,7 @@ class VitalsWindow(BaseWindow):
 
         self._fluid_manager = FluidManager()
 
-        self._populate_combo_box()
+        # self._populate_combo_box()
         self._setup_datetime()
         
 
@@ -43,11 +43,11 @@ class VitalsWindow(BaseWindow):
         self.current_datetime.setDateTime(QDateTime.currentDateTime())
 
 
-    def _populate_combo_box(self):
-        '''Automatically populate the list of fluid names with those stored in the db'''
-        fluids_dropdown = self.fluids_dropdown
-        fluid_names = self._fluid_manager.get_all_fluid_names()
-        fluids_dropdown.addItems(fluid_names)
+    # def _populate_combo_box(self):
+    #     '''Automatically populate the list of fluid names with those stored in the db'''
+    #     fluids_dropdown = self.fluids_dropdown
+    #     fluid_names = self._fluid_manager.get_all_fluid_names()
+    #     fluids_dropdown.addItems(fluid_names)
 
 
     def _update_ui(self):

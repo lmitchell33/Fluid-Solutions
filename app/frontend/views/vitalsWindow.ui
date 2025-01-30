@@ -417,7 +417,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
     </item>
 
       <!-- Label for Volume Administered -->
-    <item row="8" column="7">
+    <!-- <item row="8" column="7">
      <widget class="QLabel" name="label_14">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
@@ -429,10 +429,10 @@ font: 36pt &quot;Times New Roman&quot;;</string>
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-    </item>
+    </item> -->
 
       <!-- Textbox for Volume Administered -->
-    <item row="8" column="8">
+    <!-- <item row="8" column="8">
      <widget class="QLineEdit" name="textEdit_12">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
@@ -444,10 +444,10 @@ font: 36pt &quot;Times New Roman&quot;;</string>
         <number>50</number> 
       </property>
      </widget>
-    </item>
+    </item> -->
 
-      <!-- Fluid Tyes Dropdown -->
-    <item row="8" column="3" colspan="4">
+      <!-- Fluid Types Dropdown -->
+    <!-- <item row="8" column="3" colspan="4">
      <widget class="QComboBox" name="fluids_dropdown">
       <property name="font">
        <font>
@@ -464,7 +464,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
       </property>
      </widget>
-    </item>
+    </item> -->
 
     <!-- Label for Total Fluid Administered -->
     <item row="9" column="1" colspan="3">
@@ -473,7 +473,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
         <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
-       <string>Total Volume of Fluid Administered:</string>
+       <string>Total Volume Given:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
