@@ -3,7 +3,8 @@ import requests
 import time
 from xml.etree import ElementTree
 from threading import Lock
-from auth.auth import get_access_token, create_jwt
+# from auth.auth import get_access_token, create_jwt
+from backend.epic.auth.auth import get_access_token, create_jwt
 
 class EpicAPIManager:
     _instance = None

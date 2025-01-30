@@ -65,7 +65,7 @@ def create_jwt():
     }
 
     # load the private key
-    with open(os.path.expanduser("~/Fluid-Solutions/app/backend/epic/auth/keys/privatekey.pem"), "r") as key:
+    with open("./backend/epic/auth/keys/privatekey.pem", "r") as key:
         private_key = key.read()
 
     # create the token
