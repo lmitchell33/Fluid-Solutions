@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
+
+      <!-- Begin Main Window Widget -->
+
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
@@ -16,8 +19,16 @@
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 255)</string>
   </property>
+
+      <!-- Begin central widget -->
+
   <widget class="QWidget" name="centralwidget">
+   
+      <!-- Begin Layout -->
+
    <layout class="QGridLayout" name="gridLayout">
+    
+    <!-- Textbox for Lactate Levels -->
     <item row="7" column="8">
      <widget class="QTextEdit" name="textEdit_8">
       <property name="html">
@@ -32,6 +43,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Label for suggested action -->
     <item row="3" column="3" colspan="3">
      <widget class="QLabel" name="label_3">
       <property name="font">
@@ -47,6 +60,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Fluid Volume Status Textbox -->
     <item row="3" column="2">
      <widget class="QTextEdit" name="textEdit">
       <property name="html">
@@ -61,6 +76,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Patient name Textbox -->
     <item row="2" column="2">
      <widget class="QTextEdit" name="textEdit_9">
       <property name="font">
@@ -80,6 +97,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Label for Volume Administered -->
     <item row="8" column="7">
      <widget class="QLabel" name="label_14">
       <property name="font">
@@ -95,6 +114,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Label for the Fluid Solutions Title/Header -->
     <item row="0" column="0" colspan="9">
      <widget class="QLabel" name="label">
       <property name="styleSheet">
@@ -108,6 +129,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Textbox for PPV -->
     <item row="6" column="8">
      <widget class="QTextEdit" name="textEdit_7">
       <property name="html">
@@ -122,6 +145,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Label for Volume Status -->
     <item row="3" column="0" colspan="2">
      <widget class="QLabel" name="label_2">
       <property name="font">
@@ -137,9 +162,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Textbox for Volume Administered -->
     <item row="8" column="8">
      <widget class="QTextEdit" name="textEdit_12"/>
     </item>
+
+    <!-- Label for Patient Name -->
     <item row="2" column="0" colspan="2">
      <widget class="QLabel" name="label_11">
       <property name="font">
@@ -155,6 +184,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Routing Button -->
     <item row="10" column="0" colspan="10">
      <widget class="QPushButton" name="routing_button">
       <property name="toolTip">
@@ -165,6 +196,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Label for Lactate Levels -->
     <item row="7" column="5" colspan="3">
      <widget class="QLabel" name="label_7">
       <property name="font">
@@ -180,6 +213,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Datetime Widget -->
     <item row="1" column="4">
      <widget class="QDateTimeEdit" name="current_datetime">
       <property name="alignment">
@@ -187,6 +222,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Label for SPO2 -->
     <item row="6" column="0" colspan="2">
      <widget class="QLabel" name="label_6">
       <property name="font">
@@ -202,6 +239,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Suggested Actions Textbox -->
     <item row="3" column="6" colspan="3">
      <widget class="QTextEdit" name="textEdit_2">
       <property name="styleSheet">
@@ -219,6 +258,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Heart Rate Textbox -->
     <item row="5" column="2">
      <widget class="QTextEdit" name="textEdit_3">
       <property name="layoutDirection">
@@ -239,6 +280,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Textbox for MAP -->
     <item row="8" column="2">
      <widget class="QTextEdit" name="textEdit_11">
       <property name="html">
@@ -253,6 +296,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Label for PPV -->
     <item row="6" column="5" colspan="3">
      <widget class="QLabel" name="label_10">
       <property name="font">
@@ -268,6 +313,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Textbox for Blood Pressure -->
     <item row="7" column="2">
      <widget class="QTextEdit" name="textEdit_5">
       <property name="html">
@@ -282,6 +329,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Label for Total Fluid Administered -->
     <item row="9" column="1" colspan="3">
      <widget class="QLabel" name="label_15">
       <property name="font">
@@ -297,6 +346,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Label for Vitals -->
     <item row="4" column="0" colspan="9">
      <widget class="QLabel" name="label_4">
       <property name="styleSheet">
@@ -311,6 +362,8 @@ font: 36pt &quot;Times New Roman&quot;;</string>
       </property>
      </widget>
     </item>
+
+      <!-- Textbox for SPO2 -->
     <item row="6" column="2">
      <widget class="QTextEdit" name="textEdit_4">
       <property name="html">
@@ -325,6 +378,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Textbox for Patient ID  -->
     <item row="2" column="6" colspan="3">
      <widget class="QTextEdit" name="textEdit_10">
       <property name="styleSheet">
@@ -342,6 +397,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+
     <item row="5" column="8">
      <widget class="QTextEdit" name="textEdit_6">
       <property name="html">
@@ -356,6 +413,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Label for Heart Rate -->
     <item row="5" column="0" colspan="2">
      <widget class="QLabel" name="label_5">
       <property name="font">
@@ -371,6 +430,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Fluid Tyes Dropdown -->
     <item row="8" column="3" colspan="4">
      <widget class="QComboBox" name="fluids_dropdown">
       <property name="font">
@@ -389,6 +450,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Label for CVP -->
     <item row="5" column="5" colspan="3">
      <widget class="QLabel" name="label_9">
       <property name="font">
@@ -404,6 +467,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Label for Blood Pressure -->
     <item row="7" column="0" colspan="2">
      <widget class="QLabel" name="label_8">
       <property name="font">
@@ -419,6 +484,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- Label for MAP -->
     <item row="8" column="0" colspan="2">
      <widget class="QLabel" name="label_13">
       <property name="font">
@@ -433,6 +500,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
+
+     <!-- Label for Patient ID -->
     </item>
     <item row="2" column="3" colspan="3">
      <widget class="QLabel" name="label_12">
@@ -449,6 +518,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+      <!-- Textbox for fluid volume administration -->
     <item row="9" column="4" colspan="4">
      <widget class="QTextEdit" name="textEdit_13">
       <property name="font">
@@ -458,18 +529,14 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
+
+    <!-- End Layout -->
    </layout>
+
+   <!-- End Central Widget -->
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>887</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
+
+      <!-- Status bar for the button -->
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
