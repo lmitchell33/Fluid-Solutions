@@ -162,6 +162,11 @@
      <widget class="QComboBox" name="gender_dropdown">
       <item>
         <property name="text">
+          <string></string>
+        </property>
+      </item>
+      <item>
+        <property name="text">
           <string>Male</string>
         </property>
       </item>
