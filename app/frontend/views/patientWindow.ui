@@ -138,7 +138,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Gender [ F / M ]:</string>
+       <string>Gender [ M / F ]:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -146,14 +146,24 @@
      </widget>
     </item>
 
-      <!-- Text box for gender -->
+      <!-- Dropdown for gender -->
     <item row="3" column="1">
-     <widget class="QLineEdit" name="gender_value">
+     <widget class="QComboBox" name="gender_dropdown">
       <property name="font">
        <font>
         <pointsize>18</pointsize>
        </font>
       </property>
+              <item>
+            <property name="text">
+                <string>Male</string>
+            </property>
+        </item>
+        <item>
+            <property name="text">
+                <string>Female</string>
+            </property>
+        </item>
      </widget>
     </item>
 
@@ -177,12 +187,13 @@
 
       <!-- Textbox for the date of birth -->
     <item row="4" column="1">
-     <widget class="QCalendarWidget" name="dob_value">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
+     <widget class="QDateEdit" name="dob_value">
+        <property name="calendarPopup">
+            <bool>true</bool>
+        </property>
+        <property name="displayFormat">
+            <string>MMMM dd, yyyy</string>
+        </property>
      </widget>
     </item>
 
