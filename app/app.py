@@ -7,13 +7,12 @@ from apscheduler.schedulers.qt import QtScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 from database_manager import DatabaseManager
-from database_models import Patient
 
 from frontend.router import Router
 from frontend.patient_window import PatientWindow
 from frontend.vitals_window import VitalsWindow
 
-from backend.managers.api_manager import EpicAPIManager
+from backend.coordinator import Coordinator
 
 def load_stylesheet(stylesheet):
     '''util function to load in a QSS stylesheet to apply to the app as a whole
@@ -38,32 +37,9 @@ def load_stylesheet(stylesheet):
 
 
 def remove_inactive_patients():
-    """Removes inactive patients from the database based on API response."""
-
-    db = DatabaseManager()
-    api = EpicAPIManager()
-
-    with db.session_context() as session:
-        # get a list of all patients
-        patients = session.query(Patient).all()
-
-        if not patients:
-            print("No patients to remove")
-            return
-
-        # call the api and determine if they are inactive
-        inactive_patients = api.get_inactive_patients(patients)
-
-        # handle errors
-        if not inactive_patients:
-            print("No inactive patients to remove")
-            return
-
-        # remove all inactive patients from the db
-        session.query(Patient).filter(Patient.id.in_([p.id for p in inactive_patients])).delete(synchronize_session=False)
-
-        session.commit()
-
+    '''Removes inactive patients from the database based on API response'''
+    coordinator = Coordinator()
+    coordinator.remove_inactive_patients()
     return
 
 

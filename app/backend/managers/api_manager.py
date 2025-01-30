@@ -16,6 +16,7 @@ class EpicAPIManager:
         search_patient(**kwargs) - Search for patient ID and information from Epic
         get_patient_data(patient_id) -- get patient data from Epic 
         get_patient_vitals(observation_id) -- get patient vitals from Epic
+        get_inactive_patients(patients) -- get a list of patients who are inactive
     '''
     _instance = None
     _lock = Lock()
@@ -99,9 +100,11 @@ class EpicAPIManager:
         ]
     
         # filter for the kwargs so that only the valid serach parameters are used
-        payload = {k.replace('_', '-'): v.lower() for k, v in kwargs.items() if k in allowed_keys}
+        payload = {k: v for k, v in kwargs.items() if k in allowed_keys}
 
         response = requests.get(self.search_patient_url, payload, headers=self.headers)
+
+        print(response.url)
 
         patient = {}
 
@@ -113,7 +116,7 @@ class EpicAPIManager:
 
             for element in tree.iter():
                 patient[element.tag.removeprefix("{http://hl7.org/fhir}")] = element.get("value")
-        
+
         else:
             print(f"Bad Response: {response.status_code}")
 
@@ -207,5 +210,5 @@ if __name__ == "__main__":
     epic = EpicAPIManager()
     # epic.search_patient(given="theodore", family="mychart", birthdate="1948-07-07")
     # epic.get_patient("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
-    epic.get_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83")
-    
+    # epic.get_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83")
+    epic.search_patient(_id="T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")

@@ -30,20 +30,20 @@ class FluidManager:
             with self._db.session_context() as session:
                 fluid = session.query(Fluid).filter_by(name=fluid_name).first()
                 
+                # if the fluid is not found, create one and add it to the database
                 if not fluid:
-                    # TODO: could also throw an error
                     fluid = Fluid(name=fluid_name)
                     session.add(fluid)
 
+                # create a new fluid record and assign it
                 new_fluid_record = FluidRecord(fluid_time_given=datetime.now(), amount_ml=amount_ml, fluid=fluid, patient=patient)
-
+                
                 fluid.fluid_records.append(new_fluid_record)
                 patient.fluid_records.append(new_fluid_record)
 
                 session.add(new_fluid_record)
                 session.commit()
 
-                # TODO: replace this with some way of showing the user it was successful
                 print("Successfully created fluid record")
         
         except Exception as e:
@@ -75,7 +75,7 @@ class FluidManager:
             print(f"Failed to get the total fluid volume {e}")
 
 
-    def get_fluid_names(self):
+    def get_all_fluid_names(self):
         '''Queries the database gets a list of all fluid names stored.
 
         Returns: 

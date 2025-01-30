@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer, QDateTime
 
 from frontend.base_window import BaseWindow
+from backend.managers.fluid_manager import FluidManager
 
 class VitalsWindow(BaseWindow):
     '''
@@ -18,22 +19,35 @@ class VitalsWindow(BaseWindow):
         # pass the filepath for the vitals window ui file into the BaseWindow for displaying
         super().__init__("frontend/views/vitalsWindow.ui")
 
-        # Access the QDateTimeEdit widget
-        self.dateTimeEdit.setDisplayFormat("yyyy-MM-dd HH:mm:ss")
-        self.dateTimeEdit.setDateTime(QDateTime.currentDateTime())
-        self.dateTimeEdit.setReadOnly(True)
+        self._fluid_manager = FluidManager()
 
+        self._populate_combo_box()
+        self._setup_datetime()
+        
+
+    def _setup_datetime(self):
+        # Access the QDateTimeEdit widget
+        self.current_datetime.setDisplayFormat("hh:mm:ss a MMM dd, yyyy")
+        self.current_datetime.setDateTime(QDateTime.currentDateTime())
+        self.current_datetime.setReadOnly(True)
+        
 
         # Create and configure a QTimer
         self.timer = QTimer(self)
         self.timer.timeout.connect(self._updateDateTime)
         self.timer.start(1000)  # Update every 1 second
 
-        
 
     def _updateDateTime(self):
         # Update the QDateTimeEdit widget to the current date and time
-        self.dateTimeEdit.setDateTime(QDateTime.currentDateTime())
+        self.current_datetime.setDateTime(QDateTime.currentDateTime())
+
+
+    def _populate_combo_box(self):
+        '''Automatically populate the list of fluid names with those stored in the db'''
+        fluids_dropdown = self.fluids_dropdown
+        fluid_names = self._fluid_manager.get_all_fluid_names()
+        fluids_dropdown.addItems(fluid_names)
 
 
     def _update_ui(self):

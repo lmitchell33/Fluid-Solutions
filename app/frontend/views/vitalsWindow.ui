@@ -180,20 +180,10 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="9">
-     <widget class="QDateTimeEdit" name="dateTimeEdit">
+    <item row="1" column="4">
+     <widget class="QDateTimeEdit" name="current_datetime">
       <property name="alignment">
        <set>Qt::AlignCenter</set>
-      </property>
-      <property name="dateTime">
-       <datetime>
-        <hour>13</hour>
-        <minute>0</minute>
-        <second>0</second>
-        <year>2024</year>
-        <month>12</month>
-        <day>11</day>
-       </datetime>
       </property>
      </widget>
     </item>
@@ -382,10 +372,10 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </widget>
     </item>
     <item row="8" column="3" colspan="4">
-     <widget class="QComboBox" name="comboBox">
+     <widget class="QComboBox" name="fluids_dropdown">
       <property name="font">
        <font>
-        <pointsize>18</pointsize>
+        <pointsize>16</pointsize>
        </font>
       </property>
       <property name="layoutDirection">
@@ -397,26 +387,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <property name="sizeAdjustPolicy">
        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
       </property>
-      <item>
-       <property name="text">
-        <string>Fluid 1</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Fluid 2</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Fluid 3</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Jacksons Juice</string>
-       </property>
-      </item>
      </widget>
     </item>
     <item row="5" column="5" colspan="3">

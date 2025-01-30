@@ -2,5 +2,71 @@ from database_manager import DatabaseManager
 from database_models import Patient
 
 class PatientManager:
-    def __init__(self):
+    '''Patient Manager class used for managing new and old patient instances
+    
+    Methods:
         pass
+    '''
+    def __init__(self):
+        self._db = DatabaseManager()
+
+
+    def create_patient_from_epic(self, raw_patient_data):
+        epic_field_mapping = {
+            "_id" : "patient_mrn",
+            "birthdate" : "dob",
+            "family" : "lastname",
+            "given" : "firstname",
+            "gender" : "gender"
+        }
+        
+        with self._db.session_context() as session:
+            new_patient = Patient()
+            for key, value in raw_patient_data.items():
+                if key in epic_field_mapping.keys():
+                    setattr(new_patient, epic_field_mapping[key], value)
+
+            session.add(new_patient)
+            session.commit()
+
+        return new_patient
+
+    
+    def get_pateint_by_mrn(self, mrn):
+        '''Fetches the patient instance from the database based on the inputted MRN'''
+        with self._db.session_context() as session:
+            patient = session.query(Patient).filter_by(patient_mrn=mrn).first()
+
+            if patient:
+                return patient
+            
+            print(f"No patient with MRN: {mrn} found")
+            return None
+
+
+    def get_all_patients(self):
+        '''Returns a list of patient instances'''
+        with self._db.session_context() as session:
+            return session.query(Patient).all()
+
+
+    def get_all_patient_names(self):
+        '''Returns the list of names of all patients currently stored in the database'''
+        with self._db.session_context() as session:
+            return [f"{patient.firstname or ''} {patient.lastname or ''}" for patient in session.query(Patient).all()]
+
+
+    def delete_patient(self, patient):
+        '''Delete the designated patient(s)'''
+        with self._db.session_context() as session:
+            if isinstance(patient, list):
+                session.query(Patient).filter(Patient.id.in_([p.id for p in patient])).delete(synchronize_session=False)
+            
+            else:
+                session.delete(patient)
+
+            session.commit()
+
+
+if __name__ == "__main__":
+    pm = PatientManager()
