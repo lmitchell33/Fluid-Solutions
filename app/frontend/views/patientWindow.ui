@@ -46,10 +46,8 @@
       <!-- Label for the Patient MRN -->
     <item row="1" column="3" colspan="2">
      <widget class="QLabel" name="mrn_label">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
        <string>Patient MRN:</string>
@@ -60,13 +58,26 @@
       <!-- Text box for the Patient MRN -->
     <item row="1" column="5">
      <widget class="QLineEdit" name="mrn_value">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
-      </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(182, 181, 184);</string>
+       <string notr="true">background-color: rgb(182, 181, 184); font-size: 24px;</string>
+      </property>
+      <property name="minimumWidth">
+        <number>300</number> 
+      </property>
+      <property name="minimumHeight">
+        <number>50</number> 
+      </property>
+     </widget>
+    </item>
+
+    <!-- Search button for patients -->
+    <item row="2" column="5">
+     <widget class="QPushButton" name="search_patient">
+      <property name="toolTip">
+       <string>Click to search for a patient</string>
+      </property>
+      <property name="text">
+       <string>Search</string>
       </property>
      </widget>
     </item>
@@ -74,10 +85,8 @@
       <!-- Label for the Last Name field -->
     <item row="1" column="0">
      <widget class="QLabel" name="lastname_label">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
        <string>Last Name:</string>
@@ -91,12 +100,14 @@
       <!-- Textbox for the Lastname field -->
     <item row="1" column="1">
      <widget class="QLineEdit" name="lastname_value">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-        <stylestrategy>PreferDefault</stylestrategy>
-        <kerning>true</kerning>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
+      </property>
+      <property name="minimumWidth">
+        <number>300</number> 
+      </property>
+      <property name="minimumHeight">
+        <number>50</number> 
       </property>
      </widget>
     </item>
@@ -104,10 +115,8 @@
     <!-- Label for the first name field -->
     <item row="2" column="0">
      <widget class="QLabel" name="firstname_label">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
        <string>First Name:</string>
@@ -121,10 +130,14 @@
       <!-- Text entry widget for the first name field -->
     <item row="2" column="1">
      <widget class="QLineEdit" name="firstname_value">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+       <string notr="true">font-size: 24px;</string>
+      </property>
+      <property name="minimumWidth">
+        <number>300</number> 
+      </property>
+      <property name="minimumHeight">
+        <number>50</number> 
       </property>
      </widget>
     </item>
@@ -132,10 +145,8 @@
     <!-- Label for Gender -->
     <item row="3" column="0">
      <widget class="QLabel" name="gender_label">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
        <string>Gender [ M / F ]:</string>
@@ -149,21 +160,25 @@
       <!-- Dropdown for gender -->
     <item row="3" column="1">
      <widget class="QComboBox" name="gender_dropdown">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <item>
+        <property name="text">
+          <string>Male</string>
+        </property>
+      </item>
+      <item>
+        <property name="text">
+          <string>Female</string>
+        </property>
+      </item>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string> 
       </property>
-              <item>
-            <property name="text">
-                <string>Male</string>
-            </property>
-        </item>
-        <item>
-            <property name="text">
-                <string>Female</string>
-            </property>
-        </item>
+      <property name="minimumWidth">
+        <number>300</number> 
+      </property>
+      <property name="minimumHeight">
+        <number>50</number> 
+      </property>
      </widget>
     </item>
 
@@ -171,10 +186,8 @@
     <!-- Label for date of birth -->
     <item row="4" column="0">
      <widget class="QLabel" name="dob_label">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
        <string>Date of Birth: </string>
@@ -194,16 +207,23 @@
         <property name="displayFormat">
             <string>MMMM dd, yyyy</string>
         </property>
+        <property name="styleSheet">
+          <string notr="true">font-size: 24px;</string> 
+        </property>
+        <property name="minimumWidth">
+          <number>300</number> 
+        </property>
+        <property name="minimumHeight">
+          <number>50</number> 
+        </property> 
      </widget>
     </item>
 
     <!-- Label for Weight -->
     <item row="5" column="0">
      <widget class="QLabel" name="weight_label">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
        <string>Weight: </string>
@@ -217,10 +237,14 @@
       <!-- Textbox for Weight -->
     <item row="5" column="1">
      <widget class="QLineEdit" name="weight_value">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+       <string notr="true">font-size: 24px;</string>
+      </property>
+      <property name="minimumWidth">
+        <number>300</number> 
+      </property>
+      <property name="minimumHeight">
+        <number>50</number> 
       </property>
      </widget>
     </item>
@@ -228,10 +252,8 @@
     <!-- Label for Height -->
     <item row="5" column="3" colspan="2">
      <widget class="QLabel" name="height_label">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
        <string>Height:</string>
@@ -245,10 +267,14 @@
     <!-- Textbox for Height -->
     <item row="5" column="5">
      <widget class="QLineEdit" name="height_value">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+       <string notr="true">font-size: 24px;</string>
+      </property>
+      <property name="minimumWidth">
+        <number>300</number> 
+      </property>
+      <property name="minimumHeight">
+        <number>50</number> 
       </property>
      </widget>
     </item>
@@ -256,10 +282,8 @@
       <!-- Label for the Current Medications -->
     <item row="6" column="0">
      <widget class="QLabel" name="medications_label">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
        <string>Current Medications: </string>
@@ -284,10 +308,8 @@
       <!-- Label for Immunizations -->
     <item row="7" column="0">
      <widget class="QLabel" name="immunizations_label">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
        <string>Immunizations:</string>

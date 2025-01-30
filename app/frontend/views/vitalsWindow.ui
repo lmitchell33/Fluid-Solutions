@@ -155,7 +155,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
       </property>
      </widget>
     </item>
-    <item row="10" column="3" colspan="2">
+    <item row="10" column="0" colspan="10">
      <widget class="QPushButton" name="routing_button">
       <property name="toolTip">
        <string>Click to view patient window</string>

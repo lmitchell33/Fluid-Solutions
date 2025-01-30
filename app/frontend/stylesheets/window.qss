@@ -30,20 +30,21 @@ QTextEdit:focus, QLineEdit:focus {
 }
 
 QPushButton {
-    background-color: blue;
-    color: blue;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 600;
+    background-color: #007BFF; /* Blue background */
+    color: black;
+    border: 2px solid #007BFF; /* Border matching the background */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 20px; /* Padding for better spacing */
+    font-size: 16px; /* Font size for better visibility */
 }
 
 QPushButton:hover {
-    background-color: red;
+    background-color: #0056b3; /* Darker blue when hovered */
+    border-color: #0056b3; /* Darker border when hovered */
 }
 
 QPushButton:pressed {
-    background-color: red;
+    background-color: #004085; /* Even darker blue when pressed */
 }
 
 QPushButton:disabled {
