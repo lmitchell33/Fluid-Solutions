@@ -33,7 +33,7 @@
                         </widget>
                     </item>
                     <item>
-                        <widget class="QComboBox" name="dropdown">
+                        <widget class="QComboBox" name="fluids_dropdown">
                             <property name="minimumSize">
                                 <size>
                                     <width>250</width>
@@ -66,7 +66,7 @@
                         </widget>
                     </item>
                     <item>
-                        <widget class="QLineEdit" name="input1">
+                        <widget class="QLineEdit" name="volume_given">
                             <property name="minimumSize">
                                 <size>
                                     <width>150</width>
@@ -85,7 +85,7 @@
 
             <!-- Submit Button -->
             <item>
-                <widget class="QPushButton" name="submitButton">
+                <widget class="QPushButton" name="submit_button">
                     <property name="text">
                         <string>Submit</string>
                     </property>

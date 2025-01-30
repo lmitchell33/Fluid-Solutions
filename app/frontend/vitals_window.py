@@ -1,9 +1,10 @@
 import sys
 
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6.QtCore import QTimer, QDateTime
 
 from frontend.base_window import BaseWindow
+from frontend.popup import PopupForm
 from backend.managers.fluid_manager import FluidManager
 
 class VitalsWindow(BaseWindow):
@@ -21,9 +22,36 @@ class VitalsWindow(BaseWindow):
 
         self._fluid_manager = FluidManager()
 
-        # self._populate_combo_box()
+        self.popup = None
+
+        self.popup_button.clicked.connect(self._open_popup)
         self._setup_datetime()
         
+
+    def _open_popup(self):
+        if not self.popup:
+            self.popup = PopupForm()
+            self.popup.form_submitted.connect(self._handle_popup_submission)
+            self.popup.show()
+            self.popup.destroyed.connect(self._close_popup)
+
+
+    def _close_popup(self):
+        self.popup = None
+
+
+    def _handle_popup_submission(self, fluid, volume):
+        result = self._fluid_manager.add_record(self.patient_state.current_patient, fluid, float(volume))
+        
+        if result:
+            message = (f"Successfully recorded fluid administration for {self.patient_state.current_patient.firstname or ''} "
+                f"{self.patient_state.current_patient.lastname or ''}.\n\n"
+                f"Fluid: {fluid}\nVolume: {volume} mL")
+            QMessageBox.information(self, "Success", message)
+        else:
+            message = "There was an issue recording the fluid administration. Please try again."
+            QMessageBox.warning(self, "Error", message)
+
 
     def _setup_datetime(self):
         # Access the QDateTimeEdit widget
@@ -41,13 +69,6 @@ class VitalsWindow(BaseWindow):
     def _updateDateTime(self):
         # Update the QDateTimeEdit widget to the current date and time
         self.current_datetime.setDateTime(QDateTime.currentDateTime())
-
-
-    # def _populate_combo_box(self):
-    #     '''Automatically populate the list of fluid names with those stored in the db'''
-    #     fluids_dropdown = self.fluids_dropdown
-    #     fluid_names = self._fluid_manager.get_all_fluid_names()
-    #     fluids_dropdown.addItems(fluid_names)
 
 
     def _update_ui(self):
