@@ -21,13 +21,16 @@ class Coordinator:
     
     def get_or_create_patient(self, patient_mrn):
         '''Return or create and return a patient isntance based on the inputted mrn'''
-        patient = self._patient_manager.get_pateint_by_mrn(patient_mrn)
-        if patient:
+        # if the patient is found in the db, return the instance found
+        if (patient := self._patient_manager.get_patient_by_mrn(patient_mrn)):
             return patient
-        
-        else:
-            raw_patient_data = self._api.search_patient(_id=patient_mrn)
-            return self._patient_manager.create_patient_from_epic(raw_patient_data)
+
+        # if no patient is found in the search return None 
+        if not (raw_patient_data := self._api.search_patient(_id=patient_mrn)):
+            return None
+
+        # if a patient was found, add it to the database and return the patient instance
+        return self._patient_manager.create_patient_from_epic(raw_patient_data)
         
 
     def remove_inactive_patients(self):

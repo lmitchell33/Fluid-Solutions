@@ -1,6 +1,6 @@
 import sys
 
-from PyQt6.QtWidgets import QApplication, QMessageBox, QGridLayout
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6.QtCore import QTimer, QDateTime
 
 from frontend.base_window import BaseWindow
@@ -19,12 +19,6 @@ class VitalsWindow(BaseWindow):
         '''Constructor for the VitalsWindow class, loads the vitals .ui file'''
         # pass the filepath for the vitals window ui file into the BaseWindow for displaying
         super().__init__("frontend/views/vitalsWindow.ui")
-
-        # layout = self.findChild(QGridLayout, "gridLayout")
-        # for i in range(layout.count()):
-        #     widget = layout.itemAt(i).widget()
-        #     if widget:
-        #         widget.setStyleSheet("border: 1px solid red;")
 
         self._fluid_manager = FluidManager()
 
@@ -48,13 +42,18 @@ class VitalsWindow(BaseWindow):
         
         # display another popup for the user based on if the attemp was successful or not
         if result:
-            message = (f"Successfully recorded fluid administration for {self.patient_state.current_patient.firstname or ''} "
-                f"{self.patient_state.current_patient.lastname or ''}.\n\n"
-                f"Fluid: {fluid}\nVolume: {volume} mL")
-            QMessageBox.information(self, "Success", message)
+            current_patient = f"{self.patient_state.current_patient.firstname} {self.patient_state.current_patient.lastname}"
+            QMessageBox.information(
+                self, 
+                "Success", 
+                f"Successfully recorded fluid administration for {current_patient}. \n\n Fluid: {fluid}\n Volume: {volume} mL"
+            )
         else:
-            message = "There was an issue recording the fluid administration. Please try again."
-            QMessageBox.warning(self, "Error", message)
+            QMessageBox.warning(
+                self,
+                "Error",
+                "There was an issue recording the fluid administration. Please try again."
+            )
 
 
     def _setup_datetime(self):
