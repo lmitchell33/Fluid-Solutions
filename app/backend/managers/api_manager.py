@@ -147,15 +147,14 @@ class EpicAPIManager:
             print("No patient ID")
             return {}
 
-        url = self.read_patient_url + patient_id
+        try:
+            url = self.read_patient_url + patient_id
+            
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
+            
+            patient = {}
 
-        response = requests.get(url, headers=self.headers)
-
-        patient = {}
-
-        # check the response is valid before proceeding
-        if 200 <= response.status_code < 300:
-            # TODO: Implement logic for integration here
             xml = response.content
             tree = ElementTree.fromstring(xml)
 
@@ -163,10 +162,11 @@ class EpicAPIManager:
                 # return the following dict {field : value} for the patient's information
                 patient[element.tag.removeprefix("{http://hl7.org/fhir}")] = element.attrib.get('value')
 
-        else:
-            print(f"Bad Response: {response.status_code}")
-
-        return patient
+            return patient
+        
+        except Exception as e:
+            print(f"Error getting patient data from epic. Status code: {response.status_code}: ", e)
+            return {}
 
 
     def get_vitals(self, observation_id):
@@ -179,21 +179,28 @@ class EpicAPIManager:
             vitals {dict} -- patient vitals from Epic
         '''
 
-        url = self.vitals_url + observation_id
+        if not observation_id:
+            print("Invalid observation id")
+            return None
+        
+        try:
+            url = self.vitals_url + observation_id
 
-        response = requests.get(url, headers=self.headers)
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
 
-        # check the response is valid before proceeding
-        if 200 <= response.status_code < 300:
-            # TODO: Implement logic for integration here
+            vitals = {}
+
             xml = response.content
             tree = ElementTree.fromstring(xml)
 
             for element in tree.iter():
-                print(element.tag.removeprefix("{http://hl7.org/fhir}"), element.attrib)
+                vitals[element.tag.removeprefix("{http://hl7.org/fhir}")] = element.attrib.get('value')
+
+            return vitals
         
-        else:
-            print(f"Bad Response: {response.status_code}")
+        except Exception as e:
+            print(f"Error getting vitals from epic status code: {response.status_code}", e)
 
 
     def get_inactive_patients(self, patients):
