@@ -25,12 +25,14 @@ class PatientWindow(BaseWindow):
                 
         current_patient = self.patient_state.current_patient
 
+        # set the attributes 
         self.mrn_value.setText(current_patient.patient_mrn)
         self.lastname_value.setText(current_patient.lastname)
         self.firstname_value.setText(current_patient.firstname)
         self.gender_dropdown.setCurrentText(current_patient.gender)
         self.dob_value.setDate(current_patient.dob)
-
+        self.weight_value.setText(current_patient.weight_kg or '')
+        self.height_value.setText(current_patient.height_cm or '')
 
 
     def _search_patient(self):
