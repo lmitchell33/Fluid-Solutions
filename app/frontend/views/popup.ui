@@ -40,10 +40,8 @@
                                     <height>40</height>
                                 </size>
                             </property>
-                            <property name="font">
-                                <font>
-                                    <pointsize>14</pointsize>
-                                </font>
+                            <property name="styleSheet">
+                                <string notr="true">font-size: 19px;</string> 
                             </property>
                         </widget>
                     </item>
@@ -73,10 +71,8 @@
                                     <height>40</height>
                                 </size>
                             </property>
-                            <property name="font">
-                                <font>
-                                    <pointsize>14</pointsize>
-                                </font>
+                            <property name="styleSheet">
+                                <string notr="true">font-size: 19px;</string> 
                             </property>
                         </widget>
                     </item>

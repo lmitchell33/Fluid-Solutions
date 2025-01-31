@@ -26,6 +26,9 @@ class FluidManager:
             fluid_name {str} -- the name of the fluid being recorded
             amount_mL {float} -- The volume of fluid that was administered
         '''
+        if not patient:
+            return False
+        
         try:
             with self._db.session_context() as session:
                 fluid = session.query(Fluid).filter_by(name=fluid_name).first()

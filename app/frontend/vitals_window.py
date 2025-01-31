@@ -1,6 +1,6 @@
 import sys
 
-from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMessageBox, QGridLayout
 from PyQt6.QtCore import QTimer, QDateTime
 
 from frontend.base_window import BaseWindow
@@ -20,6 +20,12 @@ class VitalsWindow(BaseWindow):
         # pass the filepath for the vitals window ui file into the BaseWindow for displaying
         super().__init__("frontend/views/vitalsWindow.ui")
 
+        # layout = self.findChild(QGridLayout, "gridLayout")
+        # for i in range(layout.count()):
+        #     widget = layout.itemAt(i).widget()
+        #     if widget:
+        #         widget.setStyleSheet("border: 1px solid red;")
+
         self._fluid_manager = FluidManager()
 
         self.popup = None
@@ -29,20 +35,18 @@ class VitalsWindow(BaseWindow):
         
 
     def _open_popup(self):
-        if not self.popup:
+        '''Util funciton to open a popup and handle the logic/submission of the popup'''
+        if not self.popup or not self.popup.isVisible():
             self.popup = PopupForm()
-            self.popup.form_submitted.connect(self._handle_popup_submission)
             self.popup.show()
-            self.popup.destroyed.connect(self._close_popup)
-
-
-    def _close_popup(self):
-        self.popup = None
+            self.popup.form_submitted.connect(self._handle_popup_submission)
 
 
     def _handle_popup_submission(self, fluid, volume):
+        '''Handle the logic for adding a record and display a popup to the user on success or fail'''
         result = self._fluid_manager.add_record(self.patient_state.current_patient, fluid, float(volume))
         
+        # display another popup for the user based on if the attemp was successful or not
         if result:
             message = (f"Successfully recorded fluid administration for {self.patient_state.current_patient.firstname or ''} "
                 f"{self.patient_state.current_patient.lastname or ''}.\n\n"

@@ -16,9 +16,6 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255)</string>
-  </property>
 
       <!-- Begin Central Widget -->
 
@@ -59,7 +56,7 @@
     <item row="1" column="5">
      <widget class="QLineEdit" name="mrn_value">
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(182, 181, 184); font-size: 24px;</string>
+       <string notr="true">font-size: 24px;</string>
       </property>
       <property name="minimumWidth">
         <number>300</number> 
@@ -77,7 +74,7 @@
        <string>Click to search for a patient</string>
       </property>
       <property name="text">
-       <string>Search</string>
+       <string>Search for Patient</string>
       </property>
      </widget>
     </item>
@@ -104,6 +101,9 @@
         <string notr="true">font-size: 24px;</string>
       </property>
       <property name="minimumWidth">
+        <number>200</number> 
+      </property>
+      <property name="maximumWidth">
         <number>300</number> 
       </property>
       <property name="minimumHeight">
@@ -302,10 +302,8 @@
           <!--Current Medications Textbox -->
     <item row="6" column="1" colspan="5">
      <widget class="QTextEdit" name="medications_value">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
      </widget>
     </item>
@@ -328,10 +326,8 @@
     <!-- Text box for Immunizations -->
     <item row="7" column="1" colspan="5">
      <widget class="QTextEdit" name="immunizations_value">
-      <property name="font">
-       <font>
-        <pointsize>18</pointsize>
-       </font>
+      <property name="styleSheet">
+        <string notr="true">font-size: 24px;</string>
       </property>
      </widget>
     </item>
