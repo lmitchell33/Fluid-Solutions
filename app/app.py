@@ -48,6 +48,8 @@ def main():
 
     app = QApplication(sys.argv)
 
+    app.setStyleSheet(load_stylesheet("frontend/stylesheets/window.qss"))
+
     # on app startup, remove all inactive patients (if any)
     remove_inactive_patients()
 
@@ -70,10 +72,9 @@ def main():
     router = Router(patient_window, vitals_window)
 
     # resize the window to 1.5x that of the current screen
-    router.resize(int(geometry.width()/(1.25)), int(geometry.height()/(1.25)))
+    router.resize(int(geometry.width()/(2)), int(geometry.height()/(2)))
 
     # set the stylesheet and display the screen
-    app.setStyleSheet(load_stylesheet("frontend/stylesheets/window.qss"))
     router.show() # by default, this shows the patient window
 
     app.exec()

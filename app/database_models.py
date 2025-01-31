@@ -11,11 +11,11 @@ class Patient(Base):
     id = mapped_column(Integer, primary_key=True)
     firstname = mapped_column(String)
     lastname = mapped_column(String)
-    dob = mapped_column(Date, nullable=True)  # Used to find age
+    dob = mapped_column(Date, nullable=True)
     gender = mapped_column(String, nullable=True)
     height_cm = mapped_column(Float, nullable=True)
     weight_kg = mapped_column(Float, nullable=True)
-    patient_mrn = mapped_column(Integer, nullable=True, unique=True)
+    patient_mrn = mapped_column(String, nullable=True, unique=True)
 
     # One-to-many relationship: One patient can have many medications or fluid records
     medications: Mapped[List["Medication"]] = relationship("Medication", back_populates="patient", cascade="all, delete-orphan")

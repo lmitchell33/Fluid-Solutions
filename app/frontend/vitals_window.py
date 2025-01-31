@@ -1,10 +1,15 @@
 import sys
 
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6.QtCore import QTimer, QDateTime
 
 from frontend.base_window import BaseWindow
+from frontend.popup import PopupForm
 from backend.managers.fluid_manager import FluidManager
+
+# NOTE: Currently, the window is only showing the total flulid volume
+# given. If we want to specify which fluid was administered, then we are going
+# I can implement that, im just not sure the best way to.
 
 class VitalsWindow(BaseWindow):
     '''
@@ -21,9 +26,39 @@ class VitalsWindow(BaseWindow):
 
         self._fluid_manager = FluidManager()
 
-        self._populate_combo_box()
+        self.popup = None
+
+        self.popup_button.clicked.connect(self._open_popup)
         self._setup_datetime()
         
+
+    def _open_popup(self):
+        '''Util funciton to open a popup and handle the logic/submission of the popup'''
+        if not self.popup or not self.popup.isVisible():
+            self.popup = PopupForm()
+            self.popup.show()
+            self.popup.form_submitted.connect(self._handle_popup_submission)
+
+
+    def _handle_popup_submission(self, fluid, volume):
+        '''Handle the logic for adding a record and display a popup to the user on success or fail'''
+        result = self._fluid_manager.add_record(self.patient_state.current_patient, fluid, float(volume))
+        
+        # display another popup for the user based on if the attemp was successful or not
+        if result:
+            current_patient = f"{self.patient_state.current_patient.firstname} {self.patient_state.current_patient.lastname}"
+            QMessageBox.information(
+                self, 
+                "Success", 
+                f"Successfully recorded fluid administration for {current_patient}. \n\n Fluid: {fluid}\n Volume: {volume} mL"
+            )
+        else:
+            QMessageBox.warning(
+                self,
+                "Error",
+                "There was an issue recording the fluid administration. Please try again."
+            )
+
 
     def _setup_datetime(self):
         # Access the QDateTimeEdit widget
@@ -43,18 +78,13 @@ class VitalsWindow(BaseWindow):
         self.current_datetime.setDateTime(QDateTime.currentDateTime())
 
 
-    def _populate_combo_box(self):
-        '''Automatically populate the list of fluid names with those stored in the db'''
-        fluids_dropdown = self.fluids_dropdown
-        fluid_names = self._fluid_manager.get_all_fluid_names()
-        fluids_dropdown.addItems(fluid_names)
-
-
     def _update_ui(self):
         if self.patient_state.current_patient is None:
             return
 
-        # add code to update the features of the ui here 
+        current_patient = self.patient_state.current_patient
+        self.name_value.setText(f"{current_patient.firstname} {current_patient.lastname}")
+        self.mrn_value.setText(current_patient.patient_mrn)
 
 
 if __name__ == "__main__":

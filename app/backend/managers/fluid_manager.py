@@ -22,10 +22,13 @@ class FluidManager:
         name is not found in the database, it will create a new fluid.
         
         Args: 
-            patient_id {int} -- Unique db id of the patient to whom the fluid record belongs
+            patient {Patient} -- Patient instance to whom the fluid record belongs
             fluid_name {str} -- the name of the fluid being recorded
             amount_mL {float} -- The volume of fluid that was administered
         '''
+        if not patient:
+            return False
+        
         try:
             with self._db.session_context() as session:
                 fluid = session.query(Fluid).filter_by(name=fluid_name).first()
@@ -45,9 +48,11 @@ class FluidManager:
                 session.commit()
 
                 print("Successfully created fluid record")
+                return True
         
         except Exception as e:
             print(f"Failed to create fluid record: {e}")
+            return False
 
 
     def get_total_fluid_volume(self, patient, fluid=None):

@@ -69,3 +69,4 @@ class Router(QStackedWidget):
             None
         ''' 
         self.setCurrentWidget(window)
+        window.mrn_value.setFocus() #hackey fix so the datetime isnt highlighted when screens change

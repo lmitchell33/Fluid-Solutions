@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from database_manager import DatabaseManager
 from database_models import Patient
 
@@ -12,35 +14,53 @@ class PatientManager:
 
 
     def create_patient_from_epic(self, raw_patient_data):
+        # the keys represent the result parameters from epic and the values
+        # represent the attributes of the Patient Class
         epic_field_mapping = {
-            "_id" : "patient_mrn",
-            "birthdate" : "dob",
+            "id" : "patient_mrn",
+            "birthDate" : "dob",
             "family" : "lastname",
             "given" : "firstname",
             "gender" : "gender"
         }
+
+        if not isinstance(raw_patient_data, dict):
+            print("Invalid raw patient data")
+            return None
         
-        with self._db.session_context() as session:
-            new_patient = Patient()
-            for key, value in raw_patient_data.items():
-                if key in epic_field_mapping.keys():
-                    setattr(new_patient, epic_field_mapping[key], value)
+        try:
+            # create a mew patient and populate its attributes with the data from epic  
+            with self._db.session_context() as session:
+                new_patient = Patient()
+                
+                # add attributes to the patient instance
+                for key, value in raw_patient_data.items():
+                    if key in epic_field_mapping.keys():
 
-            session.add(new_patient)
-            session.commit()
+                        # conver the date of birth to a date object for SQLAclhemy
+                        if key == "birthDate" and value: 
+                            value = datetime.strptime(value, "%Y-%m-%d").date()
 
-        return new_patient
+                        setattr(new_patient, epic_field_mapping[key], value)
+
+                session.add(new_patient)
+                session.commit()
+
+            return new_patient
+        
+        except Exception as e:
+            print("Error creating patient isntance: ", e)
+            return None
 
     
-    def get_pateint_by_mrn(self, mrn):
+    def get_patient_by_mrn(self, mrn):
         '''Fetches the patient instance from the database based on the inputted MRN'''
         with self._db.session_context() as session:
-            patient = session.query(Patient).filter_by(patient_mrn=mrn).first()
-
-            if patient:
+            
+            # if the patient instance from the db exists, put it into the patient variable and return 
+            if (patient := session.query(Patient).filter_by(patient_mrn=mrn).first()):
                 return patient
             
-            print(f"No patient with MRN: {mrn} found")
             return None
 
 

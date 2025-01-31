@@ -79,6 +79,10 @@ class EpicAPIManager:
 
     def search_patient(self, **kwargs):
         '''Method to search Epic for a patient
+
+        # NOTE: This function is currently only setup to except a singular patient
+        as the result of the serach. If there are more than one then a popup has to be
+        created that will allow the user to choose which patient it is.
         
         Kwargs:
             **kwargs {dict} -- search parameters for the patient. A list of valid parameters is shown below
@@ -102,25 +106,31 @@ class EpicAPIManager:
         # filter for the kwargs so that only the valid serach parameters are used
         payload = {k: v for k, v in kwargs.items() if k in allowed_keys}
 
-        response = requests.get(self.search_patient_url, payload, headers=self.headers)
+        if not payload:
+            print("Invalid arugments, please ensure the parameters are valid")
+            return None
 
-        print(response.url)
+        try:
+            # request info from epic based on the parameters
+            response = requests.get(self.search_patient_url, payload, headers=self.headers)
+            response.raise_for_status()
 
-        patient = {}
+            patient = {}
 
-        # check the response is valid before proceeding
-        if 200 <= response.status_code < 300:
-            # TODO: Implement logic for integration here
             xml = response.content
             tree = ElementTree.fromstring(xml)
 
             for element in tree.iter():
                 patient[element.tag.removeprefix("{http://hl7.org/fhir}")] = element.get("value")
 
-        else:
-            print(f"Bad Response: {response.status_code}")
+            if patient.get('total', '0') == '0':
+                return None
+        
+            return patient
 
-        return patient
+        except Exception as e:
+            print(f"Error with seraching epic. Status code: {response.status_code}: ", e)
+            return None
 
 
     def get_patient(self, patient_id):
@@ -137,15 +147,14 @@ class EpicAPIManager:
             print("No patient ID")
             return {}
 
-        url = self.read_patient_url + patient_id
+        try:
+            url = self.read_patient_url + patient_id
+            
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
+            
+            patient = {}
 
-        response = requests.get(url, headers=self.headers)
-
-        patient = {}
-
-        # check the response is valid before proceeding
-        if 200 <= response.status_code < 300:
-            # TODO: Implement logic for integration here
             xml = response.content
             tree = ElementTree.fromstring(xml)
 
@@ -153,10 +162,11 @@ class EpicAPIManager:
                 # return the following dict {field : value} for the patient's information
                 patient[element.tag.removeprefix("{http://hl7.org/fhir}")] = element.attrib.get('value')
 
-        else:
-            print(f"Bad Response: {response.status_code}")
-            
-        return patient
+            return patient
+        
+        except Exception as e:
+            print(f"Error getting patient data from epic. Status code: {response.status_code}: ", e)
+            return {}
 
 
     def get_vitals(self, observation_id):
@@ -169,21 +179,28 @@ class EpicAPIManager:
             vitals {dict} -- patient vitals from Epic
         '''
 
-        url = self.vitals_url + observation_id
+        if not observation_id:
+            print("Invalid observation id")
+            return None
+        
+        try:
+            url = self.vitals_url + observation_id
 
-        response = requests.get(url, headers=self.headers)
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
 
-        # check the response is valid before proceeding
-        if 200 <= response.status_code < 300:
-            # TODO: Implement logic for integration here
+            vitals = {}
+
             xml = response.content
             tree = ElementTree.fromstring(xml)
 
             for element in tree.iter():
-                print(element.tag.removeprefix("{http://hl7.org/fhir}"), element.attrib)
+                vitals[element.tag.removeprefix("{http://hl7.org/fhir}")] = element.attrib.get('value')
+
+            return vitals
         
-        else:
-            print(f"Bad Response: {response.status_code}")
+        except Exception as e:
+            print(f"Error getting vitals from epic status code: {response.status_code}", e)
 
 
     def get_inactive_patients(self, patients):
@@ -208,7 +225,8 @@ class EpicAPIManager:
 
 if __name__ == "__main__":
     epic = EpicAPIManager()
-    # epic.search_patient(given="theodore", family="mychart", birthdate="1948-07-07")
+    # epic.search_patient(given="Lucas", family="Mitchell")
+    epic.search_patient(given="theodore", family="mychart", birthdate="1948-07-07")
     # epic.get_patient("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
     # epic.get_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83")
-    epic.search_patient(_id="T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
+    # epic.search_patient(_id="T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")

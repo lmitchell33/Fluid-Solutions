@@ -30,9 +30,9 @@ QTextEdit:focus, QLineEdit:focus {
 }
 
 QPushButton {
-    background-color: #007BFF; /* Blue background */
+    background-color:rgb(0, 183, 255); /* Blue background */
     color: black;
-    border: 2px solid #007BFF; /* Border matching the background */
+    border: 2px solid rgb(0, 183, 255); /* Border matching the background */
     border-radius: 5px; /* Rounded corners */
     padding: 10px 20px; /* Padding for better spacing */
     font-size: 16px; /* Font size for better visibility */
