@@ -46,6 +46,8 @@ class VitalsWindow(BaseWindow):
         
         # display another popup for the user based on if the attemp was successful or not
         if result:
+            self._update_ui()
+
             current_patient = f"{self.patient_state.current_patient.firstname} {self.patient_state.current_patient.lastname}"
             QMessageBox.information(
                 self, 
@@ -85,6 +87,7 @@ class VitalsWindow(BaseWindow):
         current_patient = self.patient_state.current_patient
         self.name_value.setText(f"{current_patient.firstname} {current_patient.lastname}")
         self.mrn_value.setText(current_patient.patient_mrn)
+        self.total_fluid_value.setText(str(self._fluid_manager.get_total_fluid_volume(current_patient) or ''))
 
 
 if __name__ == "__main__":
