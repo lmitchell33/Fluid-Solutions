@@ -12,6 +12,7 @@ class Patient(Base):
     firstname = mapped_column(String)
     lastname = mapped_column(String)
     dob = mapped_column(Date, nullable=True)  # Used to find age
+    gender = mapped_column(String, nullable=True)
     height_cm = mapped_column(Float, nullable=True)
     weight_kg = mapped_column(Float, nullable=True)
     patient_mrn = mapped_column(Integer, nullable=True, unique=True)

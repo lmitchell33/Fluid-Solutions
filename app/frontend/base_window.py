@@ -1,9 +1,7 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow
 
-from backend.patient_state import PatientState
-
-from backend.epic.api.api_manager import EpicAPIManager
+from backend.states.patient_state import PatientState
 
 class BaseWindow(QMainWindow):
     '''
@@ -30,9 +28,6 @@ class BaseWindow(QMainWindow):
         # Initialize patient state used to display the current patient being shown
         self.patient_state = PatientState()
         self.patient_state.patient_changed.connect(self._update_ui)
-
-        # Initialize the epic API manager object
-        self.epic_api_manager = EpicAPIManager()
 
 
     def get_routing_button(self):

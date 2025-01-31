@@ -1,6 +1,6 @@
 import sys
-
 from PyQt6.QtWidgets import QApplication
+
 from frontend.base_window import BaseWindow
 
 class PatientWindow(BaseWindow):

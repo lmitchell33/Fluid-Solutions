@@ -23,6 +23,12 @@ Follow these steps to setup and run the desktop application on your machine.
 git clone https://github.com/lmitchell33/Fluid-Solutions.git && cd Fluid-Solutions
 ```
 
+2. Install the requirements
+
+```sh
+pip install -r requirements.txt
+```
+
 ## **Acknowledgements**
 
 - **Dr. Leda Kloudas**  

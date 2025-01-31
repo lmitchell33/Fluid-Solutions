@@ -3,17 +3,21 @@ import argparse
 
 from PyQt6.QtCore import QFile, QTextStream
 from PyQt6.QtWidgets import QApplication
+from apscheduler.schedulers.qt import QtScheduler
+from apscheduler.triggers.cron import CronTrigger
 
-from database_models import Base
 from database_manager import DatabaseManager
 
 from frontend.router import Router
 from frontend.patient_window import PatientWindow
 from frontend.vitals_window import VitalsWindow
 
+from backend.coordinator import Coordinator
+
 def load_stylesheet(stylesheet):
     '''util function to load in a QSS stylesheet to apply to the app as a whole
-    NOTE: This will apply to ALL windows in the app unless a stylesheet is applied directly to the other window
+    This will apply to ALL windows in the app unless a stylesheet is applied directly to the other window
+    
     Args:
         stylesheet {str} -- path to the .qss file containing the styling
     
@@ -32,10 +36,25 @@ def load_stylesheet(stylesheet):
     return qss_content
 
 
+def remove_inactive_patients():
+    '''Removes inactive patients from the database based on API response'''
+    coordinator = Coordinator()
+    coordinator.remove_inactive_patients()
+    return
+
+
 def main():
     '''Initalizes the router and start the PyQT application'''
-    # starts the application from the cli and initalizes the router
+
     app = QApplication(sys.argv)
+
+    # on app startup, remove all inactive patients (if any)
+    remove_inactive_patients()
+
+    # create a cron scheduler within the QT app to remove inactive patients everynight at midnight (if app is running)
+    scheduler = QtScheduler()
+    scheduler.add_job(remove_inactive_patients, CronTrigger(hour=0, minute=0))
+    scheduler.start()
 
     # get the current size of the screen so we can resize the new window when it displays
     screen = app.primaryScreen()
@@ -51,13 +70,13 @@ def main():
     router = Router(patient_window, vitals_window)
 
     # resize the window to 1.5x that of the current screen
-    router.resize(int(geometry.width()/(1.5)), int(geometry.height()/(1.5)))
+    router.resize(int(geometry.width()/(1.25)), int(geometry.height()/(1.25)))
 
     # set the stylesheet and display the screen
     app.setStyleSheet(load_stylesheet("frontend/stylesheets/window.qss"))
     router.show() # by default, this shows the patient window
 
-    sys.exit(app.exec())
+    app.exec()
 
 
 def parse_arguments(args=None):
@@ -84,7 +103,7 @@ if __name__ == "__main__":
     db = DatabaseManager()
 
     if args.initdb:
-        db.initdb(Base)
+        db.initdb()
     else:
         main()
         db.close_session()
