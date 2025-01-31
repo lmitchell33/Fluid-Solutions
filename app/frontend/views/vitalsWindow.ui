@@ -83,13 +83,16 @@
     <item row="2" column="2">
      <widget class="QLineEdit" name="name_value">
       <property name="styleSheet">
-        <string notr="true">font-size: 24px;</string>
+        <string notr="true">background-color: rgb(182, 181, 184); font-size: 24px;</string>
       </property>
       <property name="minimumWidth">
         <number>300</number> 
       </property>
       <property name="minimumHeight">
         <number>50</number> 
+      </property>
+      <property name="readOnly">
+            <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -113,7 +116,7 @@
     <item row="3" column="2">
      <widget class="QLineEdit" name="volume_status_value">
       <property name="styleSheet">
-        <string notr="true">font-size: 24px;</string>
+        <string notr="true">background-color: rgb(182, 181, 184); font-size: 24px;</string>
       </property>
       <property name="minimumWidth">
         <number>300</number> 
@@ -121,12 +124,15 @@
       <property name="minimumHeight">
         <number>50</number> 
       </property>
+      <property name="readOnly">
+            <bool>true</bool>
+      </property>
      </widget>
     </item>
 
     <!-- Label for Patient ID -->
     <item row="2" column="3" colspan="3">
-     <widget class="QLabel" name="patient_mrn_label">
+     <widget class="QLabel" name="mrn_label">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
       </property>
@@ -141,7 +147,7 @@
 
       <!-- Textbox for Patient ID  -->
     <item row="2" column="6" colspan="3">
-     <widget class="QLineEdit" name="patient_mrn_value">
+     <widget class="QLineEdit" name="mrn_value">
       <property name="styleSheet">
        <string notr="true">background-color: rgb(182, 181, 184); font-size: 24px;</string>
       </property>

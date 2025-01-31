@@ -167,12 +167,12 @@
       </item>
       <item>
         <property name="text">
-          <string>Male</string>
+          <string>male</string>
         </property>
       </item>
       <item>
         <property name="text">
-          <string>Female</string>
+          <string>female</string>
         </property>
       </item>
       <property name="styleSheet">

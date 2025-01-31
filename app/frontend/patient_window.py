@@ -23,7 +23,15 @@ class PatientWindow(BaseWindow):
         if self.patient_state.current_patient is None:
             return
                 
-        # TODO: Add code to update the ui features when the current patient is changed.
+        current_patient = self.patient_state.current_patient
+
+        self.mrn_value.setText(current_patient.patient_mrn)
+        self.lastname_value.setText(current_patient.lastname)
+        self.firstname_value.setText(current_patient.firstname)
+        self.gender_dropdown.setCurrentText(current_patient.gender)
+        self.dob_value.setDate(current_patient.dob)
+
+
 
     def _search_patient(self):
         '''Searches a patient based on the inputted MRN'''

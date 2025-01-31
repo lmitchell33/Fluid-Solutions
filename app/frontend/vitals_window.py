@@ -7,6 +7,10 @@ from frontend.base_window import BaseWindow
 from frontend.popup import PopupForm
 from backend.managers.fluid_manager import FluidManager
 
+# NOTE: Currently, the window is only showing the total flulid volume
+# given. If we want to specify which fluid was administered, then we are going
+# I can implement that, im just not sure the best way to.
+
 class VitalsWindow(BaseWindow):
     '''
     BaseWindow inherited class to display and handle the logic for the vitals window.
@@ -78,7 +82,9 @@ class VitalsWindow(BaseWindow):
         if self.patient_state.current_patient is None:
             return
 
-        # add code to update the features of the ui here 
+        current_patient = self.patient_state.current_patient
+        self.name_value.setText(f"{current_patient.firstname} {current_patient.lastname}")
+        self.mrn_value.setText(current_patient.patient_mrn)
 
 
 if __name__ == "__main__":
