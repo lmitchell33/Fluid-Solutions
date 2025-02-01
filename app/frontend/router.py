@@ -24,6 +24,7 @@ class Router(QStackedWidget):
         handle the physical routing between the windows
         '''
         super().__init__()
+        self.setWindowTitle("Fluid Solutions")
 
         self._windows = windows
 

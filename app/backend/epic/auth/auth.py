@@ -98,9 +98,12 @@ def get_access_token(jwt=None):
         "client_assertion" : jwt
     }
 
-    response = requests.post(url=TOKEN_URL, data=auth_payload, headers=auth_headers)
-
-    return response.json()
+    try: 
+        response = requests.post(url=TOKEN_URL, data=auth_payload, headers=auth_headers)
+        return response.json()
+    except requests.exceptions.MissingSchema as e:
+        print(f"Could not get access token, {e}")
+        return None
 
 
 if __name__ == "__main__":

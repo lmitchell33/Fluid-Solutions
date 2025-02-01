@@ -38,9 +38,9 @@ class EpicAPIManager:
         self._initalized = True
 
         # urls for each of the Epic API endpoints we are using
-        self.search_patient_url = os.environ.get("SEARCH_PATIENT_URL")
-        self.vitals_url = os.environ.get("READ_VITALS_URL")
-        self.read_patient_url = os.environ.get("READ_PATIENT_URL")
+        self.search_patient_url = os.getenv("SEARCH_PATIENT_URL")
+        self.vitals_url = os.getenv("READ_VITALS_URL")
+        self.read_patient_url = os.getenv("READ_PATIENT_URL")
 
         # private variables to hold auth information for the session
         self._jwt = create_jwt()  # jwt for the session
@@ -73,8 +73,8 @@ class EpicAPIManager:
         epic_auth_response = get_access_token(self._jwt)
 
         # parse epic's OAuth endpoint response to get the info we need
-        self._access_token = epic_auth_response["access_token"]
-        self._access_token_expr = time.time() + epic_auth_response["expires_in"]
+        self._access_token = epic_auth_response.get("access_token", "")
+        self._access_token_expr = time.time() + epic_auth_response.get("expires_in", "")
 
 
     def search_patient(self, **kwargs):
@@ -162,6 +162,9 @@ class EpicAPIManager:
                 # return the following dict {field : value} for the patient's information
                 patient[element.tag.removeprefix("{http://hl7.org/fhir}")] = element.attrib.get('value')
 
+            if not patient or patient.get('id') != patient_id:
+                return {}
+
             return patient
         
         except Exception as e:
@@ -226,7 +229,7 @@ class EpicAPIManager:
 if __name__ == "__main__":
     epic = EpicAPIManager()
     # epic.search_patient(given="Lucas", family="Mitchell")
-    epic.search_patient(given="theodore", family="mychart", birthdate="1948-07-07")
-    # epic.get_patient("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
-    # epic.get_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83")
+    # epic.search_patient(given="theodore", family="mychart", birthdate="1948-07-07")
+    print(epic.get_patient("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B"))
+    # print(epic.get_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83"))
     # epic.search_patient(_id="T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
