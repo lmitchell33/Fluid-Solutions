@@ -43,6 +43,11 @@ class PatientWindow(BaseWindow):
         # The other parameters would be useful if the mrn is not known
 
         mrn = self.mrn_value.text()
+
+        if not mrn:
+            self._handle_search_resposne(False)
+            return
+
         if patient := self._coordinator.get_or_create_patient(mrn):
             self.patient_state.current_patient = patient
             search_success = True
