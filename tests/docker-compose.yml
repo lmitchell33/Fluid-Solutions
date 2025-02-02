@@ -17,4 +17,4 @@ services:
 
     volumes:
       - ../:/app
-      - ./test-reports:/app/test-reports
+      - ./test-reports:/tests/test-reports

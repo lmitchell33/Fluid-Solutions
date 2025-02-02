@@ -57,13 +57,13 @@ class PatientWindow(BaseWindow):
         if success:
             QMessageBox.information(
                 self, 
-                "Search Successful", 
+                "Search Successful!", 
                 f"Patient Found: {self.patient_state.current_patient.firstname} {self.patient_state.current_patient.lastname}"
             )
         else:
             QMessageBox.warning(
                 self, 
-                "Search Failed", 
+                "Search Failed!", 
                 "No patient found with the given MRN"
             )
 
