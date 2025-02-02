@@ -63,6 +63,7 @@ class VitalsWindow(BaseWindow):
 
 
     def _setup_datetime(self):
+        '''setup the datetime widjet in the vitals window'''
         # Access the QDateTimeEdit widget
         self.current_datetime.setDisplayFormat("hh:mm:ss a MMM dd, yyyy")
         self.current_datetime.setDateTime(QDateTime.currentDateTime())
@@ -76,11 +77,13 @@ class VitalsWindow(BaseWindow):
 
 
     def _updateDateTime(self):
+        '''update the datetime to display the current time'''
         # Update the QDateTimeEdit widget to the current date and time
         self.current_datetime.setDateTime(QDateTime.currentDateTime())
 
 
     def _update_ui(self):
+        '''update the specific widjets when the current patient is changed'''
         if self.patient_state.current_patient is None:
             return
 

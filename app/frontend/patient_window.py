@@ -20,12 +20,13 @@ class PatientWindow(BaseWindow):
         self.search_patient.clicked.connect(self._search_patient)
 
     def _update_ui(self):
+        '''update the designated widjets when the current patient is changed'''
         if self.patient_state.current_patient is None:
             return
                 
         current_patient = self.patient_state.current_patient
 
-        # set the attributes 
+        # set the values of the widjets 
         self.mrn_value.setText(current_patient.patient_mrn)
         self.lastname_value.setText(current_patient.lastname)
         self.firstname_value.setText(current_patient.firstname)

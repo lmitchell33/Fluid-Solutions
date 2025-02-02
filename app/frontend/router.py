@@ -24,8 +24,9 @@ class Router(QStackedWidget):
         handle the physical routing between the windows
         '''
         super().__init__()
-        self.setWindowTitle("Fluid Solutions")
 
+        # set the tital of the app itself to be 
+        self.setWindowTitle("Fluid Solutions")
         self._windows = windows
 
         try:
@@ -37,7 +38,6 @@ class Router(QStackedWidget):
 
         # set the inital (default) window to be the first window added to the router
         self.setCurrentWidget(self._windows[0])
-
         self._setup_routing()
 
 
