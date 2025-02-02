@@ -4,11 +4,11 @@ import socket
 
 def generate_mock_vitals():
     '''Generate mock vitals using whatever information we want'''
-    pass
+    return {}
 
 
-def send_vitals(): 
-    '''publish/sent the vitals'''
+def send_vitals(data): 
+    '''publish/send the vitals'''
     pass
 
 

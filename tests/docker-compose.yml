@@ -1,6 +1,6 @@
 version: '3'
 services:
-  api:
+  testrunner:
     environment:
       CLIENT_ID: ${CLIENT_ID}
       NON_PRODUCTION_CLIENT_ID: ${NON_PRODUCTION_CLIENT_ID}
@@ -13,6 +13,8 @@ services:
       context: ../
       dockerfile: TEST.Dockerfile
     
+    working_dir: /app/tests
+
     volumes:
       - ../:/app
       - ./test-reports:/app/test-reports
