@@ -41,10 +41,13 @@ class FluidManager:
                 # create a new fluid record and assign it
                 new_fluid_record = FluidRecord(fluid_time_given=datetime.now(), amount_ml=amount_ml, fluid=fluid, patient=patient)
                 
+                # have to commit the new fluid record before preforming appends
+                session.add(new_fluid_record)
+                session.commit()
+
                 fluid.fluid_records.append(new_fluid_record)
                 patient.fluid_records.append(new_fluid_record)
 
-                session.add(new_fluid_record)
                 session.commit()
 
                 print("Successfully created fluid record")

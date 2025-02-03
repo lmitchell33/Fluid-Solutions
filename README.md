@@ -9,7 +9,7 @@ This is a desktop application using a custom trained machine learning model to e
 - **Containerization:** Docker
 - **Programming Languages:** Python, Bash
 - **Framework:** PyQT6
-- **Operating System:** Unix/Linux (Raspbian)
+- **Operating System:** Unix/Linux (Raspbian & Ubuntu)
 
 ## **Getting Started**
 
@@ -23,10 +23,16 @@ Follow these steps to setup and run the desktop application on your machine.
 git clone https://github.com/lmitchell33/Fluid-Solutions.git && cd Fluid-Solutions
 ```
 
-2. Install the requirements
+2. Run the setup script
 
 ```sh
-pip install -r requirements.txt
+chmod +x setup.sh && source setup.sh
+```
+
+3. Start the app (note, you must be in the app directory)
+
+```sh
+python3 app.py
 ```
 
 ## **Acknowledgements**

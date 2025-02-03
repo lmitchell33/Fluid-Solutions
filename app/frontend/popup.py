@@ -32,12 +32,6 @@ class PopupForm(QWidget):
         self.form_submitted.emit(selected_fluid, volume_given)
         self.close()
 
-    
-    def close_event(self, event):
-        '''Event to close the popup and set the visibility to False'''
-        self.deleteLater()
-        super().closeEvent(event)
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

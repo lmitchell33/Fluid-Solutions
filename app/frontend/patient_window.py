@@ -20,17 +20,20 @@ class PatientWindow(BaseWindow):
         self.search_patient.clicked.connect(self._search_patient)
 
     def _update_ui(self):
+        '''update the designated widjets when the current patient is changed'''
         if self.patient_state.current_patient is None:
             return
                 
         current_patient = self.patient_state.current_patient
 
+        # set the values of the widjets 
         self.mrn_value.setText(current_patient.patient_mrn)
         self.lastname_value.setText(current_patient.lastname)
         self.firstname_value.setText(current_patient.firstname)
         self.gender_dropdown.setCurrentText(current_patient.gender)
         self.dob_value.setDate(current_patient.dob)
-
+        self.weight_value.setText(current_patient.weight_kg or '')
+        self.height_value.setText(current_patient.height_cm or '')
 
 
     def _search_patient(self):
@@ -40,6 +43,11 @@ class PatientWindow(BaseWindow):
         # The other parameters would be useful if the mrn is not known
 
         mrn = self.mrn_value.text()
+
+        if not mrn:
+            self._handle_search_resposne(False)
+            return
+
         if patient := self._coordinator.get_or_create_patient(mrn):
             self.patient_state.current_patient = patient
             search_success = True
@@ -54,13 +62,13 @@ class PatientWindow(BaseWindow):
         if success:
             QMessageBox.information(
                 self, 
-                "Search Successful", 
+                "Search Successful!", 
                 f"Patient Found: {self.patient_state.current_patient.firstname} {self.patient_state.current_patient.lastname}"
             )
         else:
             QMessageBox.warning(
                 self, 
-                "Search Failed", 
+                "Search Failed!", 
                 "No patient found with the given MRN"
             )
 

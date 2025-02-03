@@ -22,8 +22,7 @@ class PatientState(QObject):
         get_current_patient() - returns the current patient
         set_current_patient(new_patient) - updates the current patient
     '''
-    # pyqt signal allows emits a signal to all functions connected to it, 
-    # allowing us to update speciifc values/fields in the connected windows
+    # NOTE: we dont need any arguments here
     patient_changed = pyqtSignal()
 
     # private class members, used to ensure threadsafe, singleton behavior

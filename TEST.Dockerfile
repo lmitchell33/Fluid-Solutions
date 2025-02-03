@@ -6,4 +6,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["/bin/bash", "pytest", "tests/", "--md", "report.md", "-v"]
+CMD ["pytest", "--md", "./test-reports/report.md", "-v"]
