@@ -1,11 +1,13 @@
 import sys
 
 from PyQt6.QtWidgets import QApplication, QMessageBox
-from PyQt6.QtCore import QTimer, QDateTime
+from PyQt6.QtCore import QTimer, QDateTime, pyqtSlot
 
 from frontend.base_window import BaseWindow
 from frontend.popup import PopupForm
+
 from backend.managers.fluid_manager import FluidManager
+from backend.managers.vitals_manager import VitalsManager
 
 # NOTE: Currently, the window is only showing the total flulid volume
 # given. If we want to specify which fluid was administered, then we are going
@@ -25,9 +27,12 @@ class VitalsWindow(BaseWindow):
         super().__init__("frontend/views/vitalsWindow.ui")
 
         self._fluid_manager = FluidManager()
+        self.vitals_manager = VitalsManager()
 
+        # used to better represent the open/close state of the popup and precent duplicates
         self.popup = None
 
+        self.vitals_manager.vitals_data.connect(self._update_vitals)
         self.popup_button.clicked.connect(self._open_popup)
         self._setup_datetime()
         
@@ -42,7 +47,7 @@ class VitalsWindow(BaseWindow):
 
     def _handle_popup_submission(self, fluid, volume):
         '''Handle the logic for adding a record and display a popup to the user on success or fail'''
-        result = self._fluid_manager.add_record(self.patient_state.current_patient, fluid, float(volume))
+        result = self._fluid_manager.add_record(self.patient_state.current_patient, fluid, volume)
         
         # display another popup for the user based on if the attemp was successful or not
         if result:
@@ -91,6 +96,20 @@ class VitalsWindow(BaseWindow):
         self.name_value.setText(f"{current_patient.firstname} {current_patient.lastname}")
         self.mrn_value.setText(current_patient.patient_mrn)
         self.total_fluid_value.setText(str(self._fluid_manager.get_total_fluid_volume(current_patient) or ''))
+
+
+    # I used a slot bc it supposedly increases memory efficieny and performance
+    @pyqtSlot(dict)
+    def _update_vitals(self, vitals_data):
+        '''Update the vitals being shown on the page'''
+        self.heart_rate_value.setText(str(vitals_data.get("heart_rate_value", "")))
+        self.map_value.setText(str(vitals_data.get("map_value", "")))
+        self.cvp_value.setText(str(vitals_data.get("cvp_value", "")))
+        self.ppv_value.setText(str(vitals_data.get("ppv_value", "")))
+        self.lactate_value.setText(str(vitals_data.get("lactate_value", "")))
+        # self.blood_pressure_value.setText(f"{vitals_data.get('systolic_bp', '')} / {vitals_data.get('diastolic_bp', '')}")
+        self.blood_pressure_value.setText(f"{vitals_data.get('blood_pressure_value', '')}")
+        self.spo2_value.setText(str(vitals_data.get("spo2_value", "")))
 
 
 if __name__ == "__main__":
