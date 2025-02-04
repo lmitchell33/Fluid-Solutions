@@ -29,6 +29,9 @@ class FluidManager:
         if not patient:
             return False
         
+        if amount_ml == 0.0:
+            return False
+        
         try:
             with self._db.session_context() as session:
                 fluid = session.query(Fluid).filter_by(name=fluid_name).first()
