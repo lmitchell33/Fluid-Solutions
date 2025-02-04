@@ -6,7 +6,7 @@ from PyQt6 import uic
 from backend.managers.fluid_manager import FluidManager
 
 class PopupForm(QWidget):
-    form_submitted = pyqtSignal(str, str)
+    form_submitted = pyqtSignal(str, float)
 
     def __init__(self):
         super().__init__()
@@ -28,7 +28,7 @@ class PopupForm(QWidget):
     def submit_form(self):
         '''Emits the current data in the popup back to the vitals window and closes the popup'''
         selected_fluid = self.fluids_dropdown.currentText()
-        volume_given = self.volume_given.text()
+        volume_given = float(self.volume_given.text() or 0.0)
         self.form_submitted.emit(selected_fluid, volume_given)
         self.close()
 

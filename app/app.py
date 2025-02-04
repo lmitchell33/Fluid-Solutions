@@ -13,6 +13,7 @@ from frontend.patient_window import PatientWindow
 from frontend.vitals_window import VitalsWindow
 
 from backend.coordinator import Coordinator
+from backend.managers.vitals_manager import VitalsManager
 
 def load_stylesheet(stylesheet):
     '''util function to load in a QSS stylesheet to apply to the app as a whole
@@ -102,9 +103,12 @@ if __name__ == "__main__":
     args = parse_arguments()
 
     db = DatabaseManager()
+    vm = VitalsManager()
 
     if args.initdb:
         db.initdb()
     else:
+        vm.start_server()
         main()
+        vm.stop_server()
         db.close_session()

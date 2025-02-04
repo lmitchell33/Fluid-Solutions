@@ -1,4 +1,6 @@
-from PyQt6.QtWidgets import QStackedWidget
+from PyQt6.QtWidgets import QStackedWidget, QMessageBox
+
+from frontend.vitals_window import VitalsWindow
 
 class Router(QStackedWidget):
     """
@@ -69,5 +71,14 @@ class Router(QStackedWidget):
         Returns:
             None
         ''' 
+        if isinstance(window, VitalsWindow):
+            if not window.patient_state.current_patient:
+                QMessageBox.warning(
+                    self, 
+                    "Error",
+                    "Cannot switch to vitals window without chosing a patient"
+                )
+                return
+            
         self.setCurrentWidget(window)
         window.mrn_value.setFocus() #hackey fix so the datetime isnt highlighted when screens change
