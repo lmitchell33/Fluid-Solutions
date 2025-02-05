@@ -168,3 +168,10 @@ data.db
 
 # Public and Private keys
 *.pem
+
+bin/
+include/
+lib/
+lib64/
+lib64
+pyvenv.cfg

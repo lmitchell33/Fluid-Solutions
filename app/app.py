@@ -15,6 +15,7 @@ from frontend.vitals_window import VitalsWindow
 from backend.coordinator import Coordinator
 from backend.managers.vitals_manager import VitalsManager
 
+
 def load_stylesheet(stylesheet):
     '''util function to load in a QSS stylesheet to apply to the app as a whole
     This will apply to ALL windows in the app unless a stylesheet is applied directly to the other window

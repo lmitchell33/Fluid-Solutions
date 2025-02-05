@@ -1,9 +1,11 @@
 from contextlib import contextmanager
 from threading import Lock
+from datetime import datetime
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from database_models import Fluid, Base
+from database_models import Fluid, Base, Patient
 
 class DatabaseManager:
     '''Singleton class for managing database connections and sessions.
@@ -88,6 +90,9 @@ class DatabaseManager:
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         
+        self._session.add(Patient(firstname="Jackson", lastname="Jewell", patient_mrn="1", gender="female", weight_kg=500.0, height_cm=100.0, dob=datetime.now().date()))
+        self._session.commit()
+
         self._populate_fluid_names("./utils/fluid_names.txt")
 
         # Add a list of Fluids to the database

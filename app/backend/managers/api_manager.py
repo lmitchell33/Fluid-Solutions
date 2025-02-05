@@ -230,6 +230,8 @@ if __name__ == "__main__":
     epic = EpicAPIManager()
     # epic.search_patient(given="Lucas", family="Mitchell")
     # epic.search_patient(given="theodore", family="mychart", birthdate="1948-07-07")
-    print(epic.get_patient("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B"))
+    # print(epic.get_patient("T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B"))
     # print(epic.get_vitals("envjcVAhuFtXhXNFIg1Dr-2-8diVcq3BOMcZpbjYOC7JAJ1pPzK0v1075T4XMHL.83"))
-    # epic.search_patient(_id="T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B")
+    # print(epic.search_patient(_id="T81lum-5p6QvDR7l6hv7lfE52bAbA2ylWBnv9CZEzNb0B"))
+    # e63wRTbPfr1p8UW81d8Seiw3
+    print(epic.search_patient(_id="e63wRTbPfr1p8UW81d8Seiw3"))

@@ -27,13 +27,13 @@ class PatientWindow(BaseWindow):
         current_patient = self.patient_state.current_patient
 
         # set the values of the widjets 
-        self.mrn_value.setText(current_patient.patient_mrn)
-        self.lastname_value.setText(current_patient.lastname)
-        self.firstname_value.setText(current_patient.firstname)
-        self.gender_dropdown.setCurrentText(current_patient.gender)
-        self.dob_value.setDate(current_patient.dob)
-        self.weight_value.setText(current_patient.weight_kg or '')
-        self.height_value.setText(current_patient.height_cm or '')
+        self.mrn_value.setText(current_patient.patient_mrn or '')
+        self.lastname_value.setText(current_patient.lastname or '')
+        self.firstname_value.setText(current_patient.firstname or '')
+        self.gender_dropdown.setCurrentText(current_patient.gender or '')
+        self.dob_value.setDate(current_patient.dob or '')
+        self.weight_value.setText(str(current_patient.weight_kg) or 0.0)
+        self.height_value.setText(str(current_patient.height_cm) or 0.0)
 
 
     def _search_patient(self):
