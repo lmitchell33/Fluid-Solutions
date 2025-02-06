@@ -90,9 +90,14 @@ class VitalsManager(QObject):
             # parse/preprocess the data and emit it to the frontend
             # TODO: Implement the emitting part in the frontend
             
-            print(data)
-            # if data:
+            output_data = self._process_data(data)
+            # if output_data:
             #     self.vitals_data.emit(data)
+
+
+    def _process_data(self, data):
+        '''Processes incoming pyasn1 data and converts it to a dict'''
+        pass
 
 
     def stop_server(self):

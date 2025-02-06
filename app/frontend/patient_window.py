@@ -19,6 +19,7 @@ class PatientWindow(BaseWindow):
     
         self.search_patient.clicked.connect(self._search_patient)
 
+
     def _update_ui(self):
         '''update the designated widjets when the current patient is changed'''
         if self.patient_state.current_patient is None:
