@@ -2,6 +2,9 @@ import socket
 from threading import Thread, Lock
 
 from PyQt6.QtCore import pyqtSignal, QObject
+from pyasn1.codec.ber import decoder
+
+from vitals_data_models import VitalSigns
 
 class VitalsManager(QObject):
     '''
@@ -95,9 +98,14 @@ class VitalsManager(QObject):
             #     self.vitals_data.emit(data)
 
 
-    def _process_data(self, data):
+    def _process_data(self, encoded_data):
         '''Processes incoming pyasn1 data and converts it to a dict'''
-        pass
+        decoded_data, _ = decoder.decode(encoded_data, asn1Spec=VitalSigns)
+
+        data = {}
+        # TODO: process the data and put it into a dictionary for emissions
+
+        return data
 
 
     def stop_server(self):

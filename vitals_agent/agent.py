@@ -1,25 +1,9 @@
 import socket
 import time
 import random
-from pyasn1.type import univ, namedtype
-import datetime 
+from datetime import datetime
 
-# ASN.1 Models for the data being sent
-class BloodPressure(univ.Sequence):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('systolic', univ.Real()),
-        namedtype.NamedType('diastolic', univ.Real())
-    )
-
-class VitalSigns(univ.Sequence):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('timestamp', univ.OctetString()),
-        namedtype.NamedType('heartRate', univ.Real()),
-        namedtype.NamedType('map', univ.Real()),
-        namedtype.NamedType('ppv', univ.Real()),
-        namedtype.NamedType('spo2', univ.Real()),
-        namedtype.NamedType('bp', BloodPressure())
-    )
+from vitals_data_models import VitalSigns, BloodPressure, NumericObservation
 
 def generate_mock_vitals():
     '''Generate mock vitals using whatever information we want'''
@@ -29,12 +13,22 @@ def generate_mock_vitals():
     return {"heart_rate":float(random.randint(0,10)), "map":float(random.randint(0,10)), 
             "cvp":float(random.randint(0,10)), "ppv":float(random.randint(0,10)), 
             "bp_sys":float(random.randint(0,10)), "bp_dias":float(random.randint(0,10)),
-            "spo2":float(random.randint(0,10))}
+            "spo2":float(random.randint(0,10)), "timestamp":f"{datetime.now}"}
 
 
 def encode_vitals(data):
+    mdc_codes = {
+        'timestamp' : f'{datetime.now()}',
+        'heartRate' : '',
+        'meanArterialPressure' : '',
+        'pulsePressureVar' : '',
+        'spo2' : '',
+        'bloodPressure' : ''
+    }
+
+    # TODO: write this more algorithmicly
     vitals = VitalSigns()
-    vitals.setComponentByName('timestamp', str(datetime.datetime.now()).encode())
+    vitals.setComponentByName('timestamp', data.get('timestamp'))
     vitals.setComponentByName('heartRate', data.get('heart_rate'))
     vitals.setComponentByName('map', data.get('map'))
     vitals.setComponentByName('ppv', data.get('ppv'))
