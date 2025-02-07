@@ -1,25 +1,20 @@
-from pyasn1.type import univ, namedtype
+from pyasn1.type import univ, namedtype, char
 
 class NumericObservation(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('mdcCode', univ.ObjectIdentifier()),
-        namedtype.NamedType('unitCode', univ.ObjectIdentifier()),
-        namedtype.NamedType('value', univ.Integer())
-    )
-
-class BloodPressure(univ.Sequence):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('systolic', NumericObservation),
-        namedtype.NamedType('diastolic', NumericObservation)
+        namedtype.NamedType('mdcCode', univ.Integer()),  
+        namedtype.NamedType('unitCode', univ.Integer()),
+        namedtype.NamedType('value', univ.Integer())  
     )
 
 class VitalSigns(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('timestamp', univ.OctetString()),
-        namedtype.NamedType('heartRate', NumericObservation),
-        namedtype.NamedType('meanArterialPressure', NumericObservation),
-        namedtype.NamedType('pulsePressureVar', NumericObservation),
-        namedtype.NamedType('spo2', NumericObservation),
-        namedtype.NamedType('bloodPressure', BloodPressure())
+        namedtype.NamedType('timestamp', char.UTF8String()),
+        namedtype.NamedType('heartRate', NumericObservation()),
+        namedtype.NamedType('meanArterialPressure', NumericObservation()),
+        namedtype.NamedType('pulsePressureVar', NumericObservation()),
+        namedtype.NamedType('spo2', NumericObservation()),
+        namedtype.NamedType('cvp', NumericObservation()),
+        namedtype.NamedType('systolicBP', NumericObservation()),
+        namedtype.NamedType('diastolicBP', NumericObservation()),
     )
-

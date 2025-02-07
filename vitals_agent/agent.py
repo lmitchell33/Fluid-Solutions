@@ -3,44 +3,62 @@ import time
 import random
 from datetime import datetime
 
-from vitals_data_models import VitalSigns, BloodPressure, NumericObservation
+from pyasn1.codec.der.encoder import encode
+
+from vitals_data_models import VitalSigns, NumericObservation
+
 
 def generate_mock_vitals():
     '''Generate mock vitals using whatever information we want'''
-    # im thinking of creating a text file or csv with data we want to send then
-    # randomly picking a row/set from that data and sending it as vitals info 
 
-    return {"heart_rate":float(random.randint(0,10)), "map":float(random.randint(0,10)), 
-            "cvp":float(random.randint(0,10)), "ppv":float(random.randint(0,10)), 
-            "bp_sys":float(random.randint(0,10)), "bp_dias":float(random.randint(0,10)),
-            "spo2":float(random.randint(0,10)), "timestamp":f"{datetime.now}"}
+    return {
+        "heartRate":random.randint(0,10), 
+        "meanArterialPressure":random.randint(0,10), 
+        "cvp":random.randint(0,10), 
+        "pulsePressureVar":random.randint(0,10), 
+        "systolicBP":f'{random.randint(0,10)}', 
+        "diastolicBP" : f'{random.randint(0,10)}',
+        "spo2":random.randint(0,10), 
+        "timestamp":f"{datetime.now().isoformat()}"
+    }
 
 
 def encode_vitals(data):
+
+    # These mdc_codes could be wrong, but im not paying for the document to find out
     mdc_codes = {
-        'timestamp' : f'{datetime.now()}',
-        'heartRate' : '',
-        'meanArterialPressure' : '',
-        'pulsePressureVar' : '',
-        'spo2' : '',
-        'bloodPressure' : ''
+        'timestamp': {'mdcCode': None, 'unitCode': None},  # No MDC code for timestamp
+        'heartRate': {'mdcCode': 18402, 'unitCode': 264864},  # MDC_PULS_RATE (bpm)
+        'meanArterialPressure': {'mdcCode': 18949, 'unitCode': 266016},  # MDC_PRESS_BLD_ART_MEAN (mmHg)
+        'pulsePressureVar': {'mdcCode': 18951, 'unitCode': 266016},  # MDC_PRESS_BLD_ART_PULS (mmHg)
+        'spo2': {'mdcCode': 150456, 'unitCode': 262144},  # MDC_PULS_OXIM_SAT_O2 (percentage)
+        'cvp': {'mdcCode': 18945, 'unitCode': 266016},  # MDC_PRESS_CVP (mmHg)
+        'systolicBP': {'mdcCode': 18947, 'unitCode': 266016},  # MDC_PRESS_BLD_ART_SYS (mmHg)
+        'diastolicBP': {'mdcCode': 18948, 'unitCode': 266016}  # MDC_PRESS_BLD_ART_DIA (mmHg)
     }
 
-    # TODO: write this more algorithmicly
-    vitals = VitalSigns()
-    vitals.setComponentByName('timestamp', data.get('timestamp'))
-    vitals.setComponentByName('heartRate', data.get('heart_rate'))
-    vitals.setComponentByName('map', data.get('map'))
-    vitals.setComponentByName('ppv', data.get('ppv'))
-    vitals.setComponentByName('spo2', data.get('spo2'))
 
-    bp = BloodPressure()
-    bp.setComponentByName('systolic', data.get('bp_sys'))
-    bp.setComponentByName('diastolic', data.get('bp_dias'))
-    vitals.setComponentByName('bp', bp)
+    raw_data = VitalSigns()
+
+    for key, value in data.items():
+        if key == 'timestamp':
+            raw_data.setComponentByName(key, value)
+            continue
+
+        observation_component = NumericObservation()
+
+        # add the mdc and unit codes to the NumericOvservation
+        for field, field_value in mdc_codes.get(key).items():
+            observation_component.setComponentByName(f"{field}", field_value)
+
+        # add the value to the NumericObservation
+        observation_component.setComponentByName('value', f"{value}")
+        
+        # add the NumericObservation to the final message to be transmitted
+        raw_data.setComponentByName(key, observation_component)
     
-    encoded_data = vitals.prettyPrint()
-    return encoded_data.encode()
+    # encode and return the vitals data
+    return encode(raw_data)
     
 
 def send_vitals(): 

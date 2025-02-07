@@ -2,7 +2,7 @@ import socket
 from threading import Thread, Lock
 
 from PyQt6.QtCore import pyqtSignal, QObject
-from pyasn1.codec.ber import decoder
+from pyasn1.codec.ber.decoder import decode
 
 from vitals_data_models import VitalSigns
 
@@ -13,15 +13,8 @@ class VitalsManager(QObject):
 
     The data this class receives and processes may not be real, however it will
     mimic IEEE 11073 Protocol (Medical Device Communication) as it is the 
-    international standard for all medical device communication.
-    
-    This protocol utilizes the Agent-Manager Model where multiple smaller agents,
-    in this case the medical device(s), communication with a centralized manager.
-    In this model, the agent sends status updates to the manager. This communication
-    can be either "manager initiated" (the manager actively contacts the agent) 
-    or "agent initiated" (the agent proactively reaches out to the manager).
-    This class represents the 'manager' which will collect data from agent(s) who
-    send information pertaining to vitals.
+    international standard for all medical device communication. This class 
+    very loosly follows this standard, implementing asn.1 modeled communication.
     '''
     vitals_data = pyqtSignal(dict)
 
@@ -75,35 +68,40 @@ class VitalsManager(QObject):
             # Handle all errors gracefully
             except ConnectionError:
                 print("Connection error with client")
+                conn.close()
             except Exception as e:
-                print(f"Error while handling client connectionL: {e}")
-
+                print(f"Error while handling client connection: {e}")
+                conn.close()
             finally:
                 print("Connection closed")
+                conn.close()
 
     
     def _handle_clients(self, connection):
         '''Hanldes a client connection'''
         while self._running:
             # receive data from the medical device
-            data = connection.recv(1024).decode()
+            data = connection.recv(1024)
             if not data:
                 break
 
-            # parse/preprocess the data and emit it to the frontend
-            # TODO: Implement the emitting part in the frontend
-            
+            # convert the data to a dict, ensure it exists, then emit to the frontend
             output_data = self._process_data(data)
-            # if output_data:
-            #     self.vitals_data.emit(data)
+            if output_data:
+                self.vitals_data.emit(output_data)
 
 
     def _process_data(self, encoded_data):
-        '''Processes incoming pyasn1 data and converts it to a dict'''
-        decoded_data, _ = decoder.decode(encoded_data, asn1Spec=VitalSigns)
+        '''Processes incoming pyasn1 data and converts it to a dict for further processing'''
+        decoded_data, _ = decode(encoded_data, VitalSigns())
+        data = {} 
 
-        data = {}
-        # TODO: process the data and put it into a dictionary for emissions
+        # loop throuhg the data sent (pyasn1 bytes) and place it into a dict for further processing
+        for field in decoded_data:
+            if field == 'timestamp':
+                data['timestamp'] = str(decoded_data[field])
+            else:
+                data[field] = str(decoded_data[field]['value'])
 
         return data
 
@@ -112,6 +110,4 @@ class VitalsManager(QObject):
         '''Stops the server'''
         # Stop everything
         self._running = False
-        if self.server_socket:
-            self.server_socket.close()
-
+        self.server_socket.close()

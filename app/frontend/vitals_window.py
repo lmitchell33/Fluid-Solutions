@@ -102,14 +102,13 @@ class VitalsWindow(BaseWindow):
     @pyqtSlot(dict)
     def _update_vitals(self, vitals_data):
         '''Update the vitals being shown on the page'''
-        self.heart_rate_value.setText(str(vitals_data.get("heart_rate_value", "")))
-        self.map_value.setText(str(vitals_data.get("map_value", "")))
-        self.cvp_value.setText(str(vitals_data.get("cvp_value", "")))
-        self.ppv_value.setText(str(vitals_data.get("ppv_value", "")))
+        self.heart_rate_value.setText(str(vitals_data.get("heartRate", "")))
+        self.map_value.setText(str(vitals_data.get("meanArterialPressure", "")))
+        self.cvp_value.setText(str(vitals_data.get("cvp", "")))
+        self.ppv_value.setText(str(vitals_data.get("pulsePressureVar", "")))
         self.lactate_value.setText(str(vitals_data.get("lactate_value", "")))
-        # self.blood_pressure_value.setText(f"{vitals_data.get('systolic_bp', '')} / {vitals_data.get('diastolic_bp', '')}")
-        self.blood_pressure_value.setText(f"{vitals_data.get('blood_pressure_value', '')}")
-        self.spo2_value.setText(str(vitals_data.get("spo2_value", "")))
+        self.blood_pressure_value.setText(f"{vitals_data.get('systolicBP', '')} / {vitals_data.get('diastolicBP', '')}")
+        self.spo2_value.setText(str(vitals_data.get("spo2", "")))
 
 
 if __name__ == "__main__":
