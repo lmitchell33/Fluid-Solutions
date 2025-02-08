@@ -9,8 +9,5 @@
 pip install -r requirements.txt
 
 # initalize the database 
-pushd app/
-python3 app.py --initdb
-popd
-
 cd app/
+python3 app.py --initdb

@@ -1,5 +1,6 @@
 import socket
 from threading import Thread, Lock
+from concurrent.futures import ThreadPoolExecutor
 
 from PyQt6.QtCore import pyqtSignal, QObject
 from pyasn1.codec.ber.decoder import decode
@@ -31,7 +32,7 @@ class VitalsManager(QObject):
         return cls._instance
 
 
-    def __init__(self, host="0.0.0.0", port=8080):
+    def __init__(self, host="0.0.0.0", port=8080, max_workers=5):
         if self._initalized:
             return
         
@@ -42,11 +43,15 @@ class VitalsManager(QObject):
         self.server_socket = None
         self._running = False
 
+        # allow up to 5 threads/connecitons simultaneously
+        self.executor = ThreadPoolExecutor(max_workers=max_workers)
+
 
     def start_server(self):
         '''Starts the server to listen for medical devices'''
         # Start the server and listen for medical devices on the socket (stream)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # this allows quick rebinding
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
         
@@ -60,54 +65,74 @@ class VitalsManager(QObject):
     def _listen(self):
         '''Listen for incoming clients'''
         while self._running:
-            conn, addr = self.server_socket.accept()
-
             try:
+                self.server_socket.settimeout(2) # avoid blocking
+                conn, addr = self.server_socket.accept()
                 self._handle_clients(conn)
             
             # Handle all errors gracefully
-            except ConnectionError:
-                print("Connection error with client")
-                conn.close()
+            except socket.timeout:
+                continue
             except Exception as e:
                 print(f"Error while handling client connection: {e}")
-                conn.close()
-            finally:
-                print("Connection closed")
-                conn.close()
 
     
     def _handle_clients(self, connection):
         '''Hanldes a client connection'''
-        while self._running:
-            # receive data from the medical device
-            data = connection.recv(1024)
-            if not data:
-                break
+        connection.settimeout(5) # prevent hanging connections
+        
+        try:
+            while self._running:
+                # receive data from the medical device
+                data = connection.recv(1024)
+                if not data:
+                    break
 
-            # convert the data to a dict, ensure it exists, then emit to the frontend
-            output_data = self._process_data(data)
-            if output_data:
-                self.vitals_data.emit(output_data)
+                # convert the data to a dict, ensure it exists, then emit to the frontend
+                output_data = self._process_data(data)
+                if output_data:
+                    self.vitals_data.emit(output_data)
+        except (socket.timeout, ConnectionError):
+            print("Connection error")
+        finally:
+            print("Closing connection")
+            connection.close()
 
 
     def _process_data(self, encoded_data):
         '''Processes incoming pyasn1 data and converts it to a dict for further processing'''
-        decoded_data, _ = decode(encoded_data, VitalSigns())
-        data = {} 
+        try:
+            decoded_data, _ = decode(encoded_data, VitalSigns())
+            data = {} 
 
-        # loop throuhg the data sent (pyasn1 bytes) and place it into a dict for further processing
-        for field in decoded_data:
-            if field == 'timestamp':
-                data['timestamp'] = str(decoded_data[field])
-            else:
-                data[field] = str(decoded_data[field]['value'])
+            # loop throuhg the data sent (pyasn1 bytes) and place it into a dict for further processing
+            for field in decoded_data:
+                if field == 'timestamp':
+                    data['timestamp'] = str(decoded_data[field])
+                else:
+                    data[field] = str(decoded_data[field]['value'])
 
-        return data
+            return data
+        except Exception as e:
+            print(f"Error processing data: {e}")
+            return None
 
 
     def stop_server(self):
         '''Stops the server'''
         # Stop everything
-        self._running = False
-        self.server_socket.close()
+        if self._running:
+            self._running = False
+            print("Stopping the socket server for the vitals manager")
+
+            try:
+                # stops the socket from sending and receing data immediately
+                self.server_socket.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                # socket is already closed
+                pass
+
+            # closes the socket
+            self.server_socket.close()
+            self.executor.shutdown(wait=False)
+            print("Stopped vitals manager")
