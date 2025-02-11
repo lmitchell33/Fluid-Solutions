@@ -1,8 +1,12 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMessageBox
+
+from PyQt6.QtWidgets import QApplication, QMessageBox, QCompleter, QListView
+from PyQt6.QtCore import QStringListModel, Qt
 
 from frontend.base_window import BaseWindow
+
 from backend.coordinator import Coordinator
+from backend.managers.patient_manager import PatientManager
 
 class PatientWindow(BaseWindow):
     '''
@@ -16,8 +20,10 @@ class PatientWindow(BaseWindow):
         '''Constructor for the PatientWindow class, loads the vitals .ui file'''
         super().__init__("frontend/views/patientWindow.ui")
         self._coordinator = Coordinator()
+        self._patient_manager = PatientManager()
     
         self.search_patient.clicked.connect(self._search_patient)
+        self._setup_autocomplete()
 
 
     def _update_ui(self):
@@ -72,6 +78,22 @@ class PatientWindow(BaseWindow):
                 "Search Failed!", 
                 "No patient found with the given MRN"
             )
+
+
+    def _setup_autocomplete(self):
+        completer = QCompleter()
+        
+        patients = self._patient_manager.get_all_patients()
+        options = [f"{patient.firstname} {patient.lastname} - {patient.patient_mrn}" for patient in patients]
+        
+        completer.setModel(QStringListModel(options))
+        completer.setFilterMode(Qt.MatchFlag.MatchContains)
+        completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+        completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive) # Case insensitive matching
+        completer.setPopup(QListView())
+        completer.setMaxVisibleItems(5) 
+
+        self.mrn_value.setCompleter(completer)
 
 
 if __name__ == "__main__":

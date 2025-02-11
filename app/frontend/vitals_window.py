@@ -27,12 +27,12 @@ class VitalsWindow(BaseWindow):
         super().__init__("frontend/views/vitalsWindow.ui")
 
         self._fluid_manager = FluidManager()
-        self.vitals_manager = VitalsManager()
+        self._vitals_manager = VitalsManager()
 
         # used to better represent the open/close state of the popup and precent duplicates
         self.popup = None
 
-        self.vitals_manager.vitals_data.connect(self._update_vitals)
+        self._vitals_manager.vitals_data.connect(self._update_vitals)
         self.popup_button.clicked.connect(self._open_popup)
         self._setup_datetime()
         
