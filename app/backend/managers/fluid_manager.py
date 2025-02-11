@@ -33,25 +33,25 @@ class FluidManager:
             return False
         
         try:
-            with self._db.session_context() as session:
-                fluid = session.query(Fluid).filter_by(name=fluid_name).first()
+            with self._db.session_context() as db:
+                fluid = db.query(Fluid).filter_by(name=fluid_name).first()
                 
                 # if the fluid is not found, create one and add it to the database
                 if not fluid:
                     fluid = Fluid(name=fluid_name)
-                    session.add(fluid)
+                    db.add(fluid)
 
                 # create a new fluid record and assign it
                 new_fluid_record = FluidRecord(fluid_time_given=datetime.now(), amount_ml=amount_ml, fluid=fluid, patient=patient)
                 
                 # have to commit the new fluid record before preforming appends
-                session.add(new_fluid_record)
-                session.commit()
+                db.add(new_fluid_record)
+                db.commit()
 
                 fluid.fluid_records.append(new_fluid_record)
                 patient.fluid_records.append(new_fluid_record)
 
-                session.commit()
+                db.commit()
 
                 print("Successfully created fluid record")
                 return True
@@ -74,7 +74,7 @@ class FluidManager:
             sum {int} -- total fluid volume (mL) administered to the patient    
         '''
         try:
-            with self._db.session_context() as session:
+            with self._db.session_context() as db:
                 records = patient.fluid_records
             
                 if fluid:
@@ -92,5 +92,5 @@ class FluidManager:
         Returns: 
             names {List[str]} -- names of all fluids stored in the db
         '''
-        with self._db.session_context() as session:
-            return [fluid.name for fluid in session.query(Fluid).all()]
+        with self._db.session_context() as db:
+            return [fluid.name for fluid in db.query(Fluid).all()]

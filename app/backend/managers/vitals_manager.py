@@ -100,7 +100,14 @@ class VitalsManager(QObject):
 
 
     def _process_data(self, encoded_data):
-        '''Processes incoming pyasn1 data and converts it to a dict for further processing'''
+        '''Processes incoming pyasn1 data and converts it to a dict for further processing
+        
+        Args:
+            encoded_data {bytes} -- pyasn1 encoded data
+            
+        Return:
+            data {dict} -- the data decoded and wrapped into a dict
+        '''
         try:
             decoded_data, _ = decode(encoded_data, VitalSigns())
             data = {} 

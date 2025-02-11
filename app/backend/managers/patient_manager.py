@@ -30,7 +30,7 @@ class PatientManager:
         
         try:
             # create a mew patient and populate its attributes with the data from epic  
-            with self._db.session_context() as session:
+            with self._db.session_context() as db:
                 new_patient = Patient()
                 
                 # add attributes to the patient instance
@@ -43,8 +43,8 @@ class PatientManager:
 
                         setattr(new_patient, epic_field_mapping[key], value)
 
-                session.add(new_patient)
-                session.commit()
+                db.add(new_patient)
+                db.commit()
 
             return new_patient
         
@@ -55,10 +55,10 @@ class PatientManager:
     
     def get_patient_by_mrn(self, mrn):
         '''Fetches the patient instance from the database based on the inputted MRN'''
-        with self._db.session_context() as session:
+        with self._db.session_context() as db:
             
             # if the patient instance from the db exists, put it into the patient variable and return 
-            if (patient := session.query(Patient).filter_by(patient_mrn=mrn).first()):
+            if (patient := db.query(Patient).filter_by(patient_mrn=mrn).first()):
                 return patient
             
             return None
@@ -66,26 +66,26 @@ class PatientManager:
 
     def get_all_patients(self):
         '''Returns a list of patient instances'''
-        with self._db.session_context() as session:
-            return session.query(Patient).all()
+        with self._db.session_context() as db:
+            return db.query(Patient).all()
 
 
     def get_all_patient_names(self):
         '''Returns the list of names of all patients currently stored in the database'''
-        with self._db.session_context() as session:
-            return [f"{patient.firstname or ''} {patient.lastname or ''}" for patient in session.query(Patient).all()]
+        with self._db.session_context() as db:
+            return [f"{patient.firstname or ''} {patient.lastname or ''}" for patient in db.query(Patient).all()]
 
 
     def delete_patient(self, patient):
         '''Delete the designated patient(s)'''
-        with self._db.session_context() as session:
+        with self._db.session_context() as db:
             if isinstance(patient, list):
-                session.query(Patient).filter(Patient.id.in_([p.id for p in patient])).delete(synchronize_session=False)
+                db.query(Patient).filter(Patient.id.in_([p.id for p in patient])).delete(synchronize_session=False)
             
             else:
-                session.delete(patient)
+                db.delete(patient)
 
-            session.commit()
+            db.commit()
 
 
 if __name__ == "__main__":

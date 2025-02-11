@@ -45,7 +45,7 @@ def remove_inactive_patients():
     return
 
 
-def main():
+def run():
     '''Initalizes the router and start the PyQT application'''
 
     app = QApplication(sys.argv)
@@ -110,6 +110,6 @@ if __name__ == "__main__":
         db.initdb()
     else:
         vm.start_server()
-        main()
+        run()
         vm.stop_server()
         db.close_session()
