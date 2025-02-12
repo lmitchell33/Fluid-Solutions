@@ -96,3 +96,20 @@ QScrollBar::handle:vertical {
     border-radius: 4px;
     min-height: 20px;
 }
+
+QAbstractItemView {
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    border: 1px solid #aaa;
+    padding: 5px;
+}
+
+QAbstractItemView::item {
+    padding: 10px;
+}
+
+QAbstractItemView::item:selected {
+    background-color: #0078D7;
+    color: white;
+}
