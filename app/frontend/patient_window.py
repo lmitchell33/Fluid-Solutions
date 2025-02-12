@@ -85,7 +85,7 @@ class PatientWindow(BaseWindow):
         patients = self._patient_manager.get_all_patients()
         options = [f"{patient.firstname} {patient.lastname} - {patient.patient_mrn}" for patient in patients]
 
-        completer = AutoComplete(patients, options, self.mrn_value)
+        completer = AutoComplete(patients, options)
         completer.setModel(QStringListModel(options))
         self.mrn_value.setCompleter(completer)
 

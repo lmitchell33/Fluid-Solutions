@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QCompleter, QListView
 from PyQt6.QtCore import Qt
 
 class AutoComplete(QCompleter):
-    def __init__(self, patients, options, parent=None):
+    def __init__(self, patients, options):
         super().__init__()
     
         self.setFilterMode(Qt.MatchFlag.MatchContains)
