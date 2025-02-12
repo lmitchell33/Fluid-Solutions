@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QApplication, QMessageBox, QCompleter, QListView
 from PyQt6.QtCore import QStringListModel, Qt
 
 from frontend.base_window import BaseWindow
+from frontend.utils.autocomplete import AutoComplete
 
 from backend.coordinator import Coordinator
 from backend.managers.patient_manager import PatientManager
@@ -81,18 +82,11 @@ class PatientWindow(BaseWindow):
 
 
     def _setup_autocomplete(self):
-        completer = QCompleter()
-        
         patients = self._patient_manager.get_all_patients()
         options = [f"{patient.firstname} {patient.lastname} - {patient.patient_mrn}" for patient in patients]
-        
-        completer.setModel(QStringListModel(options))
-        completer.setFilterMode(Qt.MatchFlag.MatchContains)
-        completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
-        completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive) # Case insensitive matching
-        completer.setPopup(QListView())
-        completer.setMaxVisibleItems(5) 
 
+        completer = AutoComplete(patients, options, self.mrn_value)
+        completer.setModel(QStringListModel(options))
         self.mrn_value.setCompleter(completer)
 
 

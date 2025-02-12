@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6.QtCore import QTimer, QDateTime, pyqtSlot
 
 from frontend.base_window import BaseWindow
-from frontend.popup import PopupForm
+from frontend.utils.popup import PopupForm
 
 from backend.managers.fluid_manager import FluidManager
 from backend.managers.vitals_manager import VitalsManager
