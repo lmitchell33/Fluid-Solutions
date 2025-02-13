@@ -12,14 +12,13 @@ def generate_mock_vitals():
     '''Generate mock vitals using whatever information we want'''
 
     return {
-        "heartRate":random.randint(0,10), 
-        "meanArterialPressure":random.randint(0,10), 
-        "cvp":random.randint(0,10), 
-        "pulsePressureVar":random.randint(0,10), 
-        "systolicBP":f'{random.randint(0,10)}', 
-        "diastolicBP" : f'{random.randint(0,10)}',
-        "spo2":random.randint(0,10), 
-        "timestamp":f"{datetime.now().isoformat()}"
+        "heartRate" : round(random.uniform(60, 100)), 
+        "meanArterialPressure" : round(random.uniform(70, 105)), 
+        "cvp" : round(random.uniform(5, 10)), 
+        "systolicBP" : round(random.uniform(90, 130)), 
+        "diastolicBP" : round(random.uniform(60, 90)),
+        "spo2" : round(random.uniform(95, 100)), 
+        "timestamp" : f"{datetime.now().isoformat()}"
     }
 
 
@@ -30,7 +29,6 @@ def encode_vitals(data):
         'timestamp': {'mdcCode': None, 'unitCode': None},  # No MDC code for timestamp
         'heartRate': {'mdcCode': 18402, 'unitCode': 264864},  # MDC_PULS_RATE (bpm)
         'meanArterialPressure': {'mdcCode': 18949, 'unitCode': 266016},  # MDC_PRESS_BLD_ART_MEAN (mmHg)
-        'pulsePressureVar': {'mdcCode': 18951, 'unitCode': 266016},  # MDC_PRESS_BLD_ART_PULS (mmHg)
         'spo2': {'mdcCode': 150456, 'unitCode': 262144},  # MDC_PULS_OXIM_SAT_O2 (percentage)
         'cvp': {'mdcCode': 18945, 'unitCode': 266016},  # MDC_PRESS_CVP (mmHg)
         'systolicBP': {'mdcCode': 18947, 'unitCode': 266016},  # MDC_PRESS_BLD_ART_SYS (mmHg)

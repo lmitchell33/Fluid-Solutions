@@ -32,6 +32,9 @@ class VitalsWindow(BaseWindow):
         # used to better represent the open/close state of the popup and precent duplicates
         self.popup = None
 
+        self._pp_max = None
+        self._pp_min = None
+
         self._vitals_manager.vitals_data.connect(self._update_vitals)
         self.popup_button.clicked.connect(self._open_popup)
         self._setup_datetime()
@@ -105,10 +108,41 @@ class VitalsWindow(BaseWindow):
         self.heart_rate_value.setText(str(vitals_data.get("heartRate", "")))
         self.map_value.setText(str(vitals_data.get("meanArterialPressure", "")))
         self.cvp_value.setText(str(vitals_data.get("cvp", "")))
-        self.ppv_value.setText(str(vitals_data.get("pulsePressureVar", "")))
-        self.lactate_value.setText(str(vitals_data.get("lactate_value", "")))
+        
+        self.ppv_value.setText(self._calculate_ppv(vitals_data.get('systolicBP', ''), vitals_data.get('diastolicBP', '')))
+        
         self.blood_pressure_value.setText(f"{vitals_data.get('systolicBP', '')} / {vitals_data.get('diastolicBP', '')}")
         self.spo2_value.setText(str(vitals_data.get("spo2", "")))
+
+
+    def _calculate_ppv(self, systolic, diastolic):
+        '''calculates and returns the ppv of a patient'''
+        # if there is no systolic or diastolic being sent, dont display anyting
+        if not systolic or not diastolic:
+            return ""
+        
+        # calculate the current pulse pressure
+        current_pp = int(systolic) - int(diastolic)
+
+        if self._pp_max is None or self._pp_min is None:
+            # no ppv if it is the first reading, return zero and save the min and max
+            self._pp_max = current_pp 
+            self._pp_min = current_pp
+            return "0.0"
+        
+        # Track max and min pp
+        self._pp_max = max(self._pp_max, current_pp)
+        self._pp_min = min(self._pp_min, current_pp)
+        
+        # if the denominator is 0, return 0 (stops division by 0 error)
+        denominator = (self._pp_max + self._pp_min) / 2
+        if denominator == 0:
+            return "0.0"
+        
+        # calculate the variation in the pp and update the prev pp 
+        ppv = ((self._pp_max - self._pp_min) / denominator) * 100
+
+        return str(round(ppv, 1))
 
 
 if __name__ == "__main__":

@@ -401,36 +401,6 @@ font: 36pt &quot;Times New Roman&quot;;</string>
      </widget>
     </item>
 
-      <!-- Label for Lactate Levels -->
-    <item row="7" column="5" colspan="3">
-     <widget class="QLabel" name="lactate_label">
-      <property name="styleSheet">
-        <string notr="true">font-size: 24px;</string>
-      </property>
-      <property name="text">
-       <string>Lactate Levels:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-
-    <!-- Textbox for Lactate Levels -->
-    <item row="7" column="8">
-     <widget class="QLineEdit" name="lactate_value">
-      <property name="styleSheet">
-        <string notr="true">font-size: 24px;</string>
-      </property>
-      <property name="minimumWidth">
-        <number>300</number> 
-      </property>
-      <property name="minimumHeight">
-        <number>50</number> 
-      </property>
-     </widget>
-    </item>
-
     <!-- Label for Total Fluid Administered -->
     <item row="8" column="5" colspan="3">
      <widget class="QLabel" name="total_fluid_label">

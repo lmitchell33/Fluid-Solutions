@@ -12,7 +12,6 @@ class VitalSigns(univ.Sequence):
         namedtype.NamedType('timestamp', char.UTF8String()),
         namedtype.NamedType('heartRate', NumericObservation()),
         namedtype.NamedType('meanArterialPressure', NumericObservation()),
-        namedtype.NamedType('pulsePressureVar', NumericObservation()),
         namedtype.NamedType('spo2', NumericObservation()),
         namedtype.NamedType('cvp', NumericObservation()),
         namedtype.NamedType('systolicBP', NumericObservation()),
