@@ -1,4 +1,5 @@
 from datetime import datetime
+from threading import Lock
 
 from database_manager import DatabaseManager
 from database_models import Fluid, FluidRecord
@@ -12,8 +13,25 @@ class FluidManager:
         add_record(patient_id, fluid_name, amount_ml) - adds a fluidrecord to a patient
         get_total_fluid_volume(patient_id) - returns the total fluid volume administered to a patient
     '''
+
+    _instance = None
+    _lock = Lock()
+
+    def __new__(cls):
+        '''Ensure only one instance of class is created, following the Singleton pattern'''
+        if not cls._instance:
+            with cls._lock:
+                cls._instance = super(FluidManager, cls).__new__(cls)
+                cls._instance._initalized = False
+        
+        return cls._instance
     
     def __init__(self):
+        
+        if self._initalized:
+            return
+        
+        self._initalized = True
         self._db = DatabaseManager()
 
 
