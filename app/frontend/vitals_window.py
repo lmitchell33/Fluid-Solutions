@@ -36,6 +36,7 @@ class VitalsWindow(BaseWindow):
         self._pp_min = None
 
         self._vitals_manager.vitals_data.connect(self._update_vitals)
+        self._setup_units()
         self.popup_button.clicked.connect(self._open_popup)
         self._setup_datetime()
         
@@ -68,6 +69,17 @@ class VitalsWindow(BaseWindow):
                 "Error",
                 "There was an issue recording the fluid administration. Please try again."
             )
+
+
+    def _setup_units(self):
+        '''setup the units for the textboxes'''
+        self.heart_rate_units.setText("<b>bpm</b>")
+        self.spo2_units.setText("<b>%</b>")
+        self.blood_pressure_units.setText("<b>mmHg</b>")
+        self.map_units.setText("<b>mmHg</b>")
+        self.cvp_units.setText("<b>mmHg</b>")
+        self.ppv_units.setText("<b>%</b>")
+        self.fluid_volume_units.setText("<b>mL</b>")
 
 
     def _setup_datetime(self):

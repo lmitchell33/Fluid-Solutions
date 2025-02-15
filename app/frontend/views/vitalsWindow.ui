@@ -146,7 +146,7 @@
     </item>
 
       <!-- Textbox for Patient ID  -->
-    <item row="2" column="6" colspan="3">
+    <item row="2" column="6" colspan="2">
      <widget class="QLineEdit" name="mrn_value">
       <property name="styleSheet">
        <string notr="true">background-color: rgb(182, 181, 184); font-size: 24px;</string>
@@ -179,7 +179,7 @@
     </item>
 
       <!-- Suggested Actions Textbox -->
-    <item row="3" column="6" colspan="3">
+    <item row="3" column="6" colspan="2">
      <widget class="QLineEdit" name="suggested_action_value">
       <property name="styleSheet">
        <string notr="true">background-color: rgb(182, 181, 184); font-size: 24px;</string>
@@ -251,6 +251,15 @@ font: 36pt &quot;Times New Roman&quot;;</string>
      </widget>
     </item>
 
+    <!-- Units for Heart Rate -->
+    <item row="5" column="3">
+      <widget class="QLabel" name="heart_rate_units">
+        <property name="styleSheet">
+          <string notr="true">font-size: 18px;</string>
+        </property>
+      </widget>
+    </item>
+
       <!-- Label for SPO2 -->
     <item row="6" column="0" colspan="2">
      <widget class="QLabel" name="spo2_label">
@@ -258,7 +267,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
         <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
-       <string>SPO2 %: </string>
+       <string>SPO2: </string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -279,6 +288,15 @@ font: 36pt &quot;Times New Roman&quot;;</string>
         <number>50</number> 
       </property>
      </widget>
+    </item>
+
+      <!-- Units for Heart Rate -->
+    <item row="6" column="3">
+      <widget class="QLabel" name="spo2_units">
+        <property name="styleSheet">
+          <string notr="true">font-size: 18px;</string>
+        </property>
+      </widget>
     </item>
 
       <!-- Label for Blood Pressure -->
@@ -311,6 +329,15 @@ font: 36pt &quot;Times New Roman&quot;;</string>
      </widget>
     </item>
 
+      <!-- Units for Blood Pressure -->
+    <item row="7" column="3">
+      <widget class="QLabel" name="blood_pressure_units">
+        <property name="styleSheet">
+          <string notr="true">font-size: 18px;</string>
+        </property>
+      </widget>
+    </item>
+
       <!-- Label for MAP -->
     <item row="8" column="0" colspan="2">
      <widget class="QLabel" name="map_label">
@@ -341,8 +368,17 @@ font: 36pt &quot;Times New Roman&quot;;</string>
      </widget>
     </item>
 
+      <!-- Units for MAP -->
+    <item row="8" column="3">
+      <widget class="QLabel" name="map_units">
+        <property name="styleSheet">
+          <string notr="true">font-size: 18px;</string>
+        </property>
+      </widget>
+    </item>
+
       <!-- Label for CVP -->
-    <item row="5" column="5" colspan="3">
+    <item row="5" column="4" colspan="3">
      <widget class="QLabel" name="cvp_label">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
@@ -357,7 +393,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
     </item>
 
       <!-- Textbox for CVP -->
-    <item row="5" column="8">
+    <item row="5" column="7">
      <widget class="QLineEdit" name="cvp_value">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
@@ -371,8 +407,17 @@ font: 36pt &quot;Times New Roman&quot;;</string>
      </widget>
     </item>
 
+      <!-- Units for CVP -->
+    <item row="5" column="8">
+      <widget class="QLabel" name="cvp_units">
+        <property name="styleSheet">
+          <string notr="true">font-size: 18px;</string>
+        </property>
+      </widget>
+    </item>
+
       <!-- Label for PPV -->
-    <item row="6" column="5" colspan="3">
+    <item row="6" column="4" colspan="3">
      <widget class="QLabel" name="ppv_label">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
@@ -387,7 +432,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
     </item>
 
       <!-- Textbox for PPV -->
-    <item row="6" column="8">
+    <item row="6" column="7">
      <widget class="QLineEdit" name="ppv_value">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
@@ -401,14 +446,23 @@ font: 36pt &quot;Times New Roman&quot;;</string>
      </widget>
     </item>
 
+      <!-- Units for PPV -->
+    <item row="6" column="8">
+      <widget class="QLabel" name="ppv_units">
+        <property name="styleSheet">
+          <string notr="true">font-size: 18px;</string>
+        </property>
+      </widget>
+    </item>
+
     <!-- Label for Total Fluid Administered -->
-    <item row="8" column="5" colspan="3">
+    <item row="8" column="4" colspan="3">
      <widget class="QLabel" name="total_fluid_label">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
-       <string>Total Fluid Volume Given (mL):</string>
+       <string>Total Fluid Volume Given:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -417,7 +471,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
     </item>
 
       <!-- Textbox for fluid volume administration -->
-    <item row="8" column="8">
+    <item row="8" column="7">
      <widget class="QLineEdit" name="total_fluid_value">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
@@ -429,6 +483,15 @@ font: 36pt &quot;Times New Roman&quot;;</string>
         <number>50</number> 
       </property>
      </widget>
+    </item>
+
+      <!-- Units for Fluid Volume Admin -->
+    <item row="8" column="8">
+      <widget class="QLabel" name="fluid_volume_units">
+        <property name="styleSheet">
+          <string notr="true">font-size: 18px;</string>
+        </property>
+      </widget>
     </item>
 
     <!-- Button to open the Popup -->
