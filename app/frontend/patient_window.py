@@ -1,7 +1,7 @@
 import sys
 
-from PyQt6.QtWidgets import QApplication, QMessageBox, QCompleter, QListView
-from PyQt6.QtCore import QStringListModel, Qt
+from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtCore import QStringListModel
 
 from frontend.base_window import BaseWindow
 from frontend.utils.autocomplete import AutoComplete
@@ -17,9 +17,9 @@ class PatientWindow(BaseWindow):
         None
     '''
     
-    def __init__(self):
+    def __init__(self, ui_file):
         '''Constructor for the PatientWindow class, loads the vitals .ui file'''
-        super().__init__("frontend/views/patientWindow.ui")
+        super().__init__(ui_file)
         self._coordinator = Coordinator()
         self._patient_manager = PatientManager()
     

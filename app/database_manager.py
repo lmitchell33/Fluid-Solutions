@@ -1,6 +1,8 @@
+import os
 from contextlib import contextmanager
 from threading import Lock
 from datetime import datetime
+from pathlib import Path
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -30,7 +32,7 @@ class DatabaseManager:
     _instance = None
     _lock = Lock() # thread lock to prevent race conditions
 
-    def __new__(cls):
+    def __new__(cls, *args, **kwargs):
         '''Called before the __init__ method. This uses a Singleton pattern, 
         meaning only one instance of the DatabaseManager exists throughout
         the application. This maintains consistency and saves resources.
@@ -60,7 +62,8 @@ class DatabaseManager:
         
         return cls._instance
 
-    def __init__(self, database_url="sqlite:///instance/data.db"):
+
+    def __init__(self, database_url=None, engine=None):
         '''Constructor for the DatabaseManager class, creates the sqlite
         engine and a scoped session. Also sets the initalized flag, preventing
         mulitple instances of the class from being made
@@ -68,12 +71,19 @@ class DatabaseManager:
         Kwargs:
             database_url {string} - path/url for the sqlite database
         '''
-        
+
         # if an instance of the class already exists, skip to save resources
         if self._initialized:
             return 
         
-        self._initialized  = True
+        self._initialized = True
+        self._engine = None
+
+        if not database_url:
+            database_url  = os.getenv("DATABASE_URL", "sqlite:///instance/data.db")
+
+        if engine:
+            self._engine = engine
 
         self._database_url = database_url
         self._create_session()
@@ -93,7 +103,9 @@ class DatabaseManager:
         self._session.add(Patient(firstname="Jackson", lastname="Jewell", patient_mrn="1", gender="female", weight_kg=500.0, height_cm=100.0, dob=datetime.now().date()))
         self._session.commit()
 
-        self._populate_fluid_names("./utils/fluid_names.txt")
+        BASE_DIR = str(Path(__file__).parent)
+
+        self._populate_fluid_names(BASE_DIR + "/utils/fluid_names.txt")
 
         # Add a list of Fluids to the database
         print("Successfully intialized database")
@@ -124,6 +136,16 @@ class DatabaseManager:
         finally:
             self._session.commit()
 
+    
+    @classmethod
+    def set_engine(cls, engine):
+        '''Allows overriding the engine to a custom one (e.g., for tests).'''
+        with cls._lock:
+            if not cls._instance:
+                cls._instance = cls()
+            cls._instance._engine = engine
+            cls._instance._create_session()
+
 
     def close_session(self):
         '''Util function to remove the current session'''
@@ -133,8 +155,10 @@ class DatabaseManager:
 
 
     def _create_session(self):
-        '''Private helper function to create a scoped session'''
-        self._engine = create_engine(self._database_url)        
+        '''Private helper function to create a scoped session'''        
+        if not self._engine:
+            self._engine = create_engine(self._database_url)        
+        
         self._SessionFactory = sessionmaker(self._engine) # create a persistent session
         self._session = scoped_session(self._SessionFactory)
 
@@ -143,7 +167,8 @@ class DatabaseManager:
         '''private util method to populate the database with fluid names'''
         with open(filepath, "r") as fluid_names:
             for name in fluid_names:
-                if name.strip():
-                    self._session.add(Fluid(name=name.strip()))
+                fluid_name = name.strip()
+                if fluid_name:
+                    self._session.add(Fluid(name=fluid_name))
 
         self._session.commit()

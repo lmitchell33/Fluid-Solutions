@@ -2,8 +2,9 @@ from base64 import urlsafe_b64encode
 from cryptography.x509 import load_pem_x509_certificate
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
-
 import jwt
+
+from pathlib import Path
 import requests
 import uuid
 import os
@@ -11,15 +12,21 @@ import os
 # load in the secrets from the .env file
 load_dotenv()
 
+BASE_DIR = Path(__file__).parent
+
 # get the client secrets and credentials
 CLIENT_ID = os.getenv("CLIENT_ID")
 NON_PRODUCTION_CLIENT_ID = os.getenv("NON_PRODUCTION_CLIENT_ID")
 TOKEN_URL = os.getenv("TOKEN_URL")
 
+# get the paths for the public and private keys
+PRIVATE_KEY_PATH = str(BASE_DIR / os.getenv("PRIVATE_KEY"))
+PUBLIC_KEY_PATH = str(BASE_DIR / os.getenv("PUBLIC_KEY"))
+
 # generate a unique key id number to be used for the JWT token and set
 kid = str(uuid.uuid4())
 
-def get_public_key_modulus(key_file):
+def get_public_key_modulus(key_file=PUBLIC_KEY_PATH):
     '''Find the modulus of a x509 public key (certificate)
     
     Args: 
@@ -65,7 +72,7 @@ def create_jwt():
     }
 
     # load the private key
-    with open("./backend/epic/auth/keys/privatekey.pem", "r") as key:
+    with open(PRIVATE_KEY_PATH, "r") as key:
         private_key = key.read()
 
     # create the token

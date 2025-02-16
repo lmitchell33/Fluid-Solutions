@@ -21,10 +21,10 @@ class VitalsWindow(BaseWindow):
         None
     '''
 
-    def __init__(self):
+    def __init__(self, ui_file):
         '''Constructor for the VitalsWindow class, loads the vitals .ui file'''
         # pass the filepath for the vitals window ui file into the BaseWindow for displaying
-        super().__init__("frontend/views/vitalsWindow.ui")
+        super().__init__(ui_file)
 
         self._fluid_manager = FluidManager()
         self._vitals_manager = VitalsManager()

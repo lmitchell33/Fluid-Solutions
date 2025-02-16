@@ -65,8 +65,8 @@ def run():
     geometry = screen.geometry()
 
     # initalize the windows and specify which each window routes to
-    patient_window = PatientWindow()
-    vitals_window = VitalsWindow()
+    patient_window = PatientWindow("frontend/views/patientWindow.ui")
+    vitals_window = VitalsWindow("frontend/views/vitalsWindow.ui")
     patient_window.routes_to = vitals_window
     vitals_window.routes_to = patient_window
 
