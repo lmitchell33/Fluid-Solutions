@@ -9,6 +9,8 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 
 from database_models import Fluid, Base, Patient
 
+BASE_DIR = str(Path(__file__).parent)
+
 class DatabaseManager:
     '''Singleton class for managing database connections and sessions.
     
@@ -63,7 +65,7 @@ class DatabaseManager:
         return cls._instance
 
 
-    def __init__(self, database_url=None, engine=None):
+    def __init__(self, database_url=None):
         '''Constructor for the DatabaseManager class, creates the sqlite
         engine and a scoped session. Also sets the initalized flag, preventing
         mulitple instances of the class from being made
@@ -82,9 +84,6 @@ class DatabaseManager:
         if not database_url:
             database_url  = os.getenv("DATABASE_URL", "sqlite:///instance/data.db")
 
-        if engine:
-            self._engine = engine
-
         self._database_url = database_url
         self._create_session()
         
@@ -102,8 +101,6 @@ class DatabaseManager:
         
         self._session.add(Patient(firstname="Jackson", lastname="Jewell", patient_mrn="1", gender="female", weight_kg=500.0, height_cm=100.0, dob=datetime.now().date()))
         self._session.commit()
-
-        BASE_DIR = str(Path(__file__).parent)
 
         self._populate_fluid_names(BASE_DIR + "/utils/fluid_names.txt")
 
@@ -136,16 +133,6 @@ class DatabaseManager:
         finally:
             self._session.commit()
 
-    
-    @classmethod
-    def set_engine(cls, engine):
-        '''Allows overriding the engine to a custom one (e.g., for tests).'''
-        with cls._lock:
-            if not cls._instance:
-                cls._instance = cls()
-            cls._instance._engine = engine
-            cls._instance._create_session()
-
 
     def close_session(self):
         '''Util function to remove the current session'''
@@ -156,9 +143,7 @@ class DatabaseManager:
 
     def _create_session(self):
         '''Private helper function to create a scoped session'''        
-        if not self._engine:
-            self._engine = create_engine(self._database_url)        
-        
+        self._engine = create_engine(self._database_url)        
         self._SessionFactory = sessionmaker(self._engine) # create a persistent session
         self._session = scoped_session(self._SessionFactory)
 
