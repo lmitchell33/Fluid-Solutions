@@ -1,8 +1,9 @@
-import sys
-import os
 import pytest
+from unittest.mock import patch
 
-APP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../app"))
-
-if APP_DIR not in sys.path:
-    sys.path.append(APP_DIR)
+@pytest.fixture
+def patch_patient_manager(mock_db):
+    '''Patches the DatabaseManager declaration in the PatientManager class'''
+    # NOTE: This is only becuase the DatabaseManager is the result of a tree of imports into the patient window
+    with patch("backend.managers.patient_manager.DatabaseManager", return_value=mock_db):
+        yield mock_db
