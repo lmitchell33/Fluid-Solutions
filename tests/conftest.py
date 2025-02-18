@@ -2,6 +2,7 @@ import sys
 import os
 import pytest
 
+# add the app directory to the system path to allow the modules to be imported
 APP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../app"))
 
 if APP_DIR not in sys.path:
