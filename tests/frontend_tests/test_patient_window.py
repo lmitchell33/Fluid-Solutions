@@ -8,6 +8,7 @@ from app.frontend.patient_window import PatientWindow
 def app(qtbot, patch_patient_manager):
     '''fixture to create and setup an app to run the tests through'''
     ui_file_path = Path(__file__).resolve().parents[2] / "app/frontend/views/patientWindow.ui"
+    assert ui_file_path.exists(), f"UI file not found {ui_file_path}"
     test_app = PatientWindow(ui_file_path)
     qtbot.addWidget(test_app)
     return test_app
