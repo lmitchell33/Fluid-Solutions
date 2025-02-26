@@ -25,6 +25,7 @@ def test_components_exist(app):
     assert app.dob_value is not None
     assert app.weight_value is not None
     assert app.height_value is not None
+    assert app.routing_button is not None
 
 
 def test_inital_states(app):

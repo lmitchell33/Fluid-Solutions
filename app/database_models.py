@@ -17,21 +17,7 @@ class Patient(Base):
     patient_mrn = mapped_column(String, nullable=True, unique=True)
 
     # One-to-many relationship: One patient can have many medications or fluid records
-    medications: Mapped[List["Medication"]] = relationship("Medication", back_populates="patient", cascade="all, delete-orphan")
     fluid_records: Mapped[List["FluidRecord"]] = relationship("FluidRecord", back_populates="patient", cascade="all, delete-orphan")
-
-
-class Medication(Base):
-    __tablename__ = "medication"
-
-    id = mapped_column(Integer, primary_key=True)
-    name = mapped_column(String)
-    dosage_mg = mapped_column(Float, nullable=True)
-    frequency = mapped_column(Integer, nullable=True)
-
-    # Many-to-one relationship: Many medications can belong to one patient
-    patient_id: Mapped[int] = mapped_column(Integer, ForeignKey("patient.id"))
-    patient: Mapped["Patient"] = relationship("Patient", back_populates="medications")
 
 
 class FluidRecord(Base):
