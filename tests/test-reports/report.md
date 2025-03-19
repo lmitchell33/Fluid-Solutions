@@ -1,12 +1,12 @@
 # Test Report
 
-*Report generated on 26-Feb-2025 at 20:02:12 by [pytest-md]*
+*Report generated on 27-Feb-2025 at 16:55:31 by [pytest-md]*
 
 [pytest-md]: https://github.com/hackebrot/pytest-md
 
 ## Summary
 
-6 tests ran in 3.34 seconds
+6 tests ran in 4.12 seconds
 
 - 6 passed
 
@@ -18,10 +18,10 @@
 
 `test_inital_states` 0.00s
 
-`test_search_patient_success` 0.00s
+`test_search_patient_success` 0.01s
 
 `test_search_patient_failure` 0.00s
 
 `test_search_patient_invalid_input[]` 0.00s
 
-`test_search_patient_invalid_input[   ]` 0.26s
+`test_search_patient_invalid_input[   ]` 0.24s

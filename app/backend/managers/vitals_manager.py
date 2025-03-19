@@ -121,7 +121,6 @@ class VitalsManager(QObject):
 
             return data
         except Exception as e:
-            print(f"Error processing data: {e}")
             return None
 
 
