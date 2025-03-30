@@ -14,7 +14,7 @@ def generate_mock_vitals():
     return {
         "heartRate" : round(random.uniform(60, 100)), 
         "meanArterialPressure" : round(random.uniform(70, 105)), 
-        "cvp" : round(random.uniform(5, 10)), 
+        "cvp" : round(random.uniform(12, 20)), 
         "systolicBP" : round(random.uniform(90, 130)), 
         "diastolicBP" : round(random.uniform(60, 90)),
         "spo2" : round(random.uniform(95, 100)), 

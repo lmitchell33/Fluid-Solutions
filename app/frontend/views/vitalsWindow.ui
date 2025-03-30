@@ -384,7 +384,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
         <string notr="true">font-size: 24px;</string>
       </property>
       <property name="text">
-       <string>Central Venous Pressure:</string>
+       <string>Respiratory Rate:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

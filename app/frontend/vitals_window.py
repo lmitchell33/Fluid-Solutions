@@ -77,7 +77,7 @@ class VitalsWindow(BaseWindow):
         self.spo2_units.setText("<b>%</b>")
         self.blood_pressure_units.setText("<b>mmHg</b>")
         self.map_units.setText("<b>mmHg</b>")
-        self.cvp_units.setText("<b>mmHg</b>")
+        self.cvp_units.setText("<b>bpm</b>")
         self.ppv_units.setText("<b>%</b>")
         self.fluid_volume_units.setText("<b>mL</b>")
 

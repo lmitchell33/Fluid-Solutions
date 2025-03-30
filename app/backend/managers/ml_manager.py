@@ -4,6 +4,13 @@ import xgboost as xgb
 import joblib
 import numpy as np
 
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
+from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
+import pandas as pd
+
 class MLManager:
     '''ML Manager class whose job is to load in a specified model, and perform
     inference using said model. This is singleton, beucase I do not want multiple
@@ -103,15 +110,53 @@ class MLManager:
 
 if __name__ == "__main__":
     # test see if this actually works:
-    model = MLManager('rf')
+    model_type = "xgb"
+    model = MLManager(model_type=model_type)
     model.load_model()
 
-    # high -> 0
-    # low -> 1
-    # normal -> 2
+    # what is importnat to rememeber here is that the heart is trying to keep the
+    # blood at equilibrium, therefore, if the volume is high then the bp is low
+    # and when the volume is low, the bp is high?
+
+    # high -> 0 -> when BVS is high, fluid must be taken away -> bp is low 
+    # low -> 1 -> when BVS is low, fluid must be given -> bp is high
+    # normal -> 2 -> when BVS normal, nothing happens - bp is normal
+
+    output_mapping = {
+        0 : "high",
+        1 : "low",
+        2 : "normal"
+    }
+
+    #  'respiratory_rate' 
+    #  'heart_rate'
+    #  'mean_arterial_pressure'
+    #  'diastolic_arterial_pressure'
+    #  'systolic_arterial_pressure'
+    #  'spo2'
+    #  'pulse_pressure'
+
+    # It seems that the base random forest model is doing a horrible job of picking
+    # up on the trends of this data, it typically classifies everything that is high
+    # and everyhing that is low as low.
+    # the xgboost, however, is doing a much better job at picking up on the trends and
+    # at least picking up on the extreme patterns
 
     # example row from the data
     data_low = [17.0, 73.0, 83.0, 55.0, 131.0, 98.0, 76.0]
-    data_high = [13.0,60.0,103.0,75.0,148.0,97.0,73.0]
-    data_noraml = [21.0,108.0,76.3,63.7,117.4,94.0,53.8]
-    print(model.predict(data_noraml))
+    # example_test_low = [i+2 for i in data_low]
+    extreme_test_low = [13.0, 60.0, 60, 50, 100, 97.0, 50]
+
+    data_high = [13.0, 60.0, 103.0, 75.0, 148.0, 97.0, 73.0]
+    # example_test_high = [i+2 for i in data_high]
+    extreme_test_high = [13.0, 60.0, 105, 75, 165, 97.0, 90]
+
+    data_noraml = [21.0, 108.0, 76.3, 63.7, 117.4, 94.0, 53.8]
+    # example_test_normal = [i+2 for i in data_noraml]
+
+    prediction = model.predict(extreme_test_low)[0]
+    
+    if model_type == "xgb":
+        print(output_mapping[prediction])
+    elif model_type == "rf":
+        print(prediction)
