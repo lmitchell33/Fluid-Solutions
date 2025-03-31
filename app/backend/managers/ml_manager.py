@@ -10,8 +10,8 @@ class MLManager():
     instances performing infernece bc the inference is run locally and could 
     take up significant resources
     
-    Methods:
-        
+    Attributes:
+        model: The loaded machine learning model
     '''
 
     _instance = None
@@ -33,12 +33,14 @@ class MLManager():
             return
         
         self._initalized = True
-        self._model_type = model_type
+        self._model_type = model_type.lower()
         self._binary_predictor = binary
         self.model = None
 
         # get the filepath to the directory holding the model files
         self._model_dir = Path(__file__).parent.parent.parent.joinpath("models")
+        if not self._model_dir.exists():
+            print(f"Directory containing the model file not found {self._model_dir}")
 
 
     def load_model(self):
@@ -56,15 +58,24 @@ class MLManager():
         '''Private helper function to load the appropriate model.'''        
         if self._model_type == "xgb":
             model_file = "xgboost_model.json" if not self._binary_predictor else "xgboost_binary_model.json"
+            model_path = self._model_dir / model_file
+
+            if not model_path.exists():
+                raise FileNotFoundError(f"Model file not found: {model_path}")
 
             # load an xgb classifier from the saved model
             model = xgb.XGBClassifier()
-            model.load_model(f'{self._model_dir}/{model_file}')
+            model.load_model(str(model_path))
             return model
 
         elif self._model_type == "rf":
             # load in the rf model from the saved model
             model_file = "random_forest_model.pkl" if not self._binary_predictor else "random_forest_binary_model.pkl"
+            model_path = self._model_dir / model_file
+
+            if not model_path.exists():
+                raise FileNotFoundError(f"Model file not found: {model_path}")
+            
             return joblib.load(f'{self._model_dir}/{model_file}.pkl')
 
         else:
@@ -85,28 +96,29 @@ class MLManager():
         if self.model is None:
             self.load_model()
 
-        data = self._preprocess(data)
-
-        return self.model.predict(data)
+        try: 
+            preprocess_data = self._preprocess(data)
+            return self.model.predict(preprocess_data)
+        except Exception as e:
+            print(f"Failed to make prediction {e}")
 
     
     def _post_process_predict(self, data):
         '''Post-process a prediction made by the model'''
         if self._binary_predictor:
-            PREDICTION_MAPPING = {
+            prediction_mapping  = {
                 0 : {'label' : 'not normal', 'suggested_action':'administer or remove fluids'},
                 1 : {'label' : 'normal', 'suggested_action':'nothing'},
             }
         else:
-            PREDICTION_MAPPING = {
+            prediction_mapping  = {
                 0 : {'label' : 'high', 'suggested_action':'remove fluids'},
                 1 : {'label' : 'low', 'suggested_action':'administer fluids'},
                 2 : {'label' : 'normal', 'suggested_action':'nothing'}
             }
 
         prediction = self.predict(data)[0]
-
-        return PREDICTION_MAPPING.get(prediction, {"label": "N/A", "suggested_action": "N/A"})
+        return prediction_mapping.get(prediction, {"label": "N/A", "suggested_action": "N/A"})
 
 
     def _preprocess(self, data):
@@ -126,11 +138,8 @@ class MLManager():
         
         Args:
             data (list or dict): Input data to preprocess.
-            
-        Returns:
-            np.ndarray: Preprocessed input data.
         '''
-        EXPECTED_FEATURE_ORDER = {
+        feature_map = {
             0: 'respiratoryRate',
             1: 'heartRate',
             2: 'meanArterialPressure',
@@ -141,26 +150,28 @@ class MLManager():
         }
 
         if isinstance(data, dict):
-            arr = []
-            for key, value in EXPECTED_FEATURE_ORDER.items():
-                # iterate through the vitals and insert the features into their
-                # correct positions
-                arr.insert(key, float(data.get(value, 0)))
-            array = np.array(arr)
-            if array.ndim == 1:
-                array = array.reshape(1, -1)
+            features = []
+            for idx, feature_name in feature_map.items():
+                # iterate through the vitals and insert the features into their correct positions
+                features.insert(idx, float(data.get(feature_name, 0)))
+
+            # this array will be in an invalid shapes
+            array = np.array(features).reshape(1, -1)
             return array
 
-        if not isinstance(data, list):
-            print("Cannot preporcess data, invalid input type")
-            raise TypeError("List or dict expected")
-        
-        # lets just assume we will get the data in the correct order and
-        # as a list, for now
-        arr = np.array(data)
-        if arr.ndim == 1:
-            arr = arr.reshape(1, -1)
-        return arr
+        elif isinstance(data, list):
+            array = np.array(data, dtype=float)
+            if array.ndim == 1:
+                array = array.reshape(1, -1)
+
+            if array.shape[1] != len(feature_map):
+                print("inputted list has incorrect size")
+
+            return array
+
+        else:
+            raise TypeError("Inputted data for preprocessing must be list or dict")
+
 
 
 if __name__ == "__main__":
