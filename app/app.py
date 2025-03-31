@@ -74,7 +74,7 @@ def run():
     router = Router(patient_window, vitals_window)
 
     # resize the window to 1.5x that of the current screen
-    router.resize(int(geometry.width()/(2)), int(geometry.height()/(2)))
+    router.resize(int(geometry.width()/(3)), int(geometry.height()/(2)))
 
     # set the stylesheet and display the screen
     router.show() # by default, this shows the patient window

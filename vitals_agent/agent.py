@@ -14,7 +14,7 @@ def generate_mock_vitals():
     return {
         "heartRate" : round(random.uniform(60, 100)), 
         "meanArterialPressure" : round(random.uniform(70, 105)), 
-        "cvp" : round(random.uniform(12, 20)), 
+        "respiratoryRate" : round(random.uniform(12, 20)), 
         "systolicBP" : round(random.uniform(90, 130)), 
         "diastolicBP" : round(random.uniform(60, 90)),
         "spo2" : round(random.uniform(95, 100)), 
@@ -30,7 +30,7 @@ def encode_vitals(data):
         'heartRate': {'mdcCode': 18402, 'unitCode': 264864},  # MDC_PULS_RATE (bpm)
         'meanArterialPressure': {'mdcCode': 18949, 'unitCode': 266016},  # MDC_PRESS_BLD_ART_MEAN (mmHg)
         'spo2': {'mdcCode': 150456, 'unitCode': 262144},  # MDC_PULS_OXIM_SAT_O2 (percentage)
-        'cvp': {'mdcCode': 18945, 'unitCode': 266016},  # MDC_PRESS_CVP (mmHg)
+        'respiratoryRate': {'mdcCode': 18945, 'unitCode': 266016},  # MDC_PRESS_CVP (mmHg)
         'systolicBP': {'mdcCode': 18947, 'unitCode': 266016},  # MDC_PRESS_BLD_ART_SYS (mmHg)
         'diastolicBP': {'mdcCode': 18948, 'unitCode': 266016}  # MDC_PRESS_BLD_ART_DIA (mmHg)
     }

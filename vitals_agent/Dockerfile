@@ -9,4 +9,5 @@ COPY agent.py .
 CMD ["python3", "agent.py"]
 
 # to run this from the cli use:
+# docker build -t [name]
 # docker run --network=host [name]

@@ -8,10 +8,7 @@ from frontend.utils.popup import PopupForm
 
 from backend.managers.fluid_manager import FluidManager
 from backend.managers.vitals_manager import VitalsManager
-
-# NOTE: Currently, the window is only showing the total flulid volume
-# given. If we want to specify which fluid was administered, then we are going
-# I can implement that, im just not sure the best way to.
+from backend.managers.ml_manager import MLManager
 
 class VitalsWindow(BaseWindow):
     '''
@@ -28,6 +25,8 @@ class VitalsWindow(BaseWindow):
 
         self._fluid_manager = FluidManager()
         self._vitals_manager = VitalsManager()
+        self._ml_mangaer = MLManager(model_type='xgb')
+        self._ml_mangaer.load_model()
 
         # used to better represent the open/close state of the popup and precent duplicates
         self.popup = None
@@ -88,7 +87,7 @@ class VitalsWindow(BaseWindow):
         self.current_datetime.setDisplayFormat("hh:mm:ss a MMM dd, yyyy")
         self.current_datetime.setDateTime(QDateTime.currentDateTime())
         self.current_datetime.setReadOnly(True)
-        
+
 
         # Create and configure a QTimer
         self.timer = QTimer(self)
@@ -119,13 +118,25 @@ class VitalsWindow(BaseWindow):
         '''Update the vitals being shown on the page'''
         self.heart_rate_value.setText(str(vitals_data.get("heartRate", "")))
         self.map_value.setText(str(vitals_data.get("meanArterialPressure", "")))
-        self.cvp_value.setText(str(vitals_data.get("cvp", "")))
-        
+        self.cvp_value.setText(str(vitals_data.get("respiratoryRate", "")))
         self.ppv_value.setText(self._calculate_ppv(vitals_data.get('systolicBP', ''), vitals_data.get('diastolicBP', '')))
-        
         self.blood_pressure_value.setText(f"{vitals_data.get('systolicBP', '')} / {vitals_data.get('diastolicBP', '')}")
         self.spo2_value.setText(str(vitals_data.get("spo2", "")))
+        
+        if vitals_data:
+            vitals_data["pulsePressure"] = self._calculate_ppv(vitals_data.get('systolicBP', ''), vitals_data.get('diastolicBP', ''))
+            # update the suggested actions based on the inputted data
+            self._set_suggested_actions(vitals_data)
 
+
+    def _set_suggested_actions(self, data): 
+        if self._ml_mangaer is None:
+            print("ML manager not found, cannot make prediction")
+
+        prediction = self._ml_mangaer._post_process_predict(data)
+        self.volume_status_value.setText(prediction['label'])
+        self.suggested_action_value.setText(prediction['suggested_action'])
+        
 
     def _calculate_ppv(self, systolic, diastolic):
         '''calculates and returns the ppv of a patient'''
