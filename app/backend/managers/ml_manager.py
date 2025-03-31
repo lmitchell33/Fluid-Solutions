@@ -107,14 +107,14 @@ class MLManager():
         '''Post-process a prediction made by the model'''
         if self._binary_predictor:
             prediction_mapping  = {
-                0 : {'label' : 'not normal', 'suggested_action':'administer or remove fluids'},
-                1 : {'label' : 'normal', 'suggested_action':'nothing'},
+                0 : {'label' : 'abnormal blood volume', 'suggested_action':'evaluate and consider fluid resuscitation or diuresis'},
+                1 : {'label' : 'euvolemic', 'suggested_action':'monitor and maintain current status'},
             }
         else:
             prediction_mapping  = {
-                0 : {'label' : 'high', 'suggested_action':'remove fluids'},
-                1 : {'label' : 'low', 'suggested_action':'administer fluids'},
-                2 : {'label' : 'normal', 'suggested_action':'nothing'}
+                0 : {'label' : 'hypervolemia', 'suggested_action':'consider diuresis or fluid restriction'},
+                1 : {'label' : 'hypovolemia', 'suggested_action':'consider fluid resuscitation'},
+                2 : {'label' : 'euvolemia', 'suggested_action':'monitor and maintain current status'}
             }
 
         prediction = self.predict(data)[0]
