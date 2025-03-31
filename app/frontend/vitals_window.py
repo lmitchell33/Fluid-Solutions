@@ -13,9 +13,6 @@ from backend.managers.ml_manager import MLManager
 class VitalsWindow(BaseWindow):
     '''
     BaseWindow inherited class to display and handle the logic for the vitals window.
-    
-    Methods:
-        None
     '''
 
     def __init__(self, ui_file):
@@ -23,6 +20,7 @@ class VitalsWindow(BaseWindow):
         # pass the filepath for the vitals window ui file into the BaseWindow for displaying
         super().__init__(ui_file)
 
+        # initalize backend managers
         self._fluid_manager = FluidManager()
         self._vitals_manager = VitalsManager()
         self._ml_mangaer = MLManager(model_type='xgb')
@@ -30,13 +28,15 @@ class VitalsWindow(BaseWindow):
 
         # used to better represent the open/close state of the popup and precent duplicates
         self.popup = None
-
         self._pp_max = None
         self._pp_min = None
 
+        # connect pyqt signals 
         self._vitals_manager.vitals_data.connect(self._update_vitals)
-        self._setup_units()
         self.popup_button.clicked.connect(self._open_popup)
+        
+        # setup ui components
+        self._setup_units()
         self._setup_datetime()
         
 
@@ -50,6 +50,14 @@ class VitalsWindow(BaseWindow):
 
     def _handle_popup_submission(self, fluid, volume):
         '''Handle the logic for adding a record and display a popup to the user on success or fail'''
+        if not self.patient_state.current_patient:
+            QMessageBox.warning(
+                self,
+                "Error",
+                "No patient selected. Please select a patient first."
+            )
+            return
+        
         result = self._fluid_manager.add_record(self.patient_state.current_patient, fluid, volume)
         
         # display another popup for the user based on if the attemp was successful or not
@@ -72,13 +80,17 @@ class VitalsWindow(BaseWindow):
 
     def _setup_units(self):
         '''setup the units for the textboxes'''
-        self.heart_rate_units.setText("<b>bpm</b>")
-        self.spo2_units.setText("<b>%</b>")
-        self.blood_pressure_units.setText("<b>mmHg</b>")
-        self.map_units.setText("<b>mmHg</b>")
-        self.cvp_units.setText("<b>bpm</b>")
-        self.ppv_units.setText("<b>%</b>")
-        self.fluid_volume_units.setText("<b>mL</b>")
+        units_mapping = {
+            self.heart_rate_units: "bpm",
+            self.spo2_units: "%",
+            self.blood_pressure_units: "mmHg",
+            self.map_units: "mmHg",
+            self.cvp_units: "bpm",
+            self.ppv_units: "%",
+            self.fluid_volume_units: "mL"
+        }
+        for widget, unit in units_mapping.items():
+            widget.setText(f"<b>{unit}</b>")
 
 
     def _setup_datetime(self):
@@ -91,11 +103,11 @@ class VitalsWindow(BaseWindow):
 
         # Create and configure a QTimer
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self._updateDateTime)
+        self.timer.timeout.connect(self._update_datetime)
         self.timer.start(1000)  # Update every 1 second
 
 
-    def _updateDateTime(self):
+    def _update_datetime(self):
         '''update the datetime to display the current time'''
         # Update the QDateTimeEdit widget to the current date and time
         self.current_datetime.setDateTime(QDateTime.currentDateTime())
@@ -116,22 +128,35 @@ class VitalsWindow(BaseWindow):
     @pyqtSlot(dict)
     def _update_vitals(self, vitals_data):
         '''Update the vitals being shown on the page'''
+        if not vitals_data:
+            return
+        
+        # Update vital sign display values
         self.heart_rate_value.setText(str(vitals_data.get("heartRate", "")))
         self.map_value.setText(str(vitals_data.get("meanArterialPressure", "")))
         self.cvp_value.setText(str(vitals_data.get("respiratoryRate", "")))
-        self.ppv_value.setText(self._calculate_ppv(vitals_data.get('systolicBP', ''), vitals_data.get('diastolicBP', '')))
         self.blood_pressure_value.setText(f"{vitals_data.get('systolicBP', '')} / {vitals_data.get('diastolicBP', '')}")
         self.spo2_value.setText(str(vitals_data.get("spo2", "")))
+
+        # Calculate and display pulse pressure variation
+        ppv = self._calculate_ppv(
+            vitals_data.get('systolicBP', ''), 
+            vitals_data.get('diastolicBP', '')
+        )
+        self.ppv_value.setText(ppv)
+
+        # add pulse pressure to the vitals data to send to ML for prediction
+        vitals_data_with_pp = vitals_data.copy()
+        vitals_data_with_pp["pulsePressure"] = float(ppv) if ppv else 0.0
         
-        if vitals_data:
-            vitals_data["pulsePressure"] = self._calculate_ppv(vitals_data.get('systolicBP', ''), vitals_data.get('diastolicBP', ''))
-            # update the suggested actions based on the inputted data
-            self._set_suggested_actions(vitals_data)
+        # update the suggested actions based on the inputted data
+        self._set_suggested_actions(vitals_data)
 
 
     def _set_suggested_actions(self, data): 
         if self._ml_mangaer is None:
             print("ML manager not found, cannot make prediction")
+            return
 
         prediction = self._ml_mangaer._post_process_predict(data)
         self.volume_status_value.setText(prediction['label'])
