@@ -23,7 +23,7 @@ class VitalsWindow(BaseWindow):
         # initalize backend managers
         self._fluid_manager = FluidManager()
         self._vitals_manager = VitalsManager()
-        self._ml_manager = MLManager(model_type='xgb')
+        self._ml_manager = MLManager(model_type='xgb', binary=False, max_cache_size=100)
         self._ml_manager.load_model()
 
         # used to better represent the open/close state of the popup and precent duplicates
