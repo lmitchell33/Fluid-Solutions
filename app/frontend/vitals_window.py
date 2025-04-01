@@ -23,8 +23,8 @@ class VitalsWindow(BaseWindow):
         # initalize backend managers
         self._fluid_manager = FluidManager()
         self._vitals_manager = VitalsManager()
-        self._ml_mangaer = MLManager(model_type='xgb')
-        self._ml_mangaer.load_model()
+        self._ml_manager = MLManager(model_type='xgb')
+        self._ml_manager.load_model()
 
         # used to better represent the open/close state of the popup and precent duplicates
         self.popup = None
@@ -144,21 +144,17 @@ class VitalsWindow(BaseWindow):
             vitals_data.get('diastolicBP', '')
         )
         self.ppv_value.setText(ppv)
-
-        # add pulse pressure to the vitals data to send to ML for prediction
-        vitals_data_with_pp = vitals_data.copy()
-        vitals_data_with_pp["pulsePressure"] = float(ppv) if ppv else 0.0
-        
-        # update the suggested actions based on the inputted data
-        self._set_suggested_actions(vitals_data)
+        data_copy = vitals_data.copy()
+        data_copy['pulsePressure'] = ppv
+        self._set_suggested_actions(data_copy)
 
 
     def _set_suggested_actions(self, data): 
-        if self._ml_mangaer is None:
+        if self._ml_manager is None:
             print("ML manager not found, cannot make prediction")
             return
 
-        prediction = self._ml_mangaer._post_process_predict(data)
+        prediction = self._ml_manager.predict(data)
         self.volume_status_value.setText(prediction['label'])
         self.suggested_action_value.setText(prediction['suggested_action'])
         

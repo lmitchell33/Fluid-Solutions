@@ -197,7 +197,7 @@
     </item>
 
         <!-- Label for Vitals Title -->
-    <item row="4" column="0" colspan="9">
+    <!-- <item row="4" column="0" colspan="9">
      <widget class="QLabel" name="vitals_title">
       <property name="styleSheet">
        <string notr="true">font: 24pt &quot;Academy Engraved LET&quot;;
@@ -216,6 +216,17 @@ font: 36pt &quot;Times New Roman&quot;;</string>
             </sizepolicy>
       </property>
      </widget>
+    </item> -->
+
+    <item row="4" column="3" colspan="2">
+      <widget class="QPushButton" name="inference_button">
+        <property name="toolTip">
+          <string>Click to generate recommendation</string>
+        </property>
+        <property name="text">
+        <string>Analyze Status</string>
+        </property>
+      </widget>
     </item>
 
       <!-- Label for Heart Rate -->

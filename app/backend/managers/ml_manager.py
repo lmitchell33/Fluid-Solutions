@@ -1,10 +1,12 @@
 from threading import Lock
 from pathlib import Path
+from collections import deque, Counter
+
 import xgboost as xgb
 import joblib
 import numpy as np
 
-class MLManager():
+class MLManager:
     '''ML Manager class whose job is to load in a specified model, and perform
     inference using said model. This is singleton, beucase I do not want multiple
     instances performing infernece bc the inference is run locally and could 
@@ -33,9 +35,10 @@ class MLManager():
             return
         
         self._initalized = True
+        self.model = None
         self._model_type = model_type.lower()
         self._binary_predictor = binary
-        self.model = None
+        self._data_cache = []
 
         # get the filepath to the directory holding the model files
         self._model_dir = Path(__file__).parent.parent.parent.joinpath("models")
@@ -98,28 +101,38 @@ class MLManager():
 
         try: 
             preprocess_data = self._preprocess(data)
-            return self.model.predict(preprocess_data)
+            prediction = self._raw_predict(preprocess_data)
+            return self._post_process(prediction)
         except Exception as e:
             print(f"Failed to make prediction {e}")
 
+
+    def _raw_predict(self, data):
+        if self.model is None:
+            self.load_model()
+
+        return self.model.predict(data)
+
     
-    def _post_process_predict(self, data):
+    def _post_process(self, prediction):
         '''Post-process a prediction made by the model'''
         if self._binary_predictor:
             prediction_mapping  = {
-                0 : {'label' : 'abnormal blood volume', 'suggested_action':'evaluate and consider fluid resuscitation or diuresis'},
-                1 : {'label' : 'euvolemic', 'suggested_action':'monitor and maintain current status'},
+                0 : {'label' : 'abnormal blood volume', 'suggested_action':'evaluate and consider action'},
+                1 : {'label' : 'euvolemic', 'suggested_action':'maintain current status'},
             }
         else:
             prediction_mapping  = {
-                0 : {'label' : 'hypervolemia', 'suggested_action':'consider diuresis or fluid restriction'},
-                1 : {'label' : 'hypovolemia', 'suggested_action':'consider fluid resuscitation'},
-                2 : {'label' : 'euvolemia', 'suggested_action':'monitor and maintain current status'}
+                0 : {'label' : 'hypervolemia', 'suggested_action':'consider diuresis'},
+                1 : {'label' : 'hypovolemia', 'suggested_action':'consider fluid removal'},
+                2 : {'label' : 'euvolemia', 'suggested_action':'maintain current status'}
             }
 
-        prediction = self.predict(data)[0]
-        return prediction_mapping.get(prediction, {"label": "N/A", "suggested_action": "N/A"})
+        return prediction_mapping.get(prediction[0], {"label": "N/A", "suggested_action": "N/A"})
 
+
+    def run_batched_inference(self):
+        pass
 
     def _preprocess(self, data):
         '''Preprocess the inference data to match the model's expected input format.
@@ -171,7 +184,6 @@ class MLManager():
 
         else:
             raise TypeError("Inputted data for preprocessing must be list or dict")
-
 
 
 if __name__ == "__main__":
