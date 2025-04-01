@@ -71,7 +71,7 @@ def send_vitals():
         while True:
             vitals_data = generate_mock_vitals()
             vitals_agent.sendall(encode_vitals(vitals_data))
-            time.sleep(2)
+            time.sleep(0.5)
 
     # stop gracefully
     except (ConnectionRefusedError, BrokenPipeError):

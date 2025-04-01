@@ -6,20 +6,23 @@ import xgboost as xgb
 import joblib
 import numpy as np
 
-class MLManager:
+from PyQt6.QtCore import pyqtSignal, QObject
+
+class MLManager(QObject):
     '''ML Manager class whose job is to load in a specified model, and perform
-    inference using said model. This is singleton, beucase I do not want multiple
+    inference using QObjectsaid model. This is singleton, beucase I do not want multiple
     instances performing infernece bc the inference is run locally and could 
     take up significant resources
     
     Attributes:
         model: The loaded machine learning model
     '''
+    prediction_ready = pyqtSignal(dict)
 
     _instance = None
     _lock = Lock()
 
-    def __new__(cls, model_type='xgb', binary=False):
+    def __new__(cls, model_type='xgb', binary=False, max_cache_size=100):
         '''Ensure only one instance of class is created, following the Singleton pattern'''
         if not cls._instance:
             with cls._lock:
@@ -29,16 +32,20 @@ class MLManager:
         return cls._instance
     
 
-    def __init__(self, model_type='xgb', binary=False):
+    def __init__(self, model_type='xgb', binary=False, max_cache_size=100):
         '''Initalize the MLManager instance (runs only once)'''
         if self._initalized:
             return
         
+        super().__init__()
+
         self._initalized = True
         self.model = None
         self._model_type = model_type.lower()
         self._binary_predictor = binary
-        self._data_cache = []
+
+        # create a cahce for batched inference
+        self._data_cache = deque(maxlen=max_cache_size)
 
         # get the filepath to the directory holding the model files
         self._model_dir = Path(__file__).parent.parent.parent.joinpath("models")
@@ -85,6 +92,34 @@ class MLManager:
             raise FileNotFoundError(f"{self._model_type} file not found")
 
 
+    def add_to_cache(self, data):
+        '''Add the datapoint to the cache for batched inference
+        NOTE: we are using a Deque, meaning that the oldest data will be removed (if the max size is reached)
+        '''
+        self._data_cache.append(data)
+
+
+    def run_batched_inference(self):
+        '''Run batched inference on the cached data'''
+        if self.model is None:
+            self.load_model()
+
+        if len(self._data_cache) == 0:
+            return
+        
+
+        predictions = []
+        print(f"The length of the cache is: {len(self._data_cache)}")
+        for vitals_data in self._data_cache:
+            curr_prediction = self._raw_predict(vitals_data)
+            predictions.append(curr_prediction)
+
+        if predictions:
+            # use a majority vote to determine the final prediction
+            most_common_pred = Counter(predictions).most_common(1)[0][0]
+            self.prediction_ready.emit(self._post_process(most_common_pred))
+
+
     def predict(self, data):
         '''Perform inference using the loaded model
         
@@ -100,8 +135,7 @@ class MLManager:
             self.load_model()
 
         try: 
-            preprocess_data = self._preprocess(data)
-            prediction = self._raw_predict(preprocess_data)
+            prediction = self._raw_predict(data)
             return self._post_process(prediction)
         except Exception as e:
             print(f"Failed to make prediction {e}")
@@ -111,7 +145,8 @@ class MLManager:
         if self.model is None:
             self.load_model()
 
-        return self.model.predict(data)
+        preprocess_data = self._preprocess(data)
+        return self.model.predict(preprocess_data)[0]
 
     
     def _post_process(self, prediction):
@@ -128,11 +163,8 @@ class MLManager:
                 2 : {'label' : 'euvolemia', 'suggested_action':'maintain current status'}
             }
 
-        return prediction_mapping.get(prediction[0], {"label": "N/A", "suggested_action": "N/A"})
+        return prediction_mapping.get(prediction, {"label": "N/A", "suggested_action": "N/A"})
 
-
-    def run_batched_inference(self):
-        pass
 
     def _preprocess(self, data):
         '''Preprocess the inference data to match the model's expected input format.
