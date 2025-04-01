@@ -35,6 +35,10 @@ class VitalsWindow(BaseWindow):
         self._vitals_manager.vitals_data.connect(self._update_vitals)
         self.popup_button.clicked.connect(self._open_popup)
         
+        # connect the pyqt signal for the ml manager to run the inference
+        self._ml_manager.prediction_ready.connect(self._update_inference_fields)
+        self.inference_button.clicked.connect(lambda: self._ml_manager.start_collection(20))
+
         # setup ui components
         self._setup_units()
         self._setup_datetime()
@@ -144,20 +148,16 @@ class VitalsWindow(BaseWindow):
             vitals_data.get('diastolicBP', '')
         )
         self.ppv_value.setText(ppv)
-        data_copy = vitals_data.copy()
-        data_copy['pulsePressure'] = ppv
-        self._set_suggested_actions(data_copy)
+
+        vitals_data['pulsePressure'] = float(vitals_data.get('systolicBP', 0)) - float(vitals_data.get('diastolicBP', 0))
+        self._ml_manager.add_data(vitals_data)
 
 
-    def _set_suggested_actions(self, data): 
-        if self._ml_manager is None:
-            print("ML manager not found, cannot make prediction")
-            return
-
-        prediction = self._ml_manager.predict(data)
+    def _update_inference_fields(self, prediction): 
+        '''set the suggested actions based on the prediction made by the model'''
         self.volume_status_value.setText(prediction['label'])
         self.suggested_action_value.setText(prediction['suggested_action'])
-        
+
 
     def _calculate_ppv(self, systolic, diastolic):
         '''calculates and returns the ppv of a patient'''

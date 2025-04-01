@@ -1,12 +1,14 @@
 from threading import Lock
 from pathlib import Path
-from collections import deque, Counter
+from collections import Counter
 
 import xgboost as xgb
 import joblib
 import numpy as np
 
-class MLManager:
+from PyQt6.QtCore import pyqtSignal, QObject, QTimer
+
+class MLManager(QObject):
     '''ML Manager class whose job is to load in a specified model, and perform
     inference using said model. This is singleton, beucase I do not want multiple
     instances performing infernece bc the inference is run locally and could 
@@ -15,6 +17,7 @@ class MLManager:
     Attributes:
         model: The loaded machine learning model
     '''
+    prediction_ready = pyqtSignal(dict)
 
     _instance = None
     _lock = Lock()
@@ -34,11 +37,19 @@ class MLManager:
         if self._initalized:
             return
         
+        super().__init__()
+
         self._initalized = True
         self.model = None
         self._model_type = model_type.lower()
         self._binary_predictor = binary
+        
         self._data_cache = []
+        self.collecting = False
+
+        self.collection_timer = QTimer(self)
+        self.collection_timer.setSingleShot(True)
+        self.collection_timer.timeout.connect(self._end_collection)
 
         # get the filepath to the directory holding the model files
         self._model_dir = Path(__file__).parent.parent.parent.joinpath("models")
@@ -85,6 +96,49 @@ class MLManager:
             raise FileNotFoundError(f"{self._model_type} file not found")
 
 
+    def add_data(self, data):
+        '''Add data to the collection cache for batched inference'''
+        if self.collecting:
+            self._data_cache.append(data)
+
+
+    def start_collection(self, seconds):
+        '''Start collecting data for batched inference'''
+        print("starting data collection")
+        self._data_cache.clear()
+        self.collecting = True
+        self.collection_timer.start(seconds * 1000) # convert seconds to milliseconds
+
+
+    def _end_collection(self):
+        '''Updated the collecting flag and runs batched infernece'''
+        print("ending data collection")
+        self.collecting = False
+        self.collection_timer.stop()
+        self.run_batched_inference()
+
+
+    def run_batched_inference(self):
+        '''Run batched inference on the cached data'''
+        if self.model is None:
+            self.load_model()
+
+        if len(self._data_cache) == 0:
+            return
+
+        predictions = []
+        for vitals_data in self._data_cache:
+            curr_prediction = self._raw_predict(vitals_data)
+            predictions.append(curr_prediction)
+
+        self._data_cache.clear()
+
+        if predictions:
+            # use a majority vote to determine the final prediction
+            most_common_pred = Counter(predictions).most_common(1)[0][0]
+            self.prediction_ready.emit(self._post_process(most_common_pred))
+
+
     def predict(self, data):
         '''Perform inference using the loaded model
         
@@ -111,7 +165,8 @@ class MLManager:
         if self.model is None:
             self.load_model()
 
-        return self.model.predict(data)
+        preprocess_data = self._preprocess(data)
+        return self.model.predict(preprocess_data)[0]
 
     
     def _post_process(self, prediction):
@@ -128,11 +183,8 @@ class MLManager:
                 2 : {'label' : 'euvolemia', 'suggested_action':'maintain current status'}
             }
 
-        return prediction_mapping.get(prediction[0], {"label": "N/A", "suggested_action": "N/A"})
-
-
-    def run_batched_inference(self):
-        pass
+        return prediction_mapping.get(prediction, {"label": "N/A", "suggested_action": "N/A"})
+    
 
     def _preprocess(self, data):
         '''Preprocess the inference data to match the model's expected input format.
