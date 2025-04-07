@@ -11,3 +11,6 @@ pytest-md==0.2.0
 python-dotenv==0.20.0
 requests==2.32.3
 sqlalchemy==2.0.36
+xgboost==2.1.4
+joblib==1.4.2
+scikit-learn==1.6.1

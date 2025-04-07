@@ -32,7 +32,7 @@ class VitalsWindow(BaseWindow):
         self._pp_min = None
 
         # connect pyqt signals 
-        self._vitals_manager.vitals_data.connect(self._update_vitals)
+        # self._vitals_manager.vitals_data.connect(self._update_vitals)
         self.popup_button.clicked.connect(self._open_popup)
         
         # connect the pyqt signal for the ml manager to run the inference
@@ -89,7 +89,7 @@ class VitalsWindow(BaseWindow):
             self.spo2_units: "%",
             self.blood_pressure_units: "mmHg",
             self.map_units: "mmHg",
-            self.cvp_units: "bpm",
+            self.rr_units: "bpm",
             self.ppv_units: "%",
             self.fluid_volume_units: "mL"
         }
@@ -138,7 +138,7 @@ class VitalsWindow(BaseWindow):
         # Update vital sign display values
         self.heart_rate_value.setText(str(vitals_data.get("heartRate", "")))
         self.map_value.setText(str(vitals_data.get("meanArterialPressure", "")))
-        self.cvp_value.setText(str(vitals_data.get("respiratoryRate", "")))
+        self.rr_value.setText(str(vitals_data.get("respiratoryRate", "")))
         self.blood_pressure_value.setText(f"{vitals_data.get('systolicBP', '')} / {vitals_data.get('diastolicBP', '')}")
         self.spo2_value.setText(str(vitals_data.get("spo2", "")))
 

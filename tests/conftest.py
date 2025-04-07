@@ -12,6 +12,7 @@ if APP_DIR not in sys.path:
 def mock_db():
     '''mocks an instance to the DatabaseManager class'''
     from app.database_manager import DatabaseManager
+    DatabaseManager._instance = None
     os.environ['DATABASE_URL'] = "sqlite:///:memory:"
     mock_database = DatabaseManager()
     mock_database.initdb()
