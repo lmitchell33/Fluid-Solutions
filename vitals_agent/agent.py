@@ -1,7 +1,6 @@
 import socket
 import time
 import random
-from datetime import datetime
 
 from pyasn1.codec.der.encoder import encode
 
@@ -18,7 +17,6 @@ def generate_mock_vitals():
         "systolicBP" : round(random.uniform(90, 130)), 
         "diastolicBP" : round(random.uniform(60, 90)),
         "spo2" : round(random.uniform(95, 100)), 
-        "timestamp" : f"{datetime.now().isoformat()}"
     }
 
 
@@ -26,7 +24,6 @@ def encode_vitals(data):
 
     # These mdc_codes could be wrong, but im not paying for the document to find out
     mdc_codes = {
-        'timestamp': {'mdcCode': None, 'unitCode': None},  # No MDC code for timestamp
         'heartRate': {'mdcCode': 18402, 'unitCode': 264864},  # MDC_PULS_RATE (bpm)
         'meanArterialPressure': {'mdcCode': 18949, 'unitCode': 266016},  # MDC_PRESS_BLD_ART_MEAN (mmHg)
         'spo2': {'mdcCode': 150456, 'unitCode': 262144},  # MDC_PULS_OXIM_SAT_O2 (percentage)
@@ -39,10 +36,6 @@ def encode_vitals(data):
     raw_data = VitalSigns()
 
     for key, value in data.items():
-        if key == 'timestamp':
-            raw_data.setComponentByName(key, value)
-            continue
-
         observation_component = NumericObservation()
 
         # add the mdc and unit codes to the NumericOvservation

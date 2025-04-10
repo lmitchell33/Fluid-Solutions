@@ -67,7 +67,8 @@ class MLManager(QObject):
     def _load_model(self):
         '''Private helper function to load the appropriate model.'''        
         if self._model_type == "xgb":
-            model_file = "xgboost_model.json" if not self._binary_predictor else "xgboost_binary_model.json"
+            # model_file = "xgboost_model.json" if not self._binary_predictor else "xgboost_binary_model.json"
+            model_file = "unsupervised_data_xgboost.json" if not self._binary_predictor else "xgboost_binary_model.json"
             model_path = self._model_dir / model_file
 
             if not model_path.exists():
@@ -173,13 +174,14 @@ class MLManager(QObject):
         It currently handles list inputs and will be extended to support dictionaries.
 
         Expected feature order:
-            0: 'respiratory_rate'
-            1: 'heart_rate'
-            2: 'mean_arterial_pressure'
-            3: 'diastolic_arterial_pressure'
-            4: 'systolic_arterial_pressure'
-            5: 'spo2'
-            6: 'pulse_pressure'
+            0: 'respiratoryRate',
+            1: 'heartRate',
+            2: 'meanArterialPressure',
+            3: 'diastolicBP',
+            4: 'systolicBP',
+            5: 'spo2',
+            6: 'age',
+            7: 'pulsePressure'
         
         Args:
             data (list or dict): Input data to preprocess.
@@ -191,7 +193,8 @@ class MLManager(QObject):
             3: 'diastolicBP',
             4: 'systolicBP',
             5: 'spo2',
-            6: 'pulsePressure'
+            6: 'age',
+            7: 'pulsePressure'
         }
 
         if isinstance(data, dict):
@@ -239,18 +242,18 @@ if __name__ == "__main__":
     # and everyhing that is low as low.
 
     # example row from the data
-    data_low = [17.0, 73.0, 83.0, 55.0, 131.0, 98.0, 76.0]
+    data_low = [17.0, 73.0, 83.0, 55.0, 131.0, 98.0, 45, 76.0]
     # example_test_low = [i+2 for i in data_low]
-    extreme_test_low = [13.0, 60.0, 60, 50, 100, 97.0, 50]
+    extreme_test_low = [13.0, 60.0, 60, 50, 100, 97.0, 45, 50]
 
-    data_high = [13.0, 60.0, 103.0, 75.0, 148.0, 97.0, 73.0]
+    data_high = [13.0, 60.0, 103.0, 75.0, 148.0, 97.0, 45, 73.0]
     # example_test_high = [i+2 for i in data_high]
-    extreme_test_high = [13.0, 60.0, 105, 75, 165, 97.0, 90]
+    extreme_test_high = [13.0, 60.0, 105, 75, 165, 97.0, 45, 90]
 
-    data_noraml = [21.0, 108.0, 76.3, 63.7, 117.4, 94.0, 53.8]
+    data_noraml = [21.0, 108.0, 76.3, 63.7, 117.4, 94.0, 45, 53.8]
     # example_test_normal = [i+2 for i in data_noraml]
 
-    prediction = model.predict(extreme_test_low)[0]
+    prediction = model.predict(extreme_test_low)
     
     if model_type == "xgb":
         print(prediction)

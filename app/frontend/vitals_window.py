@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime
 
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6.QtCore import QTimer, QDateTime, pyqtSlot
@@ -150,6 +151,10 @@ class VitalsWindow(BaseWindow):
             vitals_data.get('diastolicBP', '')
         )
         self.ppv_value.setText(ppv)
+
+        # add pulse pressure and age for inference
+        vitals_data['pulsePressure'] = int(vitals_data['systolicBP']) - int(vitals_data['diastolicBP'])
+        vitals_data['age'] = int((datetime.now().date() - self.patient_state.current_patient.dob).days/365.25)
         self._ml_manager.add_to_cache(vitals_data)
 
 
