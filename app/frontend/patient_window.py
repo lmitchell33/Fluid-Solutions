@@ -46,10 +46,6 @@ class PatientWindow(BaseWindow):
 
     def _search_patient(self):
         '''Searches a patient based on the inputted MRN'''
-        # TODO: Update the logic here based on what we would rather have,
-        # right now it only searches based on MRN but I can add other parameters
-        # The other parameters would be useful if the mrn is not known
-
         mrn = self.mrn_value.text()
 
         if not mrn:
@@ -63,6 +59,7 @@ class PatientWindow(BaseWindow):
             search_success = False
 
         self._handle_search_resposne(search_success)
+        self._setup_autocomplete() # upate the patients in the autocomplete list
 
 
     def _handle_search_resposne(self, success):

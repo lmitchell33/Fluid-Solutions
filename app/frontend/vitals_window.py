@@ -32,7 +32,7 @@ class VitalsWindow(BaseWindow):
         self._pp_min = None
 
         # connect pyqt signals 
-        # self._vitals_manager.vitals_data.connect(self._update_vitals)
+        self._vitals_manager.vitals_data.connect(self._update_vitals)
         self.popup_button.clicked.connect(self._open_popup)
         
         # connect the pyqt signal for the ml manager to run the inference
@@ -66,7 +66,7 @@ class VitalsWindow(BaseWindow):
         
         # display another popup for the user based on if the attemp was successful or not
         if result:
-            self._update_ui()
+            self.total_fluid_value.setText(str(volume))
 
             current_patient = f"{self.patient_state.current_patient.firstname} {self.patient_state.current_patient.lastname}"
             QMessageBox.information(
@@ -123,6 +123,8 @@ class VitalsWindow(BaseWindow):
             return
 
         current_patient = self.patient_state.current_patient
+        self.volume_status_value.setText("")
+        self.suggested_action_value.setText("")
         self.name_value.setText(f"{current_patient.firstname} {current_patient.lastname}")
         self.mrn_value.setText(current_patient.patient_mrn)
         self.total_fluid_value.setText(str(self._fluid_manager.get_total_fluid_volume(current_patient) or ''))
@@ -134,7 +136,7 @@ class VitalsWindow(BaseWindow):
         '''Update the vitals being shown on the page'''
         if not vitals_data:
             return
-        
+
         # Update vital sign display values
         self.heart_rate_value.setText(str(vitals_data.get("heartRate", "")))
         self.map_value.setText(str(vitals_data.get("meanArterialPressure", "")))
