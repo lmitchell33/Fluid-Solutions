@@ -68,8 +68,6 @@ class VitalsWindow(BaseWindow):
         # display another popup for the user based on if the attemp was successful or not
         if result:
             display_volume = self._fluid_manager.get_total_fluid_volume(self.patient_state.current_patient)
-            # display_volume = float(self._fluid_manager.get_total_fluid_volume(self.patient_state.current_patient)) + float(volume)
-            # print(f" {self._fluid_manager.get_total_fluid_volume(self.patient_state.current_patient)} + {volume} = {display_volume}")
             self.total_fluid_value.setText(str(display_volume))
 
             current_patient = f"{self.patient_state.current_patient.firstname} {self.patient_state.current_patient.lastname}"
