@@ -76,6 +76,18 @@
                             </property>
                         </widget>
                     </item>
+                    <item>
+                        <widget class="QLabel" name="units">
+                            <property name="text">
+                                <string>mL</string>
+                            </property>
+                            <property name="font">
+                                <font>
+                                    <pointsize>14</pointsize>
+                                </font>
+                            </property>
+                        </widget>
+                    </item>
                 </layout>
             </item>
 

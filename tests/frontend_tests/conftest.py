@@ -23,3 +23,10 @@ def patch_patient_manager(mock_db):
     # NOTE: This is only becuase the DatabaseManager is the result of a tree of imports into the patient window
     with patch("backend.managers.patient_manager.DatabaseManager", return_value=mock_db):
         yield mock_db
+
+
+@pytest.fixture(scope="module")
+def patch_fluid_manager(mock_db):
+    '''Patches the DatabaseManager declaration in the FluidManager class'''
+    with patch("backend.managers.fluid_manager.DatabaseManager", return_value=mock_db):
+        yield mock_db

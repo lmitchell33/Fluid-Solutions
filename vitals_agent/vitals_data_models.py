@@ -9,7 +9,6 @@ class NumericObservation(univ.Sequence):
 
 class VitalSigns(univ.Sequence):
     componentType = namedtype.NamedTypes(
-        namedtype.NamedType('timestamp', char.UTF8String()),
         namedtype.NamedType('heartRate', NumericObservation()),
         namedtype.NamedType('meanArterialPressure', NumericObservation()),
         namedtype.NamedType('spo2', NumericObservation()),

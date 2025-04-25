@@ -114,10 +114,7 @@ class VitalsManager(QObject):
 
             # loop throuhg the data sent (pyasn1 bytes) and place it into a dict for further processing
             for field in decoded_data:
-                if field == 'timestamp':
-                    data['timestamp'] = str(decoded_data[field])
-                else:
-                    data[field] = str(decoded_data[field]['value'])
+                data[field] = str(decoded_data[field]['value'])
 
             return data
         except Exception as e:

@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QCompleter, QListView
 from PyQt6.QtCore import Qt
 
+from backend.managers.patient_manager import PatientManager
+
 class AutoComplete(QCompleter):
     def __init__(self, patients, options):
         super().__init__()
@@ -11,6 +13,8 @@ class AutoComplete(QCompleter):
         self.setPopup(QListView())
         self.popup().setMinimumHeight(200)
         self.setMaxVisibleItems(5) 
+
+        self._patient_manager = PatientManager()
 
 
         self.options_map = {option: patient.patient_mrn for option, patient in zip(options, patients)}

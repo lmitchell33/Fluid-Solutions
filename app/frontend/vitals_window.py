@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime
 
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6.QtCore import QTimer, QDateTime, pyqtSlot
@@ -23,7 +24,7 @@ class VitalsWindow(BaseWindow):
         # initalize backend managers
         self._fluid_manager = FluidManager()
         self._vitals_manager = VitalsManager()
-        self._ml_manager = MLManager(model_type='xgb')
+        self._ml_manager = MLManager(model_type='xgb', binary=False, max_cache_size=100)
         self._ml_manager.load_model()
 
         # used to better represent the open/close state of the popup and precent duplicates
@@ -34,6 +35,10 @@ class VitalsWindow(BaseWindow):
         # connect pyqt signals 
         self._vitals_manager.vitals_data.connect(self._update_vitals)
         self.popup_button.clicked.connect(self._open_popup)
+        
+        # connect the pyqt signal for the ml manager to run the inference
+        self._ml_manager.prediction_ready.connect(self._update_inference_fields)
+        self.inference_button.clicked.connect(self._ml_manager.run_batched_inference)
         
         # setup ui components
         self._setup_units()
@@ -62,7 +67,8 @@ class VitalsWindow(BaseWindow):
         
         # display another popup for the user based on if the attemp was successful or not
         if result:
-            self._update_ui()
+            display_volume = self._fluid_manager.get_total_fluid_volume(self.patient_state.current_patient)
+            self.total_fluid_value.setText(str(display_volume))
 
             current_patient = f"{self.patient_state.current_patient.firstname} {self.patient_state.current_patient.lastname}"
             QMessageBox.information(
@@ -85,7 +91,7 @@ class VitalsWindow(BaseWindow):
             self.spo2_units: "%",
             self.blood_pressure_units: "mmHg",
             self.map_units: "mmHg",
-            self.cvp_units: "bpm",
+            self.rr_units: "bpm",
             self.ppv_units: "%",
             self.fluid_volume_units: "mL"
         }
@@ -119,6 +125,8 @@ class VitalsWindow(BaseWindow):
             return
 
         current_patient = self.patient_state.current_patient
+        self.volume_status_value.setText("")
+        self.suggested_action_value.setText("")
         self.name_value.setText(f"{current_patient.firstname} {current_patient.lastname}")
         self.mrn_value.setText(current_patient.patient_mrn)
         self.total_fluid_value.setText(str(self._fluid_manager.get_total_fluid_volume(current_patient) or ''))
@@ -130,11 +138,11 @@ class VitalsWindow(BaseWindow):
         '''Update the vitals being shown on the page'''
         if not vitals_data:
             return
-        
+
         # Update vital sign display values
         self.heart_rate_value.setText(str(vitals_data.get("heartRate", "")))
         self.map_value.setText(str(vitals_data.get("meanArterialPressure", "")))
-        self.cvp_value.setText(str(vitals_data.get("respiratoryRate", "")))
+        self.rr_value.setText(str(vitals_data.get("respiratoryRate", "")))
         self.blood_pressure_value.setText(f"{vitals_data.get('systolicBP', '')} / {vitals_data.get('diastolicBP', '')}")
         self.spo2_value.setText(str(vitals_data.get("spo2", "")))
 
@@ -144,17 +152,15 @@ class VitalsWindow(BaseWindow):
             vitals_data.get('diastolicBP', '')
         )
         self.ppv_value.setText(ppv)
-        data_copy = vitals_data.copy()
-        data_copy['pulsePressure'] = ppv
-        self._set_suggested_actions(data_copy)
+
+        # add pulse pressure and age for inference
+        vitals_data['pulsePressure'] = int(vitals_data['systolicBP']) - int(vitals_data['diastolicBP'])
+        vitals_data['age'] = int((datetime.now().date() - self.patient_state.current_patient.dob).days/365.25)
+        self._ml_manager.add_to_cache(vitals_data)
 
 
-    def _set_suggested_actions(self, data): 
-        if self._ml_manager is None:
-            print("ML manager not found, cannot make prediction")
-            return
-
-        prediction = self._ml_manager.predict(data)
+    def _update_inference_fields(self, prediction): 
+        '''set the suggested actions based on the prediction made by the model'''
         self.volume_status_value.setText(prediction['label'])
         self.suggested_action_value.setText(prediction['suggested_action'])
         

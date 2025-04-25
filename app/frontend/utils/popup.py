@@ -1,4 +1,6 @@
 import sys
+from pathlib import Path
+
 from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6.QtCore import pyqtSignal
 from PyQt6 import uic
@@ -10,7 +12,8 @@ class PopupForm(QWidget):
 
     def __init__(self):
         super().__init__()
-        uic.loadUi("./frontend/views/popup.ui", self)
+        POPUP_PATH = Path(__file__).resolve().parents[2] / "frontend/views/popup.ui"
+        uic.loadUi(f"{POPUP_PATH}", self)
 
         self.fluid_manager = FluidManager()
         self._populate_fluids_dropdown()

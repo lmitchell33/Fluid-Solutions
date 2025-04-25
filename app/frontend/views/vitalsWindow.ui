@@ -405,7 +405,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
 
       <!-- Textbox for CVP -->
     <item row="5" column="7">
-     <widget class="QLineEdit" name="cvp_value">
+     <widget class="QLineEdit" name="rr_value">
       <property name="styleSheet">
         <string notr="true">font-size: 24px;</string>
       </property>
@@ -420,7 +420,7 @@ font: 36pt &quot;Times New Roman&quot;;</string>
 
       <!-- Units for CVP -->
     <item row="5" column="8">
-      <widget class="QLabel" name="cvp_units">
+      <widget class="QLabel" name="rr_units">
         <property name="styleSheet">
           <string notr="true">font-size: 18px;</string>
         </property>
