@@ -1,4 +1,3 @@
-from threading import Lock
 from pathlib import Path
 from collections import deque, Counter
 
@@ -10,36 +9,22 @@ from PyQt6.QtCore import pyqtSignal, QObject
 
 class MLManager(QObject):
     '''ML Manager class whose job is to load in a specified model, and perform
-    inference using QObjectsaid model. This is singleton, beucase I do not want multiple
-    instances performing infernece bc the inference is run locally and could 
-    take up significant resources
+    inference.
     
     Attributes:
         model: The loaded machine learning model
     '''
     prediction_ready = pyqtSignal(dict)
 
-    _instance = None
-    _lock = Lock()
-
-    def __new__(cls, model_type='xgb', binary=False, max_cache_size=100):
-        '''Ensure only one instance of class is created, following the Singleton pattern'''
-        if not cls._instance:
-            with cls._lock:
-                cls._instance = super(MLManager, cls).__new__(cls)
-                cls._instance._initalized = False
-        
-        return cls._instance
-    
-
     def __init__(self, model_type='xgb', binary=False, max_cache_size=100):
-        '''Initalize the MLManager instance (runs only once)'''
-        if self._initalized:
-            return
+        '''Initalize the MLManager instance (runs only once)
         
+        Args:
+            model_type {str} -- The type of model to load. Currently supports 'xgb' and 'rf'. Default is 'xgb'.
+            binary {bool} -- Whether binary or ternary classificaiton model should be loaded. Default is Ternary.
+            max_cache_size {int} -- The maximum size of the cache for batched inference.
+        '''        
         super().__init__()
-
-        self._initalized = True
         self.model = None
         self._model_type = model_type.lower()
         self._binary_predictor = binary
@@ -55,17 +40,17 @@ class MLManager(QObject):
 
     def load_model(self):
         '''Load the specified model if not already loaded'''
-        if self.model is not None:
+        if self.model:
             return
         
         try:
             self.model = self._load_model()
         except Exception as e:
             raise RuntimeError(f"Failed to load {self._model_type} model: {e}")
-    
+
 
     def _load_model(self):
-        '''Private helper function to load the appropriate model.'''        
+        '''Util method to load the appropriate model.'''        
         if self._model_type == "xgb":
             # model_file = "xgboost_model.json" if not self._binary_predictor else "xgboost_binary_model.json"
             model_file = "unsupervised_data_xgboost.json" if not self._binary_predictor else "xgboost_binary_model.json"
@@ -94,9 +79,7 @@ class MLManager(QObject):
 
 
     def add_to_cache(self, data):
-        '''Add the datapoint to the cache for batched inference
-        NOTE: we are using a Deque, meaning that the oldest data will be removed (if the max size is reached)
-        '''
+        '''Add the datapoint to the cache for batched inference'''
         self._data_cache.append(data)
 
 
@@ -107,8 +90,8 @@ class MLManager(QObject):
 
         if len(self._data_cache) == 0:
             return
-        
 
+        # batched inference using majority voting to determine the final prediction
         predictions = []
         print(f"The length of the cache is: {len(self._data_cache)}")
         for vitals_data in self._data_cache:
@@ -128,7 +111,7 @@ class MLManager(QObject):
             data: Input data for prediction in the format expected by the model
 
         Returns:
-            Model Prediction {dict} -- key:val => label:suggested action 
+            Model Prediction {dict} -- label:suggested action 
             where label = low, high, normal (or normal vs. not normal) 
             and suggested action = administer fluid etc...
         '''
@@ -143,6 +126,7 @@ class MLManager(QObject):
 
 
     def _raw_predict(self, data):
+        '''Perform inference using the loaded model without post-processing'''
         if self.model is None:
             self.load_model()
 
@@ -159,8 +143,8 @@ class MLManager(QObject):
             }
         else:
             prediction_mapping  = {
-                0 : {'label' : 'hypervolemia', 'suggested_action':'consider diuresis'},
-                1 : {'label' : 'hypovolemia', 'suggested_action':'consider fluid removal'},
+                0 : {'label' : 'hypervolemia', 'suggested_action':'consider fluid removal'},
+                1 : {'label' : 'hypovolemia', 'suggested_action':'consider fluid administration'},
                 2 : {'label' : 'euvolemia', 'suggested_action':'maintain current status'}
             }
 
@@ -172,17 +156,10 @@ class MLManager(QObject):
     
         The function ensures data is structured correctly for inference.
         It currently handles list inputs and will be extended to support dictionaries.
-
-        Expected feature order:
-            0: 'respiratoryRate',
-            1: 'heartRate',
-            2: 'meanArterialPressure',
-            3: 'diastolicBP',
-            4: 'systolicBP',
-            5: 'spo2',
-            6: 'age',
-            7: 'pulsePressure'
         
+        expected array shape for the batched inference is:
+        [[14. 91. 90. 63. 81. 96.  0. 18.]]
+
         Args:
             data (list or dict): Input data to preprocess.
         '''
@@ -200,14 +177,17 @@ class MLManager(QObject):
         if isinstance(data, dict):
             features = []
             for idx, feature_name in feature_map.items():
-                # iterate through the vitals and insert the features into their correct positions
+                # iterate through the vitals and manually put the features into their correct positions
                 features.insert(idx, float(data.get(feature_name, 0)))
 
-            # this array will be in an invalid shapes
+            # reshape the array to match the model's expected input
             array = np.array(features).reshape(1, -1)
             return array
 
+        # must convert data to numpy array and check its dimensions to match
+        # what we trained the model with
         elif isinstance(data, list):
+            # just assuming the data is in the correct order
             array = np.array(data, dtype=float)
             if array.ndim == 1:
                 array = array.reshape(1, -1)
@@ -222,24 +202,15 @@ class MLManager(QObject):
 
 
 if __name__ == "__main__":
-    # test see if this actually works:
     model_type = "xgb"
     model = MLManager(model_type=model_type)
     model.load_model()
-
-    # high -> 0 -> when BVS is high, fluid must be taken away -> bp is low 
-    # low -> 1 -> when BVS is low, fluid must be given -> bp is high
-    # normal -> 2 -> when BVS normal, nothing happens - bp is normal
 
     output_mapping = {
         0 : "high",
         1 : "low",
         2 : "normal"
     }
-
-    # It seems that the base random forest model is doing a horrible job of picking
-    # up on the trends of this data, it typically classifies everything that is high
-    # and everyhing that is low as low.
 
     # example row from the data
     data_low = [17.0, 73.0, 83.0, 55.0, 131.0, 98.0, 45, 76.0]

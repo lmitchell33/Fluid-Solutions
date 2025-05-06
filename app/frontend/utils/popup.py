@@ -5,17 +5,15 @@ from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6.QtCore import pyqtSignal
 from PyQt6 import uic
 
-from backend.managers.fluid_manager import FluidManager
-
 class PopupForm(QWidget):
     form_submitted = pyqtSignal(str, float)
 
-    def __init__(self):
+    def __init__(self, fluid_manager):
         super().__init__()
         POPUP_PATH = Path(__file__).resolve().parents[2] / "frontend/views/popup.ui"
         uic.loadUi(f"{POPUP_PATH}", self)
 
-        self.fluid_manager = FluidManager()
+        self._fluid_manager = fluid_manager
         self._populate_fluids_dropdown()
 
         self.submit_button.clicked.connect(self.submit_form)
@@ -23,9 +21,8 @@ class PopupForm(QWidget):
 
     def _populate_fluids_dropdown(self):
         '''Automatically populate the list of fluid names with those stored in the db'''
-        fluids_dropdown = self.fluids_dropdown
-        fluid_names = self.fluid_manager.get_all_fluid_names()
-        fluids_dropdown.addItems(fluid_names)
+        fluid_names = self._fluid_manager.get_all_fluid_names()
+        self.fluids_dropdown.addItems(fluid_names) # fluid dropdowns comes from the .ui file
 
 
     def submit_form(self):

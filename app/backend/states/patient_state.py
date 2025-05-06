@@ -16,24 +16,21 @@ class PatientState(QObject):
     property in the BaseWindow class, however, this was redundant and had
     unnecessary overhead. 
 
-    I also got this idea from the concept of states in React.
+    I got this idea from the concept of states in React.
 
     Methods:
         get_current_patient() - returns the current patient
         set_current_patient(new_patient) - updates the current patient
     '''
-    # NOTE: we dont need any arguments here
     patient_changed = pyqtSignal()
 
-    # private class members, used to ensure threadsafe, singleton behavior
     _instance = None
-    _lock = Lock() # threadlock the patient state
+    _lock = Lock() # ensure thread safety
     
     def __new__(cls):
         '''Called before the __init__ method. Uses a Singleton pattern similar
         to the DatabaseManager class.
         '''
-        # if cls._instance is None:
         if not cls._instance:
             with cls._lock:
                 cls._instance = super(PatientState, cls).__new__(cls)

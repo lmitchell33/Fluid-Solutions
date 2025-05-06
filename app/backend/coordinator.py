@@ -1,22 +1,16 @@
-from backend.managers.fluid_manager import FluidManager
-from backend.managers.patient_manager import PatientManager
-from backend.managers.api_manager import EpicAPIManager
-
 class Coordinator:
     '''Coordinator class used to centralize workflows that involve multiple 
     classes in the frontend This is not meant to repalce business logic or the
     managers themselves.
-    
-    NOTE: Consider making this class a singleton.
 
     Methods:
         pass
     '''
 
-    def __init__(self):
-        self._fluid_manager = FluidManager()
-        self._api = EpicAPIManager()
-        self._patient_manager = PatientManager()
+    def __init__(self, fluid_manager, api_manager, patient_manager):
+        self._fluid_manager = fluid_manager
+        self._api = api_manager
+        self._patient_manager = patient_manager
 
     
     def get_or_create_patient(self, patient_mrn):
@@ -25,11 +19,11 @@ class Coordinator:
         if (patient := self._patient_manager.get_patient_by_mrn(patient_mrn)):
             return patient
 
-        # if no patient is found in the search return None 
+        # if no patient is found in the external search return None 
         if not (raw_patient_data := self._api.search_patient(_id=patient_mrn)):
             return None
 
-        # if a patient was found, add it to the database and return the patient instance
+        # if a patient was found in the external search, add it to the database and return the new patient obj
         return self._patient_manager.create_patient_from_epic(raw_patient_data)
         
 
@@ -45,7 +39,6 @@ class Coordinator:
         # find the inactive patietns
         inactive_patients = self._api.get_inactive_patients(patients)
 
-        # handle errors
         if not inactive_patients:
             print("No inactive patients to remove")
             return

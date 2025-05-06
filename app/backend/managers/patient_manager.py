@@ -1,7 +1,6 @@
 from datetime import datetime
 from threading import Lock
 
-from database_manager import DatabaseManager
 from database_models import Patient
 
 class PatientManager:
@@ -10,27 +9,9 @@ class PatientManager:
     Methods:
         pass
     '''
-    _instance = None
-    _lock = Lock()
-
-    def __new__(cls):
-        '''Ensure only one instance of class is created, following the Singleton pattern'''
-        if not cls._instance:
-            with cls._lock:
-                cls._instance = super(PatientManager, cls).__new__(cls)
-                cls._instance._initalized = False
-        
-        return cls._instance
-    
-
-    def __init__(self):
-
-        if self._initalized:
-            return
-        
+    def __init__(self, db_manager): 
         self._initalized = True
-        
-        self._db = DatabaseManager()
+        self._db = db_manager
 
 
     def create_patient_from_epic(self, raw_patient_data):

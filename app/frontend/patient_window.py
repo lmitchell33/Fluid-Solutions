@@ -6,9 +6,6 @@ from PyQt6.QtCore import QStringListModel
 from frontend.base_window import BaseWindow
 from frontend.utils.autocomplete import AutoComplete
 
-from backend.coordinator import Coordinator
-from backend.managers.patient_manager import PatientManager
-
 class PatientWindow(BaseWindow):
     '''
     BaseWindow inherited class to display and handle the logic for the patient window.
@@ -17,11 +14,11 @@ class PatientWindow(BaseWindow):
         None
     '''
     
-    def __init__(self, ui_file):
+    def __init__(self, ui_file, coordinator, patient_manager):
         '''Constructor for the PatientWindow class, loads the vitals .ui file'''
         super().__init__(ui_file)
-        self._coordinator = Coordinator()
-        self._patient_manager = PatientManager()
+        self._coordinator = coordinator
+        self._patient_manager = patient_manager
     
         self.search_patient.clicked.connect(self._search_patient)
         self._setup_autocomplete()
@@ -52,14 +49,13 @@ class PatientWindow(BaseWindow):
             self._handle_search_resposne(False)
             return
 
-        if patient := self._coordinator.get_or_create_patient(mrn):
+        # if the patient is found, update the current patient state
+        patient = self._coordinator.get_or_create_patient(mrn)
+        if patient:
             self.patient_state.current_patient = patient
-            search_success = True
-        else:
-            search_success = False
 
-        self._handle_search_resposne(search_success)
-        self._setup_autocomplete() # upate the patients in the autocomplete list
+        self._handle_search_resposne(bool(patient))
+        self._setup_autocomplete() # reload the autocomplete options
 
 
     def _handle_search_resposne(self, success):
@@ -79,10 +75,13 @@ class PatientWindow(BaseWindow):
 
 
     def _setup_autocomplete(self):
+        '''Sets up the autocomplete for the MRN input field'''
+        
+        # get a list of all patient then format the strings for the autocomplete
         patients = self._patient_manager.get_all_patients()
         options = [f"{patient.firstname} {patient.lastname} - {patient.patient_mrn}" for patient in patients]
 
-        completer = AutoComplete(patients, options)
+        completer = AutoComplete(patients, options, self._patient_manager)
         completer.setModel(QStringListModel(options))
         self.mrn_value.setCompleter(completer)
 

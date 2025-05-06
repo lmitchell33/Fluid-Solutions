@@ -1,7 +1,5 @@
 from datetime import datetime
-from threading import Lock
 
-from database_manager import DatabaseManager
 from database_models import Fluid, FluidRecord
 
 class FluidManager:
@@ -13,26 +11,8 @@ class FluidManager:
         add_record(patient_id, fluid_name, amount_ml) - adds a fluidrecord to a patient
         get_total_fluid_volume(patient_id) - returns the total fluid volume administered to a patient
     '''
-
-    _instance = None
-    _lock = Lock()
-
-    def __new__(cls):
-        '''Ensure only one instance of class is created, following the Singleton pattern'''
-        if not cls._instance:
-            with cls._lock:
-                cls._instance = super(FluidManager, cls).__new__(cls)
-                cls._instance._initalized = False
-        
-        return cls._instance
-    
-    def __init__(self):
-        
-        if self._initalized:
-            return
-        
-        self._initalized = True
-        self._db = DatabaseManager()
+    def __init__(self, db_manager): 
+        self._db = db_manager
 
 
     def add_record(self, patient, fluid_name, amount_ml):
@@ -54,17 +34,14 @@ class FluidManager:
             with self._db.session_context() as db:
                 fluid = db.query(Fluid).filter_by(name=fluid_name).first()
                 
-                # if the fluid is not found, create one and add it to the database
+                # if the fluid is not found, create one
                 if not fluid:
                     fluid = Fluid(name=fluid_name)
                     db.add(fluid)
 
-                # create a new fluid record and assign it
+                # create a new fluid record and assign it to the patient and fluid
                 new_fluid_record = FluidRecord(fluid_time_given=datetime.now(), amount_ml=amount_ml, fluid=fluid, patient=patient)
-                
-                # have to commit the new fluid record before preforming appends
                 db.add(new_fluid_record)
-                db.commit()
 
                 fluid.fluid_records.append(new_fluid_record)
                 patient.fluid_records.append(new_fluid_record)
@@ -84,21 +61,18 @@ class FluidManager:
         
         Args:
             patient {Patient} -- The unique db id of the patient for whom the total fluid volume is administered to
-
-        Kwargs:
-            fluid {str} -- Name of the specific fluid to query, if not None
+            fluid {str} -- Name of the specific fluid to query, default to None
 
         Returns:
             sum {int} -- total fluid volume (mL) administered to the patient    
         '''
         try:
-            with self._db.session_context() as db:
-                records = patient.fluid_records
+            records = patient.fluid_records
             
-                if fluid:
-                    records = [record for record in records if record.fluid.name == fluid]
+            if fluid:
+                records = [record for record in records if record.fluid.name == fluid]
                 
-                return sum([record.amount_ml for record in records])
+            return sum([record.amount_ml for record in records])
                 
         except Exception as e:
             print(f"Failed to get the total fluid volume {e}")

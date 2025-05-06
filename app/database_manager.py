@@ -4,7 +4,7 @@ from threading import Lock
 from datetime import datetime
 from pathlib import Path
 
-from sqlalchemy import StaticPool, create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 from database_models import Fluid, Base, Patient
@@ -102,13 +102,13 @@ class DatabaseManager:
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         
+        # seed with dummy patient for testing 
         self._session.add(Patient(firstname="Jackson", lastname="Jewell", patient_mrn="1", gender="female", weight_kg=500.0, height_cm=100.0, dob=datetime.now().date()))
-
+        
+        # seed with all potential fluid names
         self._populate_fluid_names(BASE_DIR + "/utils/fluid_names.txt")
 
         self._session.commit()
-
-        # Add a list of Fluids to the database
         print("Successfully intialized database")
 
 
@@ -146,7 +146,7 @@ class DatabaseManager:
 
 
     def _create_session(self):
-        '''Private helper function to create a scoped session'''    
+        '''util method to create a scoped session'''    
         if not self._session:
             self._engine = create_engine(self._database_url)        
             self._SessionFactory = sessionmaker(self._engine) # create a persistent session
@@ -154,7 +154,7 @@ class DatabaseManager:
 
 
     def _populate_fluid_names(self, filepath):
-        '''private util method to populate the database with fluid names'''
+        '''util method to populate the database with fluid names'''
         with open(filepath, "r") as fluid_names:
             for name in fluid_names:
                 fluid_name = name.strip()

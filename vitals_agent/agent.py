@@ -14,8 +14,8 @@ def generate_mock_vitals():
         "heartRate" : round(random.uniform(60, 100)), 
         "meanArterialPressure" : round(random.uniform(70, 105)), 
         "respiratoryRate" : round(random.uniform(12, 20)), 
-        "systolicBP" : round(random.uniform(100, 140)), 
-        "diastolicBP" : round(random.uniform(70, 110)),
+        "systolicBP" : round(random.uniform(80, 110)), 
+        "diastolicBP" : round(random.uniform(50, 80)),
         "spo2" : round(random.uniform(95, 100)), 
     }
 

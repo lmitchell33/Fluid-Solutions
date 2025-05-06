@@ -1,5 +1,5 @@
 import socket
-from threading import Thread, Lock
+from threading import Thread
 from concurrent.futures import ThreadPoolExecutor
 
 from PyQt6.QtCore import pyqtSignal, QObject
@@ -13,30 +13,13 @@ class VitalsManager(QObject):
     send it to the frontend for visualization and backend for ML inference.
 
     The data this class receives and processes may not be real, however it will
-    mimic IEEE 11073 Protocol (Medical Device Communication) as it is the 
-    international standard for all medical device communication. This class 
+    mimic IEEE 11073 Protocol (Medical Device Communication) as it is an 
+    international standard for medical device communication. This class 
     very loosly follows this standard, implementing asn.1 modeled communication.
     '''
     vitals_data = pyqtSignal(dict)
 
-    _instance = None
-    _lock = Lock()
-
-    def __new__(cls):
-        '''Ensure only one instance of class is created, following the Singleton pattern'''
-        if not cls._instance:
-            with cls._lock:
-                cls._instance = super(VitalsManager, cls).__new__(cls)
-                cls._instance._initalized = False
-        
-        return cls._instance
-
-
-    def __init__(self, host="0.0.0.0", port=8080, max_workers=5):
-        if self._initalized:
-            return
-        
-        self._initalized = True
+    def __init__(self, host="0.0.0.0", port=8080, max_workers=5):        
         super().__init__()
         self.host = host
         self.port = port
@@ -49,9 +32,7 @@ class VitalsManager(QObject):
 
     def start_server(self):
         '''Starts the server to listen for medical devices'''
-        # Start the server and listen for medical devices on the socket (stream)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # this allows quick rebinding
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
         
@@ -66,7 +47,8 @@ class VitalsManager(QObject):
         '''Listen for incoming clients'''
         while self._running:
             try:
-                self.server_socket.settimeout(2) # avoid blocking
+                # timeout after 5 seconds, avoid blocking
+                self.server_socket.settimeout(5)
                 conn, addr = self.server_socket.accept()
                 self._handle_clients(conn)
             
@@ -79,7 +61,8 @@ class VitalsManager(QObject):
     
     def _handle_clients(self, connection):
         '''Hanldes a client connection'''
-        connection.settimeout(5) # prevent hanging connections
+        # if no data is received within 5 seconds, close the connection
+        connection.settimeout(5) 
         
         try:
             while self._running:

@@ -21,18 +21,20 @@ class Router(QStackedWidget):
     """
 
     def __init__(self, *windows):
-        '''Constructor for the Router, creates and adds all windows 
-        to the QStackedWidget. Also sets up the button click connections to 
-        handle the physical routing between the windows
+        '''
+        Constructor for the Router, creates and adds all windows 
+        to the QStackedWidget. Also sets up the button connections to 
+        handle the physical routing between the windows. Takes any number of args
+        (windows) to be added to the router.
         '''
         super().__init__()
 
-        # set the tital of the app itself to be 
+        # set the tital of the app itself
         self.setWindowTitle("Fluid Solutions")
         self._windows = windows
 
         try:
-            # add each widget to the stacked widget
+            # add each widget passed in to the stacked widget
             for window in self._windows:
                 self.addWidget(window)
         except Exception as e:
@@ -51,11 +53,9 @@ class Router(QStackedWidget):
                 routing_button = window.get_routing_button()
 
                 if routing_button:
-                    button = routing_button
-                    
-                    if button:
-                        # when the button is clicked, display the window it routes to
-                        button.clicked.connect(lambda _, curr_window=window: self.show_window(curr_window.routes_to))
+                    # when the button is clicked, display the window it routes to
+                    # the _ is a boolean value I dont care about
+                    routing_button.clicked.connect(lambda _, curr_window=window: self.show_window(curr_window.routes_to))
         
         except Exception as e:
             # catchall
@@ -71,6 +71,7 @@ class Router(QStackedWidget):
         Returns:
             None
         ''' 
+        # dont let the user switch to the vitals window if there is no patient selected
         if isinstance(window, VitalsWindow):
             if not window.patient_state.current_patient:
                 QMessageBox.warning(

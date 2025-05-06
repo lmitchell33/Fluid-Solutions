@@ -2,12 +2,11 @@ import os
 import requests
 import time
 from xml.etree import ElementTree
-from threading import Lock
 
 from backend.epic.auth.auth import get_access_token, create_jwt
 
 class EpicAPIManager:
-    '''Singleton class to manage the Epic API requests. 
+    '''Class to manage the Epic API requests.
     
     Properties:
         access_token {str} -- access token for the Epic API session. Typically valid for 3600 seconsd.
@@ -17,35 +16,19 @@ class EpicAPIManager:
         get_patient_data(patient_id) -- get patient data from Epic 
         get_patient_vitals(observation_id) -- get patient vitals from Epic
         get_inactive_patients(patients) -- get a list of patients who are inactive
-    '''
-    _instance = None
-    _lock = Lock()
-
-    def __new__(cls):
-        '''Ensure only one instance of class is created, following the Singleton pattern'''
-        if not cls._instance:
-            with cls._lock:
-                cls._instance = super(EpicAPIManager, cls).__new__(cls)
-                cls._instance._initalized = False
-        
-        return cls._instance
-    
+    '''    
     def __init__(self):
         '''Initialize the API Manager, ensuring initialization is done only once.'''
-        if self._initalized:
-            return
-        
-        self._initalized = True
 
         # urls for each of the Epic API endpoints we are using
         self.search_patient_url = os.getenv("SEARCH_PATIENT_URL")
         self.vitals_url = os.getenv("READ_VITALS_URL")
         self.read_patient_url = os.getenv("READ_PATIENT_URL")
 
-        # private variables to hold auth information for the session
-        self._jwt = create_jwt()  # jwt for the session
-        self._access_token = None # access token for the session
-        self._access_token_expr = None # expiration time for the access token
+        # auth info for the session
+        self._jwt = create_jwt()  
+        self._access_token = None 
+        self._access_token_expr = None 
 
         # specify the headers for each request
         self.headers = {
@@ -56,7 +39,10 @@ class EpicAPIManager:
 
     @property
     def access_token(self):
-        '''Property of the class to get the access token and ensure its not expired'''
+        '''
+        Property of the class to get the access token and ensure its not expired.
+        This always ensures that we have a valid access token before making any requests
+        '''
         
         # check if the token is expired and get a new one if it is
         if (not self._access_token) or (time.time() >= self._access_token_expr):
@@ -72,7 +58,7 @@ class EpicAPIManager:
         
         epic_auth_response = get_access_token(self._jwt)
 
-        # parse epic's OAuth endpoint response to get the info we need
+        # set the token and the token's expiration time based on the response
         self._access_token = epic_auth_response.get("access_token", "")
         self._access_token_expr = time.time() + epic_auth_response.get("expires_in", "")
 
@@ -117,6 +103,7 @@ class EpicAPIManager:
 
             patient = {}
 
+            # parse the xml response from epic
             xml = response.content
             tree = ElementTree.fromstring(xml)
 

@@ -7,27 +7,22 @@ from PyQt6.QtCore import QTimer, QDateTime, pyqtSlot
 from frontend.base_window import BaseWindow
 from frontend.utils.popup import PopupForm
 
-from backend.managers.fluid_manager import FluidManager
-from backend.managers.vitals_manager import VitalsManager
-from backend.managers.ml_manager import MLManager
-
 class VitalsWindow(BaseWindow):
     '''
     BaseWindow inherited class to display and handle the logic for the vitals window.
     '''
 
-    def __init__(self, ui_file):
+    def __init__(self, ui_file, fluid_manager, vitals_manager, ml_manager):
         '''Constructor for the VitalsWindow class, loads the vitals .ui file'''
-        # pass the filepath for the vitals window ui file into the BaseWindow for displaying
         super().__init__(ui_file)
 
         # initalize backend managers
-        self._fluid_manager = FluidManager()
-        self._vitals_manager = VitalsManager()
-        self._ml_manager = MLManager(model_type='xgb', binary=False, max_cache_size=100)
+        self._fluid_manager = fluid_manager
+        self._vitals_manager = vitals_manager
+        self._ml_manager = ml_manager
         self._ml_manager.load_model()
 
-        # used to better represent the open/close state of the popup and precent duplicates
+        # used to better represent the open/close state of the popup and ppv 
         self.popup = None
         self._pp_max = None
         self._pp_min = None
@@ -48,7 +43,7 @@ class VitalsWindow(BaseWindow):
     def _open_popup(self):
         '''Util funciton to open a popup and handle the logic/submission of the popup'''
         if not self.popup or not self.popup.isVisible():
-            self.popup = PopupForm()
+            self.popup = PopupForm(self._fluid_manager)
             self.popup.show()
             self.popup.form_submitted.connect(self._handle_popup_submission)
 
@@ -132,7 +127,7 @@ class VitalsWindow(BaseWindow):
         self.total_fluid_value.setText(str(self._fluid_manager.get_total_fluid_volume(current_patient) or ''))
 
 
-    # I used a slot bc it supposedly increases memory efficieny and performance
+    # slot supposedly increases memory efficieny and performance
     @pyqtSlot(dict)
     def _update_vitals(self, vitals_data):
         '''Update the vitals being shown on the page'''
@@ -184,7 +179,7 @@ class VitalsWindow(BaseWindow):
         self._pp_max = max(self._pp_max, current_pp)
         self._pp_min = min(self._pp_min, current_pp)
         
-        # if the denominator is 0, return 0 (stops division by 0 error)
+        # handle division by zero
         denominator = (self._pp_max + self._pp_min) / 2
         if denominator == 0:
             return "0.0"

@@ -1,10 +1,8 @@
 from PyQt6.QtWidgets import QCompleter, QListView
 from PyQt6.QtCore import Qt
 
-from backend.managers.patient_manager import PatientManager
-
 class AutoComplete(QCompleter):
-    def __init__(self, patients, options):
+    def __init__(self, patients, options, patient_manager):
         super().__init__()
     
         self.setFilterMode(Qt.MatchFlag.MatchContains)
@@ -14,16 +12,19 @@ class AutoComplete(QCompleter):
         self.popup().setMinimumHeight(200)
         self.setMaxVisibleItems(5) 
 
-        self._patient_manager = PatientManager()
-
+        self._patient_manager = patient_manager
 
         self.options_map = {option: patient.patient_mrn for option, patient in zip(options, patients)}
 
 
     def pathFromIndex(self, index):
-        '''Override the pathFromIndex method to only put the mrn in the textbox'''
+        '''
+        Override the pathFromIndex method to allow users to serach by typing
+        a patients name or MRN, and always return the MRN of the patient for
+        searching purposes.
+        '''
         completion = super().pathFromIndex(index)
 
         if completion in self.options_map.keys():
-            # put either the mrn or the completion itself in the textbox
+            # return the mrn instead of the name
             return self.options_map.get(completion, completion)

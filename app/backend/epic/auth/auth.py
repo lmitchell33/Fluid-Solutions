@@ -50,7 +50,7 @@ def get_public_key_modulus(key_file=PUBLIC_KEY_PATH):
     numbers = public_key.public_numbers()
     modulus = numbers.n
 
-    # Convert modulus and exponent to base64 URL
+    # Convert modulus and exponent to a url safe base64 encoded string
     base64_modulus = urlsafe_b64encode(modulus.to_bytes((modulus.bit_length() + 7) // 8, byteorder='big')).decode('utf-8').rstrip('=')
 
     return base64_modulus
@@ -91,6 +91,7 @@ def get_access_token(jwt=None):
         access_token {str} -- access token for the Epic APIs
     '''
 
+    # create a token if we dont have one
     if not jwt:
         jwt = create_jwt()
  
@@ -105,6 +106,7 @@ def get_access_token(jwt=None):
         "client_assertion" : jwt
     }
 
+    # make the reuqest to Epic for the access token 
     try: 
         response = requests.post(url=TOKEN_URL, data=auth_payload, headers=auth_headers)
         return response.json()
