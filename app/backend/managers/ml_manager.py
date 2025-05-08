@@ -29,10 +29,10 @@ class MLManager(QObject):
         self._model_type = model_type.lower()
         self._binary_predictor = binary
 
-        # create a cahce for batched inference
+        # cahce for batched inference
         self._data_cache = deque(maxlen=max_cache_size)
 
-        # get the filepath to the directory holding the model files
+        # filepath for the dir holding all models should be ~/Fluid-Solutions/app/models
         self._model_dir = Path(__file__).parent.parent.parent.joinpath("models")
         if not self._model_dir.exists():
             print(f"Directory containing the model file not found {self._model_dir}")
@@ -59,7 +59,6 @@ class MLManager(QObject):
             if not model_path.exists():
                 raise FileNotFoundError(f"Model file not found: {model_path}")
 
-            # load an xgb classifier from the saved model
             model = xgb.XGBClassifier()
             model.load_model(str(model_path))
             return model
@@ -177,7 +176,7 @@ class MLManager(QObject):
         if isinstance(data, dict):
             features = []
             for idx, feature_name in feature_map.items():
-                # iterate through the vitals and manually put the features into their correct positions
+                # manually put the features into their correct positions
                 features.insert(idx, float(data.get(feature_name, 0)))
 
             # reshape the array to match the model's expected input

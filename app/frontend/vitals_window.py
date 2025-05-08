@@ -16,14 +16,14 @@ class VitalsWindow(BaseWindow):
         '''Constructor for the VitalsWindow class, loads the vitals .ui file'''
         super().__init__(ui_file)
 
-        # initalize backend managers
         self._fluid_manager = fluid_manager
         self._vitals_manager = vitals_manager
         self._ml_manager = ml_manager
         self._ml_manager.load_model()
 
-        # used to better represent the open/close state of the popup and ppv 
+        # used to better represent the open/close state of the popup
         self.popup = None
+
         self._pp_max = None
         self._pp_min = None
 
@@ -60,7 +60,7 @@ class VitalsWindow(BaseWindow):
         
         result = self._fluid_manager.add_record(self.patient_state.current_patient, fluid, volume)
         
-        # display another popup for the user based on if the attemp was successful or not
+        # display another popup for the user based on if the fluid admin attempt was successful
         if result:
             display_volume = self._fluid_manager.get_total_fluid_volume(self.patient_state.current_patient)
             self.total_fluid_value.setText(str(display_volume))
@@ -81,6 +81,7 @@ class VitalsWindow(BaseWindow):
 
     def _setup_units(self):
         '''setup the units for the textboxes'''
+        # all from the .ui file
         units_mapping = {
             self.heart_rate_units: "bpm",
             self.spo2_units: "%",
@@ -100,7 +101,6 @@ class VitalsWindow(BaseWindow):
         self.current_datetime.setDisplayFormat("hh:mm:ss a MMM dd, yyyy")
         self.current_datetime.setDateTime(QDateTime.currentDateTime())
         self.current_datetime.setReadOnly(True)
-
 
         # Create and configure a QTimer
         self.timer = QTimer(self)
@@ -141,14 +141,13 @@ class VitalsWindow(BaseWindow):
         self.blood_pressure_value.setText(f"{vitals_data.get('systolicBP', '')} / {vitals_data.get('diastolicBP', '')}")
         self.spo2_value.setText(str(vitals_data.get("spo2", "")))
 
-        # Calculate and display pulse pressure variation
         ppv = self._calculate_ppv(
             vitals_data.get('systolicBP', ''), 
             vitals_data.get('diastolicBP', '')
         )
         self.ppv_value.setText(ppv)
 
-        # add pulse pressure and age for inference
+        # add pulse pressure and age for inference (not sent with the mocker)
         vitals_data['pulsePressure'] = int(vitals_data['systolicBP']) - int(vitals_data['diastolicBP'])
         vitals_data['age'] = int((datetime.now().date() - self.patient_state.current_patient.dob).days/365.25)
         self._ml_manager.add_to_cache(vitals_data)
@@ -170,7 +169,7 @@ class VitalsWindow(BaseWindow):
         current_pp = int(systolic) - int(diastolic)
 
         if self._pp_max is None or self._pp_min is None:
-            # no ppv if it is the first reading, return zero and save the min and max
+            # no ppv if it is the first reading, return zero and update the min and max
             self._pp_max = current_pp 
             self._pp_min = current_pp
             return "0.0"
@@ -179,7 +178,6 @@ class VitalsWindow(BaseWindow):
         self._pp_max = max(self._pp_max, current_pp)
         self._pp_min = min(self._pp_min, current_pp)
         
-        # handle division by zero
         denominator = (self._pp_max + self._pp_min) / 2
         if denominator == 0:
             return "0.0"

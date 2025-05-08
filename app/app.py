@@ -82,7 +82,6 @@ def run(args):
             db.initdb()
             return
 
-        # create the app and set the styling
         app = QApplication(sys.argv)
         app.setStyleSheet(load_stylesheet(stylesheet="frontend/stylesheets/window.qss"))
 

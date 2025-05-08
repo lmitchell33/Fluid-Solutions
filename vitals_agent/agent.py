@@ -42,7 +42,6 @@ def encode_vitals(data):
         for field, field_value in mdc_codes.get(key).items():
             observation_component.setComponentByName(f"{field}", field_value)
 
-        # add the value to the NumericObservation
         observation_component.setComponentByName('value', f"{value}")
         
         # add the NumericObservation to the final message to be transmitted

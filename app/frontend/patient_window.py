@@ -15,7 +15,7 @@ class PatientWindow(BaseWindow):
     '''
     
     def __init__(self, ui_file, coordinator, patient_manager):
-        '''Constructor for the PatientWindow class, loads the vitals .ui file'''
+        '''loads the vitals .ui file'''
         super().__init__(ui_file)
         self._coordinator = coordinator
         self._patient_manager = patient_manager
@@ -31,7 +31,7 @@ class PatientWindow(BaseWindow):
                 
         current_patient = self.patient_state.current_patient
 
-        # set the values of the widjets 
+        # set the values of the widjets (all found within the .ui file)
         self.mrn_value.setText(current_patient.patient_mrn or '')
         self.lastname_value.setText(current_patient.lastname or '')
         self.firstname_value.setText(current_patient.firstname or '')
@@ -49,7 +49,7 @@ class PatientWindow(BaseWindow):
             self._handle_search_resposne(False)
             return
 
-        # if the patient is found, update the current patient state
+        # update the current patient state
         patient = self._coordinator.get_or_create_patient(mrn)
         if patient:
             self.patient_state.current_patient = patient

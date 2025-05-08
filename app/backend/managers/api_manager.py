@@ -20,17 +20,16 @@ class EpicAPIManager:
     def __init__(self):
         '''Initialize the API Manager, ensuring initialization is done only once.'''
 
-        # urls for each of the Epic API endpoints we are using
+        # urls for each of the Epic API endpoints are stored in the .env file
         self.search_patient_url = os.getenv("SEARCH_PATIENT_URL")
         self.vitals_url = os.getenv("READ_VITALS_URL")
         self.read_patient_url = os.getenv("READ_PATIENT_URL")
 
-        # auth info for the session
+        # keep track of the state of the access token
         self._jwt = create_jwt()  
         self._access_token = None 
         self._access_token_expr = None 
 
-        # specify the headers for each request
         self.headers = {
             "Authorization" : f"Bearer {self.access_token}",
             "Content-Type" : "application/json"
@@ -44,7 +43,7 @@ class EpicAPIManager:
         This always ensures that we have a valid access token before making any requests
         '''
         
-        # check if the token is expired and get a new one if it is
+        # ensure that we always have a valid access token
         if (not self._access_token) or (time.time() >= self._access_token_expr):
             self._get_new_access_token() 
         
@@ -58,7 +57,7 @@ class EpicAPIManager:
         
         epic_auth_response = get_access_token(self._jwt)
 
-        # set the token and the token's expiration time based on the response
+        # update to keep track of the current token
         self._access_token = epic_auth_response.get("access_token", "")
         self._access_token_expr = time.time() + epic_auth_response.get("expires_in", "")
 
@@ -66,10 +65,6 @@ class EpicAPIManager:
     def search_patient(self, **kwargs):
         '''Method to search Epic for a patient
 
-        # NOTE: This function is currently only setup to except a singular patient
-        as the result of the serach. If there are more than one then a popup has to be
-        created that will allow the user to choose which patient it is.
-        
         Kwargs:
             **kwargs {dict} -- search parameters for the patient. A list of valid parameters is shown below
                 - _id
@@ -84,12 +79,12 @@ class EpicAPIManager:
             patient_data {str} -- patient data from Epic        
         '''
 
-        # Define the allowed search parameters for the API (from Epic)
+        # allowed search parameters for the API (from Epic)
         allowed_keys = [
             "_id", "address", "birthdate", "family", "gender", "given", "identifier",
         ]
     
-        # filter for the kwargs so that only the valid serach parameters are used
+        # only accept the allowed keys
         payload = {k: v for k, v in kwargs.items() if k in allowed_keys}
 
         if not payload:
@@ -204,7 +199,6 @@ class EpicAPIManager:
         '''
         inactive_patients = []
         for patient in patients:
-            # call the get epic api to get the patient data based off of their mrn
             patient_data = self.get_patient(patient.patient_mrn)
 
             if patient_data.get('active') == "false":

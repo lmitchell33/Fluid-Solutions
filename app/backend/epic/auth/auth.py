@@ -9,17 +9,14 @@ import requests
 import uuid
 import os
 
-# load in the secrets from the .env file
 load_dotenv()
 
 BASE_DIR = Path(__file__).parent
 
-# get the client secrets and credentials
 CLIENT_ID = os.getenv("CLIENT_ID")
 NON_PRODUCTION_CLIENT_ID = os.getenv("NON_PRODUCTION_CLIENT_ID")
 TOKEN_URL = os.getenv("TOKEN_URL")
 
-# get the paths for the public and private keys
 PRIVATE_KEY_PATH = str(BASE_DIR / os.getenv("PRIVATE_KEY"))
 PUBLIC_KEY_PATH = str(BASE_DIR / os.getenv("PUBLIC_KEY"))
 
@@ -36,23 +33,18 @@ def get_public_key_modulus(key_file=PUBLIC_KEY_PATH):
         base64_modulus {str} -- the base64 encoded modulus of the public key
     '''
 
-    # Load the certificate
     with open(key_file, "rb") as cert_file:
         cert_data = cert_file.read()
 
-    # Parse the certificate
+    # load the cert and get the public key
     certificate = load_pem_x509_certificate(cert_data)
-
-    # Extract the public key from the certificate
     public_key = certificate.public_key()
 
     # Extract the modulus and exponent
     numbers = public_key.public_numbers()
     modulus = numbers.n
 
-    # Convert modulus and exponent to a url safe base64 encoded string
     base64_modulus = urlsafe_b64encode(modulus.to_bytes((modulus.bit_length() + 7) // 8, byteorder='big')).decode('utf-8').rstrip('=')
-
     return base64_modulus
 
 
@@ -71,7 +63,6 @@ def create_jwt():
         'exp' : int(expiration_time.timestamp())
     }
 
-    # load the private key
     with open(PRIVATE_KEY_PATH, "r") as key:
         private_key = key.read()
 
@@ -91,11 +82,9 @@ def get_access_token(jwt=None):
         access_token {str} -- access token for the Epic APIs
     '''
 
-    # create a token if we dont have one
     if not jwt:
         jwt = create_jwt()
  
-    # OAuth 2.0 http request information
     auth_headers = {
         'Content-Type' : "application/x-www-form-urlencoded"
     }
@@ -105,8 +94,7 @@ def get_access_token(jwt=None):
         "client_assertion_type" : "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
         "client_assertion" : jwt
     }
-
-    # make the reuqest to Epic for the access token 
+ 
     try: 
         response = requests.post(url=TOKEN_URL, data=auth_payload, headers=auth_headers)
         return response.json()

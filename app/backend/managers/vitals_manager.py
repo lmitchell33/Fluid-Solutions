@@ -52,7 +52,6 @@ class VitalsManager(QObject):
                 conn, addr = self.server_socket.accept()
                 self._handle_clients(conn)
             
-            # Handle all errors gracefully
             except socket.timeout:
                 continue
             except Exception as e:
@@ -71,7 +70,7 @@ class VitalsManager(QObject):
                 if not data:
                     break
 
-                # convert the data to a dict, ensure it exists, then emit to the frontend
+                # convert the data to a dict, then emit to the frontend
                 output_data = self._process_data(data)
                 if output_data:
                     self.vitals_data.emit(output_data)
@@ -106,7 +105,6 @@ class VitalsManager(QObject):
 
     def stop_server(self):
         '''Stops the server'''
-        # Stop everything
         if self._running:
             self._running = False
             print("Stopping the socket server for the vitals manager")
@@ -118,7 +116,6 @@ class VitalsManager(QObject):
                 # socket is already closed
                 pass
 
-            # closes the socket
             self.server_socket.close()
             self.executor.shutdown(wait=False)
             print("Stopped vitals manager")
