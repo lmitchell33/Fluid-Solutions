@@ -20,7 +20,7 @@ TOKEN_URL = os.getenv("TOKEN_URL")
 PRIVATE_KEY_PATH = str(BASE_DIR / os.getenv("PRIVATE_KEY"))
 PUBLIC_KEY_PATH = str(BASE_DIR / os.getenv("PUBLIC_KEY"))
 
-# generate a unique key id number to be used for the JWT token and set
+# generate a unique key id number to be used for the JWT token
 kid = str(uuid.uuid4())
 
 def get_public_key_modulus(key_file=PUBLIC_KEY_PATH):

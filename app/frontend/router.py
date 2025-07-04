@@ -29,7 +29,7 @@ class Router(QStackedWidget):
         '''
         super().__init__()
 
-        # set the tital of the app itself
+        # set the title of the app itself
         self.setWindowTitle("Fluid Solutions")
         self._windows = windows
 
@@ -49,16 +49,13 @@ class Router(QStackedWidget):
         '''Dynamically connects routing buttons between all windows'''
         try:
             for window in self._windows: 
-                # get the routing button for the current window 
                 routing_button = window.get_routing_button()
 
                 if routing_button:
-                    # when the button is clicked, display the window it routes to
                     # the _ is a boolean value I dont care about
                     routing_button.clicked.connect(lambda _, curr_window=window: self.show_window(curr_window.routes_to))
         
         except Exception as e:
-            # catchall
             print(f"Error occured: {e}")
             raise e                    
 

@@ -38,7 +38,7 @@ class VitalsManager(QObject):
         
         self._running = True
 
-        # run the server in a separate daemon so it does not block the mian thread
+        # run the server in a separate daemon
         socket_thread = Thread(target=self._listen, daemon=True)
         socket_thread.start()
 
@@ -110,10 +110,8 @@ class VitalsManager(QObject):
             print("Stopping the socket server for the vitals manager")
 
             try:
-                # stops the socket from sending and receing data immediately
                 self.server_socket.shutdown(socket.SHUT_RDWR)
             except OSError:
-                # socket is already closed
                 pass
 
             self.server_socket.close()

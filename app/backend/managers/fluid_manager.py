@@ -34,12 +34,10 @@ class FluidManager:
             with self._db.session_context() as db:
                 fluid = db.query(Fluid).filter_by(name=fluid_name).first()
                 
-                # if the fluid is not found, create one
                 if not fluid:
                     fluid = Fluid(name=fluid_name)
                     db.add(fluid)
 
-                # create a new fluid record and assign it to the patient and fluid
                 new_fluid_record = FluidRecord(fluid_time_given=datetime.now(), amount_ml=amount_ml, fluid=fluid, patient=patient)
                 db.add(new_fluid_record)
 

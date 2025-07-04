@@ -34,11 +34,9 @@ class PatientManager:
             with self._db.session_context() as db:
                 new_patient = Patient()
                 
-                # add attributes to the patient instance
                 for key, value in raw_patient_data.items():
                     if key in epic_field_mapping.keys():
 
-                        # conver the date of birth to a date object for SQLAclhemy
                         if key == "birthDate" and value: 
                             value = datetime.strptime(value, "%Y-%m-%d").date()
 
@@ -58,7 +56,6 @@ class PatientManager:
         '''Fetches the patient instance from the database based on the inputted MRN'''
         with self._db.session_context() as db:
             
-            # if the patient instance from the db exists, put it into the patient variable and return 
             if (patient := db.query(Patient).filter_by(patient_mrn=mrn).first()):
                 return patient
             

@@ -29,10 +29,10 @@ class MLManager(QObject):
         self._model_type = model_type.lower()
         self._binary_predictor = binary
 
-        # cahce for batched inference
+        # cache for batched inference
         self._data_cache = deque(maxlen=max_cache_size)
 
-        # filepath for the dir holding all models should be ~/Fluid-Solutions/app/models
+        # filepath for the dir holding all models should be /Fluid-Solutions/app/models
         self._model_dir = Path(__file__).parent.parent.parent.joinpath("models")
         if not self._model_dir.exists():
             print(f"Directory containing the model file not found {self._model_dir}")
@@ -64,7 +64,6 @@ class MLManager(QObject):
             return model
 
         elif self._model_type == "rf":
-            # load in the rf model from the saved model
             model_file = "random_forest_model.pkl" if not self._binary_predictor else "random_forest_binary_model.pkl"
             model_path = self._model_dir / model_file
 
@@ -183,10 +182,9 @@ class MLManager(QObject):
             array = np.array(features).reshape(1, -1)
             return array
 
-        # must convert data to numpy array and check its dimensions to match
-        # what we trained the model with
+        # must convert data to numpy array and check its dimensions to match model
         elif isinstance(data, list):
-            # just assuming the data is in the correct order
+            # assuming the data is in the correct order
             array = np.array(data, dtype=float)
             if array.ndim == 1:
                 array = array.reshape(1, -1)

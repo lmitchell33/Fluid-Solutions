@@ -92,13 +92,11 @@ class EpicAPIManager:
             return None
 
         try:
-            # request info from epic based on the parameters
             response = requests.get(self.search_patient_url, payload, headers=self.headers)
             response.raise_for_status()
 
             patient = {}
 
-            # parse the xml response from epic
             xml = response.content
             tree = ElementTree.fromstring(xml)
 

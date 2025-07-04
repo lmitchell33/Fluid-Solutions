@@ -27,7 +27,7 @@ class VitalsWindow(BaseWindow):
         self._pp_max = None
         self._pp_min = None
 
-        # connect pyqt signals 
+        # connect pyqt signals for vitals data
         self._vitals_manager.vitals_data.connect(self._update_vitals)
         self.popup_button.clicked.connect(self._open_popup)
         
@@ -102,7 +102,6 @@ class VitalsWindow(BaseWindow):
         self.current_datetime.setDateTime(QDateTime.currentDateTime())
         self.current_datetime.setReadOnly(True)
 
-        # Create and configure a QTimer
         self.timer = QTimer(self)
         self.timer.timeout.connect(self._update_datetime)
         self.timer.start(1000)  # Update every 1 second
@@ -161,7 +160,7 @@ class VitalsWindow(BaseWindow):
 
     def _calculate_ppv(self, systolic, diastolic):
         '''calculates and returns the ppv of a patient'''
-        # if there is no systolic or diastolic being sent, dont display anyting
+        # if we arent receiving sys or dias for some reason
         if not systolic or not diastolic:
             return ""
         
@@ -169,7 +168,7 @@ class VitalsWindow(BaseWindow):
         current_pp = int(systolic) - int(diastolic)
 
         if self._pp_max is None or self._pp_min is None:
-            # no ppv if it is the first reading, return zero and update the min and max
+            # no ppv if it is the first reading
             self._pp_max = current_pp 
             self._pp_min = current_pp
             return "0.0"
@@ -182,7 +181,6 @@ class VitalsWindow(BaseWindow):
         if denominator == 0:
             return "0.0"
         
-        # calculate the variation in the pp and update the prev pp 
         ppv = ((self._pp_max - self._pp_min) / denominator) * 100
 
         return str(round(ppv, 1))

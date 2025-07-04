@@ -119,7 +119,6 @@ def run(args):
         # this is a demo and I don't have time to figure soemething else out
         dependencies['vitals_manager'].start_server()
 
-        # start the app and router, by default the patient window is shown
         router.show() 
         app.exec()
 

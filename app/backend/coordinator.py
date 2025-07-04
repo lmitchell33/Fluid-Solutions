@@ -15,15 +15,12 @@ class Coordinator:
     
     def get_or_create_patient(self, patient_mrn):
         '''Return or create and return a patient isntance based on the inputted mrn'''
-        # if the patient is found in the db, return the instance found
         if (patient := self._patient_manager.get_patient_by_mrn(patient_mrn)):
             return patient
 
-        # if no patient is found in the external search return None 
         if not (raw_patient_data := self._api.search_patient(_id=patient_mrn)):
             return None
 
-        # if a patient was found in the external search, add it to the database and return the new patient obj
         return self._patient_manager.create_patient_from_epic(raw_patient_data)
         
 
@@ -31,12 +28,10 @@ class Coordinator:
         """Removes inactive patients from the database based on API response."""
         patients = self._patient_manager.get_all_patients()
         
-        # if there are no patients, dont do anything
         if not patients:
             print("No patients to remove")
             return
-
-        # find the inactive patietns
+        
         inactive_patients = self._api.get_inactive_patients(patients)
 
         if not inactive_patients:

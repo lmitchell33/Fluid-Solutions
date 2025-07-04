@@ -53,8 +53,7 @@ class DatabaseManager:
             cls._instance {DatabaseManager} - the singular instance of the class.
         '''
         
-        # If instance does not exist, then initalize an instance and set the 
-        # initalized flag to ensure no more instances of the class be created.
+        # Singleton pattern
         if not cls._instance:
             with cls._lock:
                 if not cls._instance: 
@@ -74,8 +73,7 @@ class DatabaseManager:
             database_url {string} - path/url for the sqlite database
         '''
 
-        # if an instance of the class already exists, skip to save resources
-        # if the instance exists, but there is no session, create a new session
+        # Singleton pattern
         if self._initialized and self._session:
             self._create_session()
             return 

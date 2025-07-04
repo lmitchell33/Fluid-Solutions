@@ -40,7 +40,7 @@ class PatientState(QObject):
 
     def __init__(self):
         '''Constructor for the PatientState class'''
-        # skip if instance of the class already exists
+        # singleton
         if self._initialized:
             return 
         
