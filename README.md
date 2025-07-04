@@ -2,7 +2,9 @@
 
 ## **Overview**
 
-This is our senior capstone project and it is a desktop application using an XGBoost model to estimate blood volume status based on vital signs and patient metrics. The XGBoost model was custom developed using the MIMIC-IV dataset of ICU vital signs and has an accuracy of approximately 96%. The application provides an easy-to-use graphical interface for inputting vital signs, displaying predictions, and visualizing the entered data. The tool is inteded to be used in the ICU, specifically within a vitals monitor or a on a smaller screen/laptop and is designed to be plug-and-play with little to no installation.
+This is our senior capstone project and it is a desktop application using an XGBoost model to estimate blood volume status based on vital signs and patient metrics. The XGBoost model was custom developed using the MIMIC-IV dataset of ICU vital signs and has an accuracy of approximately 96%. The application provides an easy-to-use graphical interface for inputting vital signs, displaying predictions, and visualizing the entered data. The tool is intended to be used in the ICU, specifically within a vitals monitor or a on a smaller screen/laptop and is designed to be plug-and-play with little to no installation.
+
+NOTE: The Unit Tests for this project were started but never completed due to a lack of time.
 
 ## **Built With**
 
