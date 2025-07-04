@@ -117,9 +117,8 @@ class DatabaseManager:
         '''context function that can be used to ensure the reuired overhead is always followed when querying the db
         
         Inteded use:
-            function(*args, **kwargs):
-                with session_context() as session:
-                    val = session.query(class).filter(params).first()
+            with session_context() as session:
+                val = session.query(class).filter(params).first()
         
         this will automatically rollback on error
         '''
